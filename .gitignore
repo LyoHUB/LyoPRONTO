@@ -1,7 +1,9 @@
-# ----------- Manually excluded files
+# ----------- Files excluded for this project
 #
 # Python precompiled files
 *.pyc
+# Data files
+*.csv
 ################################################################################
 #                               Jupyter Notebook                               #
 ################################################################################

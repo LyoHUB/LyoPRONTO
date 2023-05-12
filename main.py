@@ -5,15 +5,18 @@ import scipy.optimize as sp
 import numpy as np
 import math
 import csv
-import constant
-import freezing
-import calc_knownRp
-import calc_unknownRp
-import design_space
-import opt_Pch_Tsh
-import opt_Pch
-import opt_Tsh
-import functions
+
+from src import *
+# from . import constant
+# from . import freezing
+# from . import calc_knownRp
+# from . import calc_unknownRp
+# from . import design_space
+# from . import opt_Pch_Tsh
+# from . import opt_Pch
+# from . import opt_Tsh
+# from . import functions
+
 import pylab as plt
 from matplotlib import rc as matplotlibrc
 from pdb import set_trace as keyboard

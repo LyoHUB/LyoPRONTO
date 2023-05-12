@@ -2,8 +2,8 @@ import scipy.optimize as sp
 import numpy as np
 import math
 import csv
-import constant
-import functions
+from . import constant
+from . import functions
 from pdb import set_trace as keyboard
 
 ################# Primary drying at fixed set points ###############
