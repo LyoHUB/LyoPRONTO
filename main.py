@@ -6,7 +6,7 @@ import numpy as np
 import math
 import csv
 
-from src import *
+from .src import *
 # from . import constant
 # from . import freezing
 # from . import calc_knownRp
@@ -17,9 +17,9 @@ from src import *
 # from . import opt_Tsh
 # from . import functions
 
-import pylab as plt
+import matplotlib.pyplot as plt
 from matplotlib import rc as matplotlibrc
-from pdb import set_trace as keyboard
+# from pdb import set_trace as keyboard
 import time
 
 current_time = time.strftime("%y%m%d_%H%M",time.localtime())
