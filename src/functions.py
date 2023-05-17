@@ -27,7 +27,7 @@ solute in the solution
 """
 def Lpr0_FUN(Vfill,Ap,cSolid):
 
-    F=Vfill/(Ap*constant.rho_ice)*(1-cSolid*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # Fill height in cm
+    F=Vfill/(Ap*constant.rho_ice)*(constant.rho_solution-cSolid*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # Fill height in cm
 
     return F
 
