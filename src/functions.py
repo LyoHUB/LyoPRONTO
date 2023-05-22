@@ -1,7 +1,8 @@
+"""File with a bunch of functions in it."""
+
 import scipy.optimize as sp
 import numpy as np
 import math
-import csv
 from . import constant
 from pdb import set_trace as keyboard
 
@@ -20,12 +21,21 @@ def Vapor_pressure(T_sub):
     return F
 
 ##
-"""
-Calculates the intial fill height of the frozen product in cm. Inputs are fill
-volume in mL, product area in cm^2, and fractional concentration of the
-solute in the solution
-"""
 def Lpr0_FUN(Vfill,Ap,cSolid):
+    """Calculates the intial fill height of the frozen product in cm. 
+
+    Examples:
+        >>> Lpr0_FUN(3.0, 3.14, 0.05)
+        1.037911272081373
+    
+    Args:
+        Vfill (float): fill volume in mL
+        Ap (float): product area in cm^2
+        cSolid (float): fractional concentration of the solute in solution
+
+    Returns:
+        float: initial fill height of the frozen product, in cm.
+    """
 
     F=Vfill/(Ap*constant.rho_ice)*(constant.rho_solution-cSolid*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # Fill height in cm
 

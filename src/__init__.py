@@ -1,3 +1,6 @@
+"""Here be code."""
+
+
 from . import constant
 from . import freezing
 from . import calc_knownRp
