@@ -5,7 +5,7 @@ LyoPRONTO is an open-source user-friendly tool to simulate and optimize freezing
 Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko
 
 # Interactive Simulation
-Run an interactive LyoPRONTO simulation at http://lyopronto.herokuapp.com 
+Run an interactive LyoPRONTO simulation at http://lyopronto.rcac.purdue.edu 
 
 # Using This Code
 Download this repository, then in your preferred command line navigate to the containing directory (so that `LyoPronto` is a subdirectory).
