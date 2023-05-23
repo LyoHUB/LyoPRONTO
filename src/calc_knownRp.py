@@ -1,3 +1,5 @@
+"""Class for the `dry` method on known Rp.
+"""
 import scipy.optimize as sp
 import numpy as np
 import math
@@ -10,6 +12,19 @@ from pdb import set_trace as keyboard
 ################# Primary drying at fixed set points ###############
 
 def dry(vial,product,ht,Pchamber,Tshelf,dt):
+    """TODO: Fill this out. Compute the results of the drying process, with known Rp and fixed set points.
+
+    Args:
+        vial (dict): data for vial, including vial bottom area and product area
+        product (dict): data on product, including
+        ht (dict): heat transfer coefficient data, i.e. `KC`, `KP`, `KD`.
+        Pchamber (_type_): _description_
+        Tshelf (_type_): _description_
+        dt (_type_): _description_
+
+    Returns:
+        7xN np.array: [t, N number of timesteps taken; 
+    """
 
     ##################  Initialization ################
 
