@@ -2,12 +2,13 @@
 LyoPRONTO is an open-source user-friendly tool to simulate and optimize freezing and primary drying in lyophilizers written using Python.
 
 # Authors
-Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko
+Original authors: Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko.
+Maintained and updated by Isaac S. Wheeler.
 
 # Interactive Simulation
-Run an interactive LyoPRONTO simulation at http://lyopronto.rcac.purdue.edu 
+A web-based GUI is available for this software at http://lyopronto.rcac.purdue.edu.
 
-# Using This Code
+# How to Use This Code
 Download this repository, then in your preferred command line navigate to the containing directory (so that `LyoPronto` is a subdirectory).
 Execute:
 ```
@@ -18,3 +19,14 @@ This will execute the file `main.py` in an appropriate scope. Parameters can be 
 # Citation
 G. Shivkumar, P. S. Kazarin, A. D. Strongrich, & A. A. Alexeenko, "LyoPRONTO: An Open-Source Lyophilization PRocess OptimizatioN TOol",  AAPS PharmSciTech (2019) 20: 328. 
 
+# Licensing
+
+Copyright (C) 2019, Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko.
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+By request, this software may also be distributed under the terms of the GNU Lesser General Public License (LGPL); for permission, contact the authors or maintainer.
