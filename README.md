@@ -6,15 +6,16 @@ Original authors: Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko.
 Maintained and updated by Isaac S. Wheeler.
 
 # Interactive Simulation
-A web-based GUI is available for this software at http://lyopronto.rcac.purdue.edu.
+A web-based GUI is available for this software at http://lyopronto.geddes.rcac.purdue.edu.
 
-# How to Use This Code
+# How to Use This Code Directly
 Download this repository, then in your preferred command line navigate to the containing directory (so that `LyoPronto` is a subdirectory).
 Execute:
 ```
 python3 LyoPronto.main -m
 ```
 This will execute the file `main.py` in an appropriate scope. Parameters can be changed in `main.py`. Files listing the inputs and outputs will be generated in the current directory, along with some plots of temperature, pressure, and drying progress vs. time.
+A video tutorial by the authors illustrating this process can be found [on LyoHUB's YouTube channel](https://youtu.be/DI-Gz0pBI0w).
 
 # Citation
 G. Shivkumar, P. S. Kazarin, A. D. Strongrich, & A. A. Alexeenko, "LyoPRONTO: An Open-Source Lyophilization PRocess OptimizatioN TOol",  AAPS PharmSciTech (2019) 20: 328. 
