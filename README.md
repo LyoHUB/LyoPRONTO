@@ -20,6 +20,8 @@ A video tutorial by the authors illustrating this process can be found [on LyoHU
 # Citation
 G. Shivkumar, P. S. Kazarin, A. D. Strongrich, & A. A. Alexeenko, "LyoPRONTO: An Open-Source Lyophilization PRocess OptimizatioN TOol",  AAPS PharmSciTech (2019) 20: 328. 
 
+The noted paper is open access, and can be found [here](https://link.springer.com/article/10.1208/s12249-019-1532-7).
+
 # Licensing
 
 Copyright (C) 2019, Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko.
