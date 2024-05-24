@@ -14,12 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import scipy.optimize as sp
+from scipy.optimize import fsolve
 import numpy as np
 import math
-import csv
 from . import constant
-from pdb import set_trace as keyboard
 
 ####################### Functions #######################
 
@@ -43,9 +41,8 @@ solute in the solution
 """
 def Lpr0_FUN(Vfill,Ap,cSolid):
 
-    F=Vfill/(Ap*constant.rho_ice)*(constant.rho_solution-cSolid*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # Fill height in cm
-
-    return F
+    dens_fac = (constant.rho_solution-cSolid*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)
+    return Vfill/(Ap*constant.rho_ice)*dens_fac  # Fill height in cm
 
 ##
 """
@@ -55,9 +52,7 @@ A1 in cm-hr-Torr/g, A2 in 1/cm
 """
 def Rp_FUN(l,R0,A1,A2):
 
-    F=R0+A1*l/(1.0+A2*l) # Product resistance in cm^2-hr-Torr/g
-
-    return F
+    return R0 + A1*l/(1+A2*l) # Product resistance in cm^2-hr-Torr/g
 
 ##
 """
@@ -69,9 +64,7 @@ in cal/s/K/cm^2/Torr, KD in 1/Torr, and chamber pressure in Torr
 """
 def Kv_FUN(KC,KP,KD,Pch):
 
-    F=KC+KP*Pch/(1.0+KD*Pch) # Kv in cal/s/K/cm^2
-
-    return F
+    return KC + KP*Pch/(1.0+KD*Pch) # Kv in cal/s/K/cm^2
 
 ##
 
@@ -84,7 +77,7 @@ cal/s/K/cm^2, initial product length in cm, cake length in cm, product
 resistance in cm^2-Torr-hr/g, and shelf temperature in degC
 
 """
-def T_sub_solver_FUN(T_unknown, *data):
+def T_sub_solver_FUN(T_sub_guess, *data):
     # Tsub is found from solving for T_unknown.
     # Determines the function to calculate the sublimation temperature
     # represented as T_unknown. Other inputs are chamber pressure in Torr, vial
@@ -94,11 +87,14 @@ def T_sub_solver_FUN(T_unknown, *data):
     
     Pch, Av, Ap, Kv, Lpr0, Lck, Rp, Tsh = data
 
-    P_sub = Vapor_pressure(T_unknown)   # Vapor pressure at the sublimation temperature in Torr
+    P_sub = Vapor_pressure(T_sub_guess)   # Vapor pressure at the sublimation temperature in Torr
+    Qsub = constant.dHs*(P_sub-Pch)*Ap/Rp /constant.hr_To_s # Sublimation heat
+    T_b = T_sub_guess + Qsub/Ap/constant.k_ice*(Lpr0-Lck) # Corresponding bottom temperature
+    Qsh = Kv*Av*(Tsh - T_b) # Heat transfer from shelf
+    return Qsub-Qsh
 
-    F = (P_sub-Pch)*(Av/Ap*Kv/constant.k_ice*(Lpr0-Lck)+1)-Av/Ap*Kv*Rp*constant.hr_To_s/constant.dHs*(Tsh-T_unknown)  # Heat and mass transfer energy balance function - Should be zero
 
-    return F
+
 
 ##
 
@@ -142,9 +138,9 @@ def Rp_finder(T_sub,Lpr0,Lck,Pch,Tbot):
 
     P_sub = Vapor_pressure(T_sub)   # Vapor pressure at the sublimation temperature in Torr
 
-    F = (Lpr0-Lck)*(P_sub-Pch)*constant.dHs/(Tbot-T_sub)/constant.hr_To_s/constant.k_ice	# Product resistance in cm^2-Torr-hr/g
+    Rp = (Lpr0-Lck)*(P_sub-Pch)*constant.dHs/(Tbot-T_sub)/constant.hr_To_s/constant.k_ice	# Product resistance in cm^2-Torr-hr/g
 
-    return F
+    return Rp
 
 ##
 
@@ -274,3 +270,28 @@ def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh):
 
 
 ################################################################
+def calc_step(t, Lck, config):
+    vial, product, ht, Pch_t, Tsh_t, dt, Lpr0 = config
+    Tsh = Tsh_t(t)
+    Pch = Pch_t(t)
+    Kv = Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
+    Rp = Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
+    Tsub = fsolve(T_sub_solver_FUN, 250, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
+    dmdt = sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
+    if dmdt<0:
+        # print("Shelf temperature is too low for sublimation.")
+        dmdt = 0.0
+    Tbot = T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
+    dry_frac = Lck/Lpr0
+
+    col = np.array([t, Tsub, Tbot, Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), dry_frac])
+    return col
+
+def fill_output(sol, config):
+    vial, product, ht, Pchamber, Tshelf, dt, Lpr0 = config
+    # out_t = np.arange(0, sol.t[-1], dt)   
+    out_t = np.linspace(0, sol.t[-1], 100)   
+    fullout = np.zeros((len(out_t), len(calc_step(0, 0, config))))
+    for i,t in enumerate(out_t):
+        fullout[i,:] = calc_step(t, sol.sol(t)[0], config)
+    return fullout
