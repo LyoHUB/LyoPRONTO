@@ -22,7 +22,6 @@ import math
 import csv
 from . import constant
 from . import functions
-from pdb import set_trace as keyboard
 
 
 ################# Primary drying at fixed set points ###############

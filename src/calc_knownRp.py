@@ -19,7 +19,6 @@ from scipy.integrate import solve_ivp
 import numpy as np
 from . import constant
 from . import functions
-from pdb import set_trace as keyboard
 
 
 ################# Primary drying at fixed set points ###############
