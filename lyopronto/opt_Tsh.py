@@ -41,6 +41,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
     # Initial chamber pressure
     Pch = Pchamber['setpt'][0]        # Torr
+    Pchamber = Pchamber.copy()
     Pchamber['setpt'] = np.insert(Pchamber['setpt'],0,Pchamber['setpt'][0])        # Include initial chamber pressure in set point array
     # Chamber pressure control time
     Pchamber['t_setpt'] = np.array([[0]])

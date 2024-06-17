@@ -46,6 +46,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
     # Initial shelf temperature
     Tsh = Tshelf['init']        # degC
+    Tshelf = Tshelf.copy()
     Tshelf['setpt'] = np.insert(Tshelf['setpt'],0,Tshelf['init'])        # Include initial shelf temperature in set point array
     # Shelf temperature control time
     Tshelf['t_setpt'] = np.array([[0]])
