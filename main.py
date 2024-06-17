@@ -22,7 +22,7 @@ import numpy as np
 import math
 import csv
 
-from .src import *
+from src import *
 # from . import constant
 # from . import freezing
 # from . import calc_knownRp
@@ -81,8 +81,7 @@ else:
     product_temp_filename = './temperature.dat'
 # Critical product temperature
 # At least 2 to 3 deg C below collapse or glass transition temperature
-if not(sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
-    product['T_pr_crit'] = -5        # in degC
+product['T_pr_crit'] = -5        # in degC
 
 # Vial Heat Transfer Parameters
 if sim['tool'] == 'Freezing Calculator':
@@ -131,17 +130,15 @@ else:
     Tshelf = dict([('min',-45),('max',120)])
 
 # Time step
-dt = 0.001    # hr
+dt = 0.01    # hr
 
 # Lyophilizer equipment capability
 # Form: dm/dt [kg/hr] = a + b * Pch [Torr]
 # a in kg/hr, b in kg/hr/Torr 
-if not(sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
-    eq_cap = dict([('a',-0.182),('b',0.0117e3)])
+eq_cap = dict([('a',-0.182),('b',0.0117e3)])
 
 # Equipment load
-if not(sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
-    nVial = 398    # Number of vials
+nVial = 398    # Number of vials
 
 ########################################################
 
@@ -219,9 +216,8 @@ try:
     writer.writerow(['Time step [hr]:',dt])
     writer.writerow([''])
     
-    if not (sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
-        writer.writerow(['Equipment capability parameters:','a [kg/hr]:',eq_cap['a'],'b [kg/hr/Torr]:',eq_cap['b']])
-        writer.writerow(['Number of vials:',nVial])    
+    writer.writerow(['Equipment capability parameters:','a [kg/hr]:',eq_cap['a'],'b [kg/hr/Torr]:',eq_cap['b']])
+    writer.writerow(['Number of vials:',nVial])    
 
 finally:
     csvfile.close()
