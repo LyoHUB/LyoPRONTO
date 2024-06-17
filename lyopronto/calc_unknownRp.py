@@ -72,6 +72,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
         if dmdt<0:
             print(f"No sublimation. t={t:1.2f}, Tsh={Tsh:2.1f}, Tsub={Tsub:3.1f}, dmdt={dmdt:1.2e}, Rp={Rp:1.2f}, Lck={Lck:1.2f}")
             dmdt = 0.0
+            Rp = 0.0
 
         # Sublimated ice length
         dL = (dmdt*constant.kg_To_g)*dt[iStep]/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
