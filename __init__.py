@@ -21,4 +21,4 @@ import numpy as np
 import math
 import csv
 
-from .src import *
+from .lyopronto import *
