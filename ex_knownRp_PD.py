@@ -24,7 +24,7 @@ import csv
 
 # from lyopronto.calc_knownRp import dry
 
-from src import *
+from lyopronto import *
 # from . import constant
 # from . import freezing
 # from . import calc_knownRp

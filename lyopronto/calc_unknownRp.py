@@ -67,6 +67,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
         Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
 
         Tsub = sp.fsolve(functions.T_sub_Rp_finder, Tbot_exp[iStep], args = (vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Tbot_exp[iStep],Tsh))[0] # Sublimation front temperature array in degC
+        # Q = Kv*vial['Av']*(Tsh - Tbot_exp[iStep])
+        # Tsub = Tbot_exp[iStep] - Q/vial['Ap']/constant.k_ice*(Lpr0-Lck)
         Rp = functions.Rp_finder(Tsub,Lpr0,Lck,Pch,Tbot_exp[iStep])    #     Product resistance in cm^2-Torr-hr/g
         dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
         if dmdt<0:

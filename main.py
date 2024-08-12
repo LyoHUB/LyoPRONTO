@@ -22,7 +22,7 @@ import numpy as np
 import math
 import csv
 
-from src import *
+from lyopronto import *
 # from . import constant
 # from . import freezing
 # from . import calc_knownRp
