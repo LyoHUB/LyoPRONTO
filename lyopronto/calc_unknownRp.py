@@ -20,7 +20,6 @@ import math
 import csv
 from . import constant
 from . import functions
-from pdb import set_trace as keyboard
 
 ################# Primary drying at fixed set points ###############
 
@@ -37,6 +36,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
 
     # Initial shelf temperature
     Tsh = Tshelf['init']        # degC
+    Tshelf = Tshelf.copy() # Don't edit the original argument!!
     Tshelf['setpt'] = np.insert(Tshelf['setpt'],0,Tshelf['init'])        # Include initial shelf temperature in set point array
     # Shelf temperature control time
     Tshelf['t_setpt'] = np.array([[0]])
@@ -45,6 +45,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
 
     # Initial chamber pressure
     Pch = Pchamber['setpt'][0]        # Torr
+    Pchamber = Pchamber.copy() # Don't edit the original argument!!
     Pchamber['setpt'] = np.insert(Pchamber['setpt'],0,Pchamber['setpt'][0])        # Include initial chamber pressure in set point array
     # Chamber pressure control time
     Pchamber['t_setpt'] = np.array([[0]])
@@ -65,12 +66,15 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
 
         Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
 
-        Tsub = sp.fsolve(functions.T_sub_Rp_finder, T0, args = (vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Tbot_exp[iStep],Tsh)) # Sublimation front temperature array in degC
+        Tsub = sp.fsolve(functions.T_sub_Rp_finder, Tbot_exp[iStep], args = (vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Tbot_exp[iStep],Tsh))[0] # Sublimation front temperature array in degC
+        # Q = Kv*vial['Av']*(Tsh - Tbot_exp[iStep])
+        # Tsub = Tbot_exp[iStep] - Q/vial['Ap']/constant.k_ice*(Lpr0-Lck)
         Rp = functions.Rp_finder(Tsub,Lpr0,Lck,Pch,Tbot_exp[iStep])    #     Product resistance in cm^2-Torr-hr/g
         dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
         if dmdt<0:
-            print("Shelf temperature is too low for sublimation.")
+            print(f"No sublimation. t={t:1.2f}, Tsh={Tsh:2.1f}, Tsub={Tsub:3.1f}, dmdt={dmdt:1.2e}, Rp={Rp:1.2f}, Lck={Lck:1.2f}")
             dmdt = 0.0
+            Rp = 0.0
 
         # Sublimated ice length
         dL = (dmdt*constant.kg_To_g)*dt[iStep]/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm

@@ -20,7 +20,6 @@ import math
 import csv
 from . import constant
 from . import functions
-from pdb import set_trace as keyboard
 
 ################# Primary drying at fixed set points ###############
 
@@ -148,11 +147,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     
             Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
     
-            try:
-                Tsub = sp.fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp)) # Sublimation front temperature array in degC
-                dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
-            except Exception:
-                keyboard()
+            Tsub = sp.fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp)) # Sublimation front temperature array in degC
+            dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
                 
             # Sublimated ice length
             dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
