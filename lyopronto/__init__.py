@@ -1,3 +1,4 @@
+"""Here's some docs on the main module."""
 # LyoPRONTO, a vial-scale lyophilization process simulator
 # Copyright (C) 2024, Gayathri Shivkumar, Petr S. Kazarin, Alina A. Alexeenko, Isaac S. Wheeler
 
