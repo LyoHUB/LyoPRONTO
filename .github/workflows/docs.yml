@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@v5
-
+      - run: pip install mkdocstrings-python
       - name: Deploy docs
         uses: mhausenblas/mkdocs-deploy-gh-pages@master
         env:
