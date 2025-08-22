@@ -16,10 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import sys
 import scipy.optimize as sp
 import numpy as np
-import math
 import csv
 import matplotlib.pyplot as plt
 from matplotlib import rc as matplotlibrc
@@ -27,7 +25,7 @@ import time
 
 # from lyopronto.calc_unknownRp import dry
 
-from src import *
+from lyopronto import *
 # from . import constant
 # from . import freezing
 # from . import calc_knownRp

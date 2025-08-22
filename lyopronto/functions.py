@@ -152,13 +152,14 @@ area in cm^2, product area in cm^2, vial heat transfer coefficient in
 cal/s/K/cm^2, initial product length in cm, cake length in cm, vial bottom 
 temperature in degC, and shelf temperature in degC
 """
-def T_sub_Rp_finder(T_unknown, *data):
+def T_sub_Rp_finder(T_sub, *data):
     
     Av, Ap, Kv, Lpr0, Lck, Tbot, Tsh = data
 
-    F = (1.0 + Ap/Av/Kv*constant.k_ice/(Lpr0-Lck))*(Tbot-T_unknown) - (Tsh-T_unknown)
+    LHS = (Tsh - Tbot)*Av*Kv
+    RHS = (Tbot - T_sub)*Ap*constant.k_ice/(Lpr0-Lck)
 
-    return F
+    return LHS-RHS
 
 ##
 
