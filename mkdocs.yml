@@ -1,0 +1,17 @@
+site_name: LyoPRONTO Documentation
+
+theme:
+    name: "material"
+
+plugins:
+    - mkdocstrings:
+        default_handler: python
+
+nav:
+    # List of web pages to show, in order
+    - index.md
+    # - tutorials.md
+    # - how-to-guides.md
+    - reference.md
+    # - explanation.md
+

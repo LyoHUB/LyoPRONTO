@@ -1,3 +1,4 @@
+"""File with a bunch of functions in it."""
 # LyoPRONTO, a vial-scale lyophilization process simulator
 # Copyright (C) 2024, Gayathri Shivkumar, Petr S. Kazarin, Alina A. Alexeenko, Isaac S. Wheeler
 
@@ -34,12 +35,21 @@ def Vapor_pressure(T_sub):
     return F
 
 ##
-"""
-Calculates the intial fill height of the frozen product in cm. Inputs are fill
-volume in mL, product area in cm^2, and fractional concentration of the
-solute in the solution
-"""
 def Lpr0_FUN(Vfill,Ap,cSolid):
+    """Calculates the intial fill height of the frozen product in cm. 
+
+    Examples:
+        >>> Lpr0_FUN(3.0, 3.14, 0.05)
+        1.037911272081373
+    
+    Args:
+        Vfill (float): fill volume in mL
+        Ap (float): product area in cm^2
+        cSolid (float): fractional concentration of the solute in solution
+
+    Returns:
+        float: initial fill height of the frozen product, in cm.
+    """
 
     dens_fac = (constant.rho_solution-cSolid*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)
     return Vfill/(Ap*constant.rho_ice)*dens_fac  # Fill height in cm
