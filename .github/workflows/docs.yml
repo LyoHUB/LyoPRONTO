@@ -11,11 +11,11 @@ on:
   # Will have to be manually deleted later with `mike delete pr-####` from a local CLI
   pull_request:
     
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   build:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     name: Deploy docs
     runs-on: ubuntu-latest
     steps:
