@@ -1,11 +1,18 @@
 name: Publish docs to GitHub Pages
 on:
+  # On pushing to master, rebuild docs with current version number and push as "dev"
   push:
     branches:
       - main
-  # Delete this before merging. Currently this will overwrite the regular docs every time a pull request is made
+# On releasing a new version, rebuild docs with new version number and push as "latest"
+  release:
+    types: [published, edited]
+  # For drafting purposes, build a docs version for each new PR.
+  # Will have to be manually deleted later with `mike delete pr-####` from a local CLI
   pull_request:
-
+    
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build:
@@ -14,8 +21,14 @@ jobs:
     steps:
       - name: Checkout main
         uses: actions/checkout@v5
-      - run: pip install mkdocstrings-python mkdocs-material
-      - name: Deploy docs
-        run: mkdocs gh-deploy --force
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: pip install mkdocstrings-python mkdocs-material mike
+      # Deploy docs according to type of event
+      - name: Deploy docs as dev
+        if: ${{ github.event_name }} == 'push' && ${{ github.ref_name }} == 'main'
+        run: mike deploy dev
+      - name: Deploy docs as latest
+        if: ${{ github.event_name }} == 'release'
+        run: mike deploy ${{ github.ref_name }} latest
+      - name: Deploy docs for PR
+        if: ${{ github.event_name }} == 'pull_request'
+        run: mike deploy pr-${{ github.ref_name#/merge }}
