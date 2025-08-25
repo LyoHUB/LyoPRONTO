@@ -32,3 +32,5 @@ jobs:
       - name: Deploy docs for PR
         if: ${{ github.event_name }} == 'pull_request'
         run: mike deploy pr-${{ github.event.number }}
+        env:
+          GIT_COMMITTER_NAME: ${{ github.actor }}
