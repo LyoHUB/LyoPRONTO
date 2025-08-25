@@ -23,6 +23,7 @@ jobs:
       - name: Checkout main
         uses: actions/checkout@v5
       - run: pip install mkdocstrings-python mkdocs-material mike
+      - run: echo ${{ github.event_name}} ${{ github.ref_name }}
       # Deploy docs according to type of event
       - name: Deploy docs as latest
         if: ${{ github.event_name }} == 'release'
