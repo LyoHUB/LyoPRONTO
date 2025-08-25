@@ -12,9 +12,10 @@ on:
     types: [published, edited]
     
 jobs:
-  build:
+  docdeploy:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_COMMITTER_NAME: ${{ github.actor }}
 
     name: Deploy docs
     runs-on: ubuntu-latest
@@ -23,14 +24,12 @@ jobs:
         uses: actions/checkout@v5
       - run: pip install mkdocstrings-python mkdocs-material mike
       # Deploy docs according to type of event
-      - name: Deploy docs as dev
-        if: ${{ github.event_name }} == 'push' && ${{ github.ref_name }} == 'main'
-        run: mike deploy dev
       - name: Deploy docs as latest
         if: ${{ github.event_name }} == 'release'
         run: mike deploy ${{ github.ref_name }} latest
       - name: Deploy docs for PR
         if: ${{ github.event_name }} == 'pull_request'
-        env:
-          GIT_COMMITTER_NAME: ${{ github.actor }}
         run: mike deploy pr-${{ github.event.number }}
+      - name: Deploy docs as dev
+        if: ${{ github.event_name }} == 'push' && ${{ github.ref_name }} == 'main'
+        run: mike deploy dev
