@@ -1,3 +1,4 @@
+"""File with a bunch of functions in it."""
 # LyoPRONTO, a vial-scale lyophilization process simulator
 # Copyright (C) 2024, Gayathri Shivkumar, Petr S. Kazarin, Alina A. Alexeenko, Isaac S. Wheeler
 
@@ -23,67 +24,81 @@ from . import constant
 
 ##
 
-"""
-Calculates the vapor pressure in Torr. Input is sublimation front
-temperature in degC
-"""
 def Vapor_pressure(T_sub):
+    """
+    Calculates the vapor pressure in Torr. Input is sublimation front
+    temperature in degC
+    """
 
-    F = 2.698e10*math.exp(-6144.96/(273.15+T_sub))   # Vapor pressure at the sublimation temperature in Torr
+    p = 2.698e10*math.exp(-6144.96/(273.15+T_sub))   # Vapor pressure at the sublimation temperature in Torr
 
-    return F
+    return p
 
 ##
-"""
-Calculates the intial fill height of the frozen product in cm. Inputs are fill
-volume in mL, product area in cm^2, and fractional concentration of the
-solute in the solution
-"""
 def Lpr0_FUN(Vfill,Ap,cSolid):
+    """Calculates the intial fill height of the frozen product in cm. 
+
+    Args:
+        Vfill (float): fill volume in mL
+        Ap (float): product area in cm^2
+        cSolid (float): fractional concentration of the solute in solution
+
+    Returns:
+        (float): initial fill height of the frozen product, in cm.
+    """
 
     dens_fac = (constant.rho_solution-cSolid*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)
     return Vfill/(Ap*constant.rho_ice)*dens_fac  # Fill height in cm
 
 ##
-"""
-Calculates product resistance in cm^2-hr-Torr/g. Inputs are cake length 
-in cm and product resistance parameters R0 in cm^2-hr-Torr/g, 
-A1 in cm-hr-Torr/g, A2 in 1/cm
-"""
 def Rp_FUN(l,R0,A1,A2):
+    """Calculates product resistance in cm^2-hr-Torr/g.
+
+    Args:
+        l (float): cake length in cm
+        R0 (float): base product resistance in cm^2-hr-Torr/g
+        A1 (float): product resistance parameter in cm-hr-Torr/g
+        A2 (float): product resistance parameter in 1/cm
+        
+    Returns:
+        (float): product resistance in cm^2-hr-Torr/g
+    """
 
     return R0 + A1*l/(1+A2*l) # Product resistance in cm^2-hr-Torr/g
 
 ##
-"""
-Kv_FUN(KC,KP,KD,Pch)
-
-Calculates the vial heat transfer coefficeint in cal/s/K/cm^2.
-Inputs are vial heat transfer parameters KC in cal/s/K/cm^2, KP
-in cal/s/K/cm^2/Torr, KD in 1/Torr, and chamber pressure in Torr
-"""
 def Kv_FUN(KC,KP,KD,Pch):
+    """Calculates the vial heat transfer coefficient.
+
+    Args:
+        KC (float): Vial heat transfer parameter in cal/s/K/cm^2.
+        KP (float): Vial heat transfer parameter in cal/s/K/cm^2/Torr.
+        KD (float): Vial heat transfer parameter in 1/Torr.
+        Pch (float): Chamber pressure in Torr.
+
+    Returns:
+        (float): Vial heat transfer coefficient in cal/s/K/cm^2.
+    """
 
     return KC + KP*Pch/(1.0+KD*Pch) # Kv in cal/s/K/cm^2
 
 ##
 
-"""
-Tsub is found from solving for T_unknown.
-Determines the function to calculate the sublimation temperature
-represented as T_unknown. Other inputs are chamber pressure in Torr, vial
-area in cm^2, product area in cm^2, vial heat transfer coefficient in
-cal/s/K/cm^2, initial product length in cm, cake length in cm, product
-resistance in cm^2-Torr-hr/g, and shelf temperature in degC
-
-"""
 def T_sub_solver_FUN(T_sub_guess, *data):
-    # Tsub is found from solving for T_unknown.
-    # Determines the function to calculate the sublimation temperature
-    # represented as T_unknown. Other inputs are chamber pressure in Torr, vial
-    # area in cm^2, product area in cm^2, vial heat transfer coefficient in
-    # cal/s/K/cm^2, initial product length in cm, cake length in cm, product
-    # resistance in cm^2-Torr-hr/g, and shelf temperature in degC
+    """Tsub is found from solving for T_unknown.
+    Determines the function to calculate the sublimation temperature
+    represented as T_unknown. Other inputs are chamber pressure in Torr, vial
+    area in cm^2, product area in cm^2, vial heat transfer coefficient in
+    cal/s/K/cm^2, initial product length in cm, cake length in cm, product
+    resistance in cm^2-Torr-hr/g, and shelf temperature in degC
+
+    Args:
+        T_sub_guess (float): Initial guess for the sublimation temperature in degC.
+        data (tuple): Pch, Av, Ap, Kv, Lpr0, Lck, Rp, Tsh
+
+    Returns:
+        (float): residual for the pseudosteady heat balance
+    """
     
     Pch, Av, Ap, Kv, Lpr0, Lck, Rp, Tsh = data
 
@@ -93,18 +108,13 @@ def T_sub_solver_FUN(T_sub_guess, *data):
     Qsh = Kv*Av*(Tsh - T_b) # Heat transfer from shelf
     return Qsub-Qsh
 
-
-
-
 ##
-
-##
-"""
-Calculates the sublimation rate from each vial in kg/hr. Inputs are
-product area in cm^2, product resistance in cm^2-Torr-hr/g, sublimation
-front temperature in degC, and chamber pressure in Torr
-"""
 def sub_rate(Ap,Rp,T_sub,Pch):
+    """
+    Calculates the sublimation rate from each vial in kg/hr. Inputs are
+    product area in cm^2, product resistance in cm^2-Torr-hr/g, sublimation
+    front temperature in degC, and chamber pressure in Torr
+    """
 
     P_sub = Vapor_pressure(T_sub)   # Vapor pressure at the sublimation temperature in Torr
 
@@ -114,13 +124,13 @@ def sub_rate(Ap,Rp,T_sub,Pch):
 
 
 ##
-"""
-Calculates the temperature at the bottom of the vial in degC. Inputs are
-sublimation front temperature in degC, initial product length in cm, cake
-length in cm, chamber pressure in Torr, and product resistance in
-cm^2-Torr-hr/g
-"""
 def T_bot_FUN(T_sub,Lpr0,Lck,Pch,Rp):
+    """
+    Calculates the temperature at the bottom of the vial in degC. Inputs are
+    sublimation front temperature in degC, initial product length in cm, cake
+    length in cm, chamber pressure in Torr, and product resistance in
+    cm^2-Torr-hr/g
+    """
 
     P_sub = Vapor_pressure(T_sub)   # Vapor pressure at the sublimation temperature in Torr
 
@@ -129,12 +139,12 @@ def T_bot_FUN(T_sub,Lpr0,Lck,Pch,Rp):
     return Tbot
 	
 ##
-"""
-Calculates product resistance in cm^2-hr-Torr/g. Inputs are sublimation
-temperature in degC, initial product length in cm, cake length in cm,
-chamber pressure in Torr, and vial bottom temperature in degC
-"""
 def Rp_finder(T_sub,Lpr0,Lck,Pch,Tbot):
+    """
+    Calculates product resistance in cm^2-hr-Torr/g. Inputs are sublimation
+    temperature in degC, initial product length in cm, cake length in cm,
+    chamber pressure in Torr, and vial bottom temperature in degC
+    """
 
     P_sub = Vapor_pressure(T_sub)   # Vapor pressure at the sublimation temperature in Torr
 
@@ -144,15 +154,15 @@ def Rp_finder(T_sub,Lpr0,Lck,Pch,Tbot):
 
 ##
 
-"""
-Tsub is found from solving for T_unknown.
-Determines the function to calculate the sublimation temperature
-represented as T_unknown. Other inputs are chamber pressure in Torr, vial
-area in cm^2, product area in cm^2, vial heat transfer coefficient in
-cal/s/K/cm^2, initial product length in cm, cake length in cm, vial bottom 
-temperature in degC, and shelf temperature in degC
-"""
 def T_sub_Rp_finder(T_sub, *data):
+    """
+    Tsub is found from solving for T_unknown.
+    Determines the function to calculate the sublimation temperature
+    represented as T_unknown. Other inputs are chamber pressure in Torr, vial
+    area in cm^2, product area in cm^2, vial heat transfer coefficient in
+    cal/s/K/cm^2, initial product length in cm, cake length in cm, vial bottom 
+    temperature in degC, and shelf temperature in degC
+    """
     
     Av, Ap, Kv, Lpr0, Lck, Tbot, Tsh = data
 
@@ -163,13 +173,13 @@ def T_sub_Rp_finder(T_sub, *data):
 
 ##
 
-"""
-Tsub is found from solving for T_unknown.  # Determines the function to calculate the sublimation temperature
-represented as T_unknown. Other inputs are vial bottom temperature in degC, 
-initial product length in cm, cake length in cm, chamber pressure in Torr,
-and product resistance in cm^2-Torr-hr/g
-"""
 def T_sub_fromTpr(T_unknown, *data):
+    """
+    Tsub is found from solving for T_unknown.  # Determines the function to calculate the sublimation temperature
+    represented as T_unknown. Other inputs are vial bottom temperature in degC, 
+    initial product length in cm, cake length in cm, chamber pressure in Torr,
+    and product resistance in cm^2-Torr-hr/g
+    """
     
     Tbot, Lpr0, Lck, Pch, Rp = data
 
@@ -181,15 +191,13 @@ def T_sub_fromTpr(T_unknown, *data):
 
 ##
 
-"""
-Tbot_max_eq_cap(Pch,dm_dt,Lpr0,Lck,Rp,Ap)
-
-Calculates the maximum product temperature (occus at vial bottom) in
-degC. Inputs are chamber pressure in Torr, sublimation rate based on
-equipment capability in kg/hr, initial product length in cm, cake length
-in cm, product resistance in cm^2-Torr-hr/g, and product area in cm^2
-"""
 def Tbot_max_eq_cap(Pch,dm_dt,Lpr0,Lck,Rp,Ap):
+    """
+    Calculates the maximum product temperature (occus at vial bottom) in
+    degC. Inputs are chamber pressure in Torr, sublimation rate based on
+    equipment capability in kg/hr, initial product length in cm, cake length
+    in cm, product resistance in cm^2-Torr-hr/g, and product area in cm^2
+    """
 
     P_sub = dm_dt/Ap*Rp + Pch     # Sublimation front pressure in Torr
     T_sub = -6144.96/np.log(P_sub/2.698e10) - 273.15    # Sublimation front temperature in degC
@@ -198,16 +206,14 @@ def Tbot_max_eq_cap(Pch,dm_dt,Lpr0,Lck,Rp,Ap):
 
     return Tbot_max
 
-"""
-Ineq_Constraints(Pch,dm_dt,Tcrit,Tbot,a,b,nVial)
-
-Defines the inequality constraints for lyophilization optimization within
-safe operation region inside the desgin space. Inputs are chamber pressure in Torr,
-sublimation rate in kg/hr, critical product temperature in degC, vial bottom
-temperature in degC, equipment capability parameters a in kg/hr and b in kg/hr/Torr,
-and number of vials
-"""
 def Ineq_Constraints(Pch,dm_dt,Tcrit,Tbot,a,b,nVial):
+    """
+    Defines the inequality constraints for lyophilization optimization within
+    safe operation region inside the desgin space. Inputs are chamber pressure in Torr,
+    sublimation rate in kg/hr, critical product temperature in degC, vial bottom
+    temperature in degC, equipment capability parameters a in kg/hr and b in kg/hr/Torr,
+    and number of vials
+    """
 
     C1 = a + b*Pch - nVial*dm_dt	# Equipment capability limit
    
@@ -217,16 +223,14 @@ def Ineq_Constraints(Pch,dm_dt,Tcrit,Tbot,a,b,nVial):
 
 ##
 
-"""
-Eq_Constraints(Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv,Lpr0,Lck,Av,Ap,Rp)
-
-Defines the equality constraints for lyophilization. Inputs are chamber pressure in Torr,
-sublimation rate in kg/hr, vial bottom temperature in degC, shelf temperature in degC,
-sublimation front pressure in Torr, sublimation front temperature in degC, vial heat
-transfer coefficient in cal/s/cm^2/C, initial product length in cm, cake length in cm,
-vial area in cm^2, product area in cm^2, and product resistance in cm^2-Torr-hr/g 
-"""
 def Eq_Constraints(Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv,Lpr0,Lck,Av,Ap,Rp):
+    """
+    Defines the equality constraints for lyophilization. Inputs are chamber pressure in Torr,
+    sublimation rate in kg/hr, vial bottom temperature in degC, shelf temperature in degC,
+    sublimation front pressure in Torr, sublimation front temperature in degC, vial heat
+    transfer coefficient in cal/s/cm^2/C, initial product length in cm, cake length in cm,
+    vial area in cm^2, product area in cm^2, and product resistance in cm^2-Torr-hr/g 
+    """
 
     C1 = Psub - 2.698e10*math.exp(-6144.96/(273.15+Tsub))   # Vapor pressure at the sublimation temperature in Torr
     
@@ -240,12 +244,10 @@ def Eq_Constraints(Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv,Lpr0,Lck,Av,Ap,Rp):
 
 ##
 
-"""
-lumped_cap_Tpr(t,Tpr0,rho,Cp,V,h,Av,Tsh,Tsh0, Tsh_ramp)
-
-Calculates the product temperature in C. Inputs are time in hr, initial product temperature in degC, product density in g/mL, constant pressure specific heat of the product in J/kg/K, product volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, current shelf temperature in degC, initial shelf temperature in degC, shelf temperature ramping rate in degC/min
-"""
 def lumped_cap_Tpr(t,Tpr0,rho,Cp,V,h,Av,Tsh,Tsh0, Tsh_ramp):
+    """
+    Calculates the product temperature in C. Inputs are time in hr, initial product temperature in degC, product density in g/mL, constant pressure specific heat of the product in J/kg/K, product volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, current shelf temperature in degC, initial shelf temperature in degC, shelf temperature ramping rate in degC/min
+    """
 
     F = (Tpr0 + Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 - Tsh0)*math.exp(-h*Av*constant.cm_To_m**2*t*constant.hr_To_s/rho/Cp*constant.kg_To_g/V) - Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 + Tsh
 
@@ -255,12 +257,10 @@ def lumped_cap_Tpr(t,Tpr0,rho,Cp,V,h,Av,Tsh,Tsh0, Tsh_ramp):
 
 ##
 
-"""
-crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh)
-
-Calculates the crystallization time in hr. Inputs are fill volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, freezing temperature in degC, nucleation temperature in degC, shelf temperature in degC
-"""
 def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh):
+    """
+    Calculates the crystallization time in hr. Inputs are fill volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, freezing temperature in degC, nucleation temperature in degC, shelf temperature in degC
+    """
 
     F = constant.rho_solution*V*(constant.dHf*constant.cal_To_J-constant.Cp_solution/constant.kg_To_g*(Tf-Tn))/h/constant.hr_To_s/Av/constant.cm_To_m**2/(Tf-Tsh)
 
@@ -272,6 +272,16 @@ def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh):
 
 ################################################################
 def calc_step(t, Lck, config):
+    """Calculate the full set of system states at a given time step from ODE solution states.
+
+    Args:
+        t (float): The current time in hours.
+        Lck (float): The cake thickness in cm.
+        config (tuple): A tuple containing the configuration parameters.
+
+    Returns:
+        (np.ndarray): The full set of system states at the given time step.
+    """
     vial, product, ht, Pch_t, Tsh_t, dt, Lpr0 = config
     Tsh = Tsh_t(t)
     Pch = Pch_t(t)
@@ -289,6 +299,15 @@ def calc_step(t, Lck, config):
     return col
 
 def fill_output(sol, config):
+    """Fill the output array with the results from the ODE solver.
+
+    Args:
+        sol (ODESolution): The solution object returned by the ODE solver.
+        config (tuple): A tuple containing the configuration parameters.
+
+    Returns:
+        (np.ndarray): The output array filled with the results from the ODE solver.
+    """
     vial, product, ht, Pchamber, Tshelf, dt, Lpr0 = config
     # out_t = np.arange(0, sol.t[-1], dt)   
     out_t = np.linspace(0, sol.t[-1], 100)   
