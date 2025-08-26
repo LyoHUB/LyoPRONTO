@@ -1,19 +1,45 @@
 name: Publish docs to GitHub Pages
 on:
+  # For drafting purposes, build a docs version for each new PR.
+  # Will have to be manually deleted later with `mike delete pr-####` from a local CLI
+  pull_request:
+  # On pushing to master, rebuild docs with current version number and push as "dev"
   push:
     branches:
       - main
-
-
+# On releasing a new version, rebuild docs with new version number and push as "latest"
+  release:
+    types: [published, edited]
+    
 jobs:
-  build:
+  docdeploy:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_COMMITTER_NAME: ${{ github.actor }}
+      GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
+
     name: Deploy docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main
         uses: actions/checkout@v5
-
-      - name: Deploy docs
-        uses: mhausenblas/mkdocs-deploy-gh-pages@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # To be able to push gh-pages branch later, need to have that branch fetched
+        # Could fetch it later on but this seems simpler and less finicky
+        with:
+          fetch-depth: 0
+      - run: pip install mkdocstrings-python mkdocs-material mike
+      - run: echo ${{ github.event_name}} ${{ github.ref_name }}
+      # Deploy docs according to type of event
+      - name: Deploy docs as latest
+        if: ${{ github.event_name == 'release' }}
+        run: mike deploy ${{ github.ref_name }} latest
+      - name: Deploy docs for PR
+        if: ${{ github.event_name == 'pull_request' }}
+        run: mike deploy pr-${{ github.event.number }}
+      - name: Deploy docs as dev
+        if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
+        run: mike deploy dev
+      - name: Get docs into GitHub Pages
+        run: |
+          git switch gh-pages
+          git push origin gh-pages

@@ -6,6 +6,12 @@ theme:
 plugins:
     - mkdocstrings:
         default_handler: python
+    - mike:
+        version_selector: true
+        canonical_version: latest
+extra:
+    version:
+        provider: mike
 
 nav:
     # List of web pages to show, in order
