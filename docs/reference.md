@@ -1,4 +1,4 @@
-Diataxis, part 3: reference
+# Full listing of all docstrings by module
 
 ::: lyopronto
     options:

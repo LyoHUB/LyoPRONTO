@@ -16,8 +16,8 @@ extra:
 nav:
     # List of web pages to show, in order
     - index.md
-    # - tutorials.md
-    # - how-to-guides.md
+    - tutorials.md
+    - how-to-guides.md
+    - explanation.md
     - reference.md
-    # - explanation.md
 
