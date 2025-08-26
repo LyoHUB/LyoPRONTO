@@ -33,3 +33,15 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 By request, this software may also be distributed under the terms of the GNU Lesser General Public License (LGPL); for permission, contact the authors or maintainer.
+
+# Notes on contributing & maintenance
+
+There is a GitHub Action on this repo which will automatically build the documentation (which uses Material for MkDocs with `mike` for versioning). This action triggers on push to main (which creates a `dev` section of the docs), on publishing a release (which creates a numbered version of the docs), and on pull request edits (which makes a `pr-###` version of the docs). 
+After merging a pull request, it is a good idea to use [mike](https://github.com/jimporter/mike) to clear out the PR version of the docs. Locally, do something like the following
+```
+git fetch 
+mike delete pr-### # replace with correct PR number
+git switch gh-pages
+git push origin gh-pages
+```
+This could theoretically be automated but I decided against this for now. In the long run, it may be worth not generating PR versions of the docs if this is burdensome.
