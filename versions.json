@@ -3,5 +3,10 @@
     "version": "pr-3",
     "title": "pr-3",
     "aliases": []
+  },
+  {
+    "version": "dev",
+    "title": "dev",
+    "aliases": []
   }
 ]
