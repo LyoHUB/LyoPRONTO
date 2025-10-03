@@ -1,10 +1,10 @@
-name: Tests (with Coverage)
+name: PR Tests (Fast)
 
-# Full tests with coverage for main branch
-# PRs use pr-tests.yml for faster feedback
+# Fast tests for pull requests without coverage
+# Coverage is only run on main branch pushes
 
 on:
-  push:
+  pull_request:
     branches: [ main, dev-pyomo ]
 
 jobs:
@@ -29,15 +29,12 @@ jobs:
         pip install -r requirements.txt -r requirements-dev.txt
         pip install -e .
     
-    - name: Run tests with pytest and coverage
+    - name: Run tests with pytest (no coverage for speed)
       run: |
-        pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
+        pytest tests/ -n auto -v
     
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v4
-      with:
-        file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
-        token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Test Summary
+      if: always()
+      run: |
+        echo "✅ Tests completed in PR mode (coverage skipped for speed)"
+        echo "Coverage will be checked when merged to main"
