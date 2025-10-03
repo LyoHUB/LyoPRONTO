@@ -14,17 +14,21 @@ lyopronto_primary_drying_*.csv
 lyopronto_optimizer_*.csv
 lyopronto_freezing_*.csv
 lyopronto_design_space_*.csv
+lyopronto_parameter_estimation_*.csv
 primary_drying_results.png
+parameter_estimation_results.png
+freezing_results.png
+design_space_results.png
+optimizer_results.png
 
 # Debug scripts
 debug_*.py
 
-# But keep test data and example outputs
+# But keep test data and documentation
 !test_data/*.csv
 !test_data/*.txt
-!examples/outputs/*.csv
-!examples/outputs/*.png
 !examples/outputs/.gitkeep
+!examples/outputs/README.md
 
 # Coverage reports
 .coverage
