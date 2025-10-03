@@ -2,8 +2,33 @@
 #
 # Python precompiled files
 *.pyc
-# Data files
+__pycache__/
+*.py[cod]
+
+# Generated output files (exclude from repo)
+*.pdf
 *.csv
+*_saved_*.csv
+*_saved_*.pdf
+lyopronto_primary_drying_*.csv
+lyopronto_optimizer_*.csv
+lyopronto_freezing_*.csv
+lyopronto_design_space_*.csv
+primary_drying_results.png
+
+# Debug scripts
+debug_*.py
+
+# But keep test data and example outputs
+!test_data/*.csv
+!test_data/*.txt
+!examples/outputs/*.csv
+!examples/outputs/*.png
+!examples/outputs/.gitkeep
+
+# Coverage reports
+.coverage
+htmlcov/
 
 docs/build
 ################################################################################

@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc as matplotlibrc
 import time
 
-# from lyopronto.calc_unknownRp import dry
+from lyopronto.calc_unknownRp import dry
 
 from lyopronto import *
 # from . import constant
@@ -161,8 +161,19 @@ nVial = 398    # Number of vials
 #         Tbot_exp = np.append(Tbot_exp,line_string[1])
 # fi.close()
 dat = np.loadtxt(product_temp_filename)
-time = dat[:,1]
-Tbot_exp = dat[:,2]
+# File format: time(hr), temperature(°C)
+if dat.ndim == 1:
+    # Single row case
+    time = np.array([dat[0]])
+    Tbot_exp = np.array([dat[1]])
+elif dat.shape[1] == 2:
+    # Two column format: time, temperature
+    time = dat[:,0]
+    Tbot_exp = dat[:,1]
+else:
+    # Three column format: vial_number, time, temperature
+    time = dat[:,1]
+    Tbot_exp = dat[:,2]
 
 output_saved, product_res = dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp)
 params,params_covariance = sp.curve_fit(lambda h,r,a1,a2: r+h*a1/(1+h*a2),product_res[:,1],product_res[:,2],p0=[1.0,0.0,0.0])

@@ -1,0 +1,8 @@
+# Development dependencies for testing and linting
+pytest>=7.4.0
+pytest-cov>=4.1.0
+pytest-xdist>=3.3.0  # for parallel test execution
+hypothesis>=6.82.0  # for property-based testing
+black>=23.7.0  # code formatter
+flake8>=6.1.0  # linter
+mypy>=1.4.0  # type checker
