@@ -20,11 +20,22 @@ pytest tests/ -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
 - **Python**: 3.13
 - **Tests**: 128 tests
 - **Coverage**: 93%
-- **Duration**: ~5-6 minutes
 
-### Triggers
-- Push to `main` or `dev-pyomo`
-- Pull requests to `main` or `dev-pyomo`
+### Two-Stage CI Workflow
+
+#### ⚡ Fast Tests (PR commits)
+- **Duration**: 3-5 minutes
+- **Coverage**: No (for speed)
+- **Triggers**: Every commit in PR
+- **File**: `.github/workflows/pr-tests.yml`
+
+#### 📊 Full Coverage Tests (Approval + Main)
+- **Duration**: 5-7 minutes  
+- **Coverage**: Yes (full analysis)
+- **Triggers**: 
+  - PR approval by reviewer
+  - Push to `main` or `dev-pyomo`
+- **File**: `.github/workflows/tests.yml`
 
 ## 📁 Files Created
 

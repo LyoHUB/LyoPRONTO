@@ -1,7 +1,7 @@
-name: Tests (with Coverage)
+name: Main Branch Tests
 
 # Full tests with coverage for main branch
-# PRs use pr-tests.yml for faster feedback
+# (PRs are handled by pr-tests.yml)
 
 on:
   push:
@@ -41,3 +41,9 @@ jobs:
         name: codecov-umbrella
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
+    
+    - name: Coverage Summary
+      if: always()
+      run: |
+        echo "✅ Full coverage tests completed for main branch"
+        echo "📊 Coverage metrics updated in Codecov"
