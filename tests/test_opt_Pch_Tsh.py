@@ -9,6 +9,9 @@ import pytest
 import numpy as np
 from lyopronto import opt_Pch_Tsh
 
+# Constants for test assertions
+MAX_AGGRESSIVE_OPTIMIZATION_TIME = 5.0  # Maximum expected drying time with aggressive optimization (hours)
+
 
 @pytest.fixture
 def standard_opt_pch_tsh_inputs():
@@ -306,4 +309,5 @@ class TestOptPchTshValidation:
         assert output[-1, 6] > 0.99, "Should reach >99% dried"
         
         # Should complete relatively quickly with aggressive optimization
-        assert output[-1, 0] < 5.0, "Aggressive optimization should be < 5 hr"
+        assert output[-1, 0] < MAX_AGGRESSIVE_OPTIMIZATION_TIME, \
+            f"Aggressive optimization should complete in < {MAX_AGGRESSIVE_OPTIMIZATION_TIME} hr"

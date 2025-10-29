@@ -79,6 +79,9 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                 dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
             
             # Update record as functions of the cycle time
+                # Note: iStep==0 check handles first timestep initialization
+                # Single timestep completion can occur with aggressive conditions (high shelf temp, low pressure)
+                # This is a valid physical scenario where drying completes within dt, not an error
                 if (iStep==0):
                     output_saved = np.array([[t, float(Tbot), dmdt/(vial['Ap']*constant.cm_To_m**2)]])
                 else:
