@@ -27,7 +27,7 @@ jobs:
         id: versions
         uses: mikefarah/yq@v4.44.1
         with:
-          cmd: yq eval '.python-version' .github/workflows/ci-versions.yml
+          cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
