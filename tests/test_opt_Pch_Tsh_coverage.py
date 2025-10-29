@@ -48,6 +48,7 @@ class TestOptPchTsh:
             'nVial': nVial
         }
     
+    @pytest.mark.slow
     def test_opt_both_completes(self, opt_both_setup):
         """Test that optimizer runs to completion."""
         output = opt_Pch_Tsh.dry(
@@ -66,6 +67,7 @@ class TestOptPchTsh:
         assert output.shape[0] > 0
         assert output.shape[1] == 7  # Standard output columns
     
+    @pytest.mark.slow
     def test_opt_both_output_shape(self, opt_both_setup):
         """Test output has correct format."""
         output = opt_Pch_Tsh.dry(
@@ -85,6 +87,7 @@ class TestOptPchTsh:
         # Check all values are finite
         assert np.all(np.isfinite(output)), "Output contains non-finite values"
     
+    @pytest.mark.slow
     def test_opt_both_respects_temp_constraint(self, opt_both_setup):
         """Test critical temperature is not exceeded."""
         output = opt_Pch_Tsh.dry(
@@ -106,6 +109,7 @@ class TestOptPchTsh:
         assert max_violation <= 0.5, \
             f"Temperature exceeded critical by {max_violation:.2f}°C"
     
+    @pytest.mark.slow
     def test_opt_both_pressure_within_bounds(self, opt_both_setup):
         """Test optimized pressure stays within bounds."""
         output = opt_Pch_Tsh.dry(
@@ -128,6 +132,7 @@ class TestOptPchTsh:
         assert np.all(Pch <= P_max * 1.05), \
             f"Pressure {np.max(Pch):.3f} above maximum {P_max}"
     
+    @pytest.mark.slow
     def test_opt_both_shelf_temp_within_bounds(self, opt_both_setup):
         """Test optimized shelf temperature stays within bounds."""
         output = opt_Pch_Tsh.dry(
@@ -150,6 +155,7 @@ class TestOptPchTsh:
         assert np.all(Tsh <= T_max + 1.0), \
             f"Shelf temp {np.max(Tsh):.1f} above maximum {T_max}"
     
+    @pytest.mark.slow
     def test_opt_both_respects_equipment(self, opt_both_setup):
         """Test equipment capability constraint is satisfied."""
         output = opt_Pch_Tsh.dry(
@@ -180,6 +186,7 @@ class TestOptPchTsh:
         assert max_violation <= 0.01, \
             f"Equipment capability exceeded by {max_violation:.4f} kg/hr"
     
+    @pytest.mark.slow
     def test_opt_both_physically_reasonable(self, opt_both_setup):
         """Test output is physically reasonable."""
         output = opt_Pch_Tsh.dry(
@@ -195,6 +202,7 @@ class TestOptPchTsh:
         
         assert_physically_reasonable_output(output)
     
+    @pytest.mark.slow
     def test_opt_both_reaches_completion(self, opt_both_setup):
         """Test that drying reaches completion."""
         output = opt_Pch_Tsh.dry(
@@ -212,6 +220,7 @@ class TestOptPchTsh:
         assert final_fraction >= 0.99, \
             f"Should reach 99% dried, got {final_fraction*100:.1f}%"
     
+    @pytest.mark.slow
     def test_opt_both_convergence(self, opt_both_setup):
         """Test optimization converges to a solution."""
         output = opt_Pch_Tsh.dry(
@@ -230,6 +239,7 @@ class TestOptPchTsh:
         assert 1.0 <= total_time <= 50.0, \
             f"Drying time {total_time:.1f} hr seems unreasonable"
     
+    @pytest.mark.slow
     def test_opt_both_variables_optimized(self, opt_both_setup):
         """Test that both Pch and Tsh are actively optimized."""
         output = opt_Pch_Tsh.dry(
@@ -309,6 +319,7 @@ class TestOptPchTshComparison:
             'nVial': nVial
         }
     
+    @pytest.mark.slow
     def test_joint_opt_vs_pch_only(self, comparison_setup):
         """Test joint optimization against Pch-only optimization.
         
@@ -352,6 +363,7 @@ class TestOptPchTshComparison:
         assert final_both > 0.0, "Joint optimization should show drying progress"
         assert final_pch > 0.0, "Pch-only optimization should show drying progress"
     
+    @pytest.mark.slow
     def test_joint_opt_shorter_or_equal_time(self, comparison_setup):
         """Test that joint optimization achieves reasonable drying time."""
         output = opt_Pch_Tsh.dry(
@@ -411,6 +423,7 @@ class TestOptPchTshEdgeCases:
             'nVial': nVial
         }
     
+    @pytest.mark.slow
     def test_conservative_critical_temp(self, conservative_setup):
         """Test with very conservative critical temperature."""
         output = opt_Pch_Tsh.dry(
@@ -430,6 +443,7 @@ class TestOptPchTshEdgeCases:
         # Should respect conservative constraint
         assert np.max(Tbot) <= T_crit + 0.5
     
+    @pytest.mark.slow
     def test_high_product_resistance(self, conservative_setup):
         """Test with high product resistance."""
         conservative_setup['product']['R0'] = 3.0
@@ -449,6 +463,7 @@ class TestOptPchTshEdgeCases:
         assert output.shape[0] > 0
         assert_physically_reasonable_output(output)
     
+    @pytest.mark.slow
     def test_narrow_optimization_ranges(self, conservative_setup):
         """Test with narrow optimization ranges."""
         conservative_setup['Pchamber']['min'] = 0.070
@@ -470,6 +485,7 @@ class TestOptPchTshEdgeCases:
         # Should still find solution within narrow ranges
         assert output[-1, 6] >= 0.95
     
+    @pytest.mark.slow
     def test_tight_equipment_constraint(self, conservative_setup):
         """Test with tight equipment capability constraint."""
         # Reduce equipment capability
@@ -490,6 +506,7 @@ class TestOptPchTshEdgeCases:
         # Should complete even with tight constraint
         assert output[-1, 6] >= 0.95
     
+    @pytest.mark.slow
     def test_concentrated_product(self, conservative_setup):
         """Test with high solids concentration."""
         conservative_setup['product']['cSolid'] = 0.15  # 15% solids

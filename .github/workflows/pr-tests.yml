@@ -47,10 +47,12 @@ jobs:
       run: |
         if [ "${{ steps.mode.outputs.coverage }}" == "true" ]; then
           echo "🔍 Running full tests with coverage (PR is ready for review)"
-          pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          echo "⚡ Skipping slow tests (marked with @pytest.mark.slow) - these run on merge"
+          pytest tests/ -n auto -v -m "not slow" --cov=lyopronto --cov-report=xml --cov-report=term-missing
         else
           echo "⚡ Running fast tests without coverage (PR is draft)"
-          pytest tests/ -n auto -v
+          echo "⚡ Skipping slow tests (marked with @pytest.mark.slow)"
+          pytest tests/ -n auto -v -m "not slow"
         fi
     
     - name: Upload coverage (if run)

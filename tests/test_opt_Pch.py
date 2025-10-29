@@ -179,6 +179,7 @@ class TestOptPchBasic:
 class TestOptPchEdgeCases:
     """Edge case tests for opt_Pch module."""
     
+    @pytest.mark.slow
     def test_low_critical_temperature(self, standard_opt_pch_inputs):
         """Test with very low critical temperature (-20°C)."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
@@ -191,6 +192,7 @@ class TestOptPchEdgeCases:
         assert output.shape[0] > 1, "Should complete drying"
         assert np.all(output[:, 2] <= -19.5), "Should respect lower T_crit"
     
+    @pytest.mark.slow
     def test_high_resistance_product(self, standard_opt_pch_inputs):
         """Test with high resistance product."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
@@ -270,6 +272,7 @@ class TestOptPchValidation:
         assert 0.1 < avg_flux < 10, \
             f"Average flux {avg_flux:.2f} kg/hr/m² should be reasonable (0.1-10)"
     
+    @pytest.mark.slow
     def test_consistent_results(self, standard_opt_pch_inputs):
         """Test that repeated runs give consistent results."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs

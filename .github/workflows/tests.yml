@@ -29,8 +29,10 @@ jobs:
         pip install -r requirements.txt -r requirements-dev.txt
         pip install -e . --no-build-isolation
     
-    - name: Run tests with pytest and coverage
+    - name: Run ALL tests with pytest and coverage (including slow tests)
       run: |
+        echo "🔍 Running complete test suite including slow tests"
+        echo "⏱️ This may take 30-40 minutes on CI (includes optimization tests)"
         pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
     
     - name: Upload coverage to Codecov

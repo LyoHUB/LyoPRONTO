@@ -49,16 +49,16 @@ def run_freezing_example():
     
     # Vial geometry
     vial = {
-        'Av': 3.8,     # Vial area in cm^2
-        'Ap': 3.14,    # Product area in cm^2
-        'Vfill': 2.0   # Fill volume in mL
+        'Av': 3.8,     # Vial area [cm**2]
+        'Ap': 3.14,    # Product area [cm**2]
+        'Vfill': 2.0   # Fill volume [mL]
     }
     
     # Product properties
     product = {
-        'Tpr0': 15.8,      # Initial product temperature in degC
-        'Tf': -1.52,       # Freezing temperature in degC
-        'Tn': -5.84,       # Nucleation temperature in degC
+        'Tpr0': 15.8,      # Initial product temperature [degC]
+        'Tf': -1.52,       # Freezing temperature [degC]
+        'Tn': -5.84,       # Nucleation temperature [degC]
         'cSolid': 0.05     # Solid content in g/mL
     }
     
@@ -71,10 +71,10 @@ def run_freezing_example():
     # Initial: -35°C, ramp at 1°C/min to 20°C setpoint
     # Simulation completes when product fully frozen (holds at ~30 hr)
     Tshelf = {
-        'init': -35.0,                   # Initial shelf temperature in degC
-        'setpt': np.array([20.0]),       # Target shelf temperature in degC
-        'dt_setpt': np.array([1800]),    # Hold time at setpoint in min (30 hours)
-        'ramp_rate': 1.0                 # Ramp rate in degC/min
+        'init': -35.0,                   # Initial shelf temperature [degC]
+        'setpt': np.array([20.0]),       # Target shelf temperature [degC]
+        'dt_setpt': np.array([1800]),    # Hold time at setpoint [min] (30 hours)
+        'ramp_rate': 1.0                 # Ramp rate [degC]/min
     }
     
     # Time step
