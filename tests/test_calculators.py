@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from lyopronto import calc_knownRp, calc_unknownRp
-from tests.conftest import assert_physically_reasonable_output
+from .test_helpers import assert_physically_reasonable_output
 
 
 class TestCalcKnownRp:
