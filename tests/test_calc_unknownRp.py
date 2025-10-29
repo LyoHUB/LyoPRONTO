@@ -299,7 +299,7 @@ class TestCalcUnknownRpEdgeCases:
         
         assert output is not None
         # Higher concentration means less ice to sublimate, different drying time
-        assert len(output) > 0
+        assert output.size > 0
 
 
 class TestCalcUnknownRpValidation:

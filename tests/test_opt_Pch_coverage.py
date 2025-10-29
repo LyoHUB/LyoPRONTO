@@ -359,7 +359,7 @@ class TestOptPchEdgeCases:
         
         # Should run without errors and show some progress despite tight constraint
         assert output is not None
-        assert len(output) > 0
+        assert output.size > 0
         final_fraction = output[-1, 6]
         assert final_fraction >= 0.0, "Should have non-negative drying progress"
         assert final_fraction <= 1.0, "Fraction should not exceed 100%"

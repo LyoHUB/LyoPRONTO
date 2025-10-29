@@ -80,14 +80,14 @@ class TestOptimizerWebInterface:
         """Test that optimizer runs to completion."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
         
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        output = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        # Check that results are returned
-        assert results is not None
-        assert len(results) > 0
+        # Should return valid output
+        assert output is not None
+        assert output.size > 0
         
         # Check that drying completes (fraction dried reaches ~1.0, was percentage 0-100, now fraction 0-1)
-        percent_dried = results[:, 6]
+        percent_dried = output[:, 6]
         assert percent_dried[-1] >= 0.99, f"Drying incomplete: {percent_dried[-1]*100}% dried"
     
     def test_optimizer_output_shape(self, optimizer_params):
@@ -263,7 +263,7 @@ class TestOptimizerWebInterface:
         
         # Verify results
         assert results is not None
-        assert len(results) > 0
+        assert results.size > 0
         assert results[-1, 6] >= 0.99  # Drying complete
 
 

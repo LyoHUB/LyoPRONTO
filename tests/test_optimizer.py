@@ -84,7 +84,7 @@ class TestOptimizerWebInterface:
         
         # Check that results are returned
         assert results is not None
-        assert len(results) > 0
+        assert results.size > 0
         
         # Check that drying completes (percent dried reaches ~100%)
         percent_dried = results[:, 6]
@@ -263,7 +263,7 @@ class TestOptimizerWebInterface:
         
         # Verify results
         assert results is not None
-        assert len(results) > 0
+        assert results.size > 0
         assert results[-1, 6] >= 0.99  # Drying complete
 
 

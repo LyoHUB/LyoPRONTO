@@ -64,7 +64,7 @@ class TestWebInterfaceExample:
         
         # Check output structure
         assert output.shape[1] == 7, "Output should have 7 columns"
-        assert len(output) > 0, "Output should not be empty"
+        assert output.size > 0, "Output should not be empty"
         
         # Extract key results
         drying_time = output[-1, 0]

@@ -354,8 +354,8 @@ class TestOptPchTshComparison:
         # Both should complete and return valid results
         assert output_both is not None
         assert output_pch is not None
-        assert len(output_both) > 0
-        assert len(output_pch) > 0
+        assert output_both.size > 0
+        assert output_pch.size > 0
         
         # Check both achieve some drying progress
         final_both = output_both[-1, 6]

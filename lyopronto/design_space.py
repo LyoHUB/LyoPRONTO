@@ -111,10 +111,10 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             ######################################################
 
-            T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1]) if len(output_saved) > 0 else 0.0    # Maximum product temperature [degC]
+            T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1]) if output_saved.size > 0 else 0.0    # Maximum product temperature [degC]
             drying_time[i_Tsh,i_Pch] = t    # Total drying time [hr]
             del_t = output_saved[1:,0]-output_saved[:-1,0]
-            if len(del_t) > 0:
+            if del_t.size > 0:
                 del_t = np.append(del_t,del_t[-1])
                 sub_flux_avg[i_Tsh,i_Pch] = np.sum(output_saved[:,2]*del_t)/np.sum(del_t)    # Average sublimation flux [kg/hr]/m^2
                 sub_flux_max[i_Tsh,i_Pch] = np.max(output_saved[:,2])    # Maximum sublimation flux [kg/hr]/m^2
@@ -183,7 +183,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
         drying_time_pr[j] = t    # Total drying time [hr]
         del_t = output_saved[1:,0]-output_saved[:-1,0]
-        if len(del_t) > 0:
+        if del_t.size > 0:
             del_t = np.append(del_t,del_t[-1])
             sub_flux_avg_pr[j] = np.sum(output_saved[:,1]*del_t)/np.sum(del_t)    # Average sublimation flux [kg/hr]/m^2
             sub_flux_min_pr[j] = np.min(output_saved[:,1])    # Minimum sublimation flux [kg/hr]/m^2

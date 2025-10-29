@@ -101,13 +101,13 @@ def run_freezing_example():
     # Find key events
     # Nucleation: first occurrence of Tn
     nucleation_idx = np.where(np.abs(T_product - product['Tn']) < 0.1)[0]
-    if len(nucleation_idx) > 0:
+    if nucleation_idx.size > 0:
         t_nucleation = time_hr[nucleation_idx[0]]
         print(f"\nNucleation occurs at t = {t_nucleation:.3f} hr")
     
     # Crystallization phase: product at freezing temperature
     crystallization_idx = np.where(np.abs(T_product - product['Tf']) < 0.01)[0]
-    if len(crystallization_idx) > 1:
+    if crystallization_idx.size > 1:
         t_crystallization_start = time_hr[crystallization_idx[0]]
         t_crystallization_end = time_hr[crystallization_idx[-1]]
         crystallization_time = t_crystallization_end - t_crystallization_start
