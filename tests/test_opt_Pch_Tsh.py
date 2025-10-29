@@ -158,9 +158,9 @@ class TestOptPchTshBasic:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        # Percent dried (column 6) should reach > 99%
+        # Fraction dried (column 6) should reach > 0.99
         final_dried = output[-1, 6]
-        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+        assert final_dried > 0.99, f"Should dry to >99%, got {final_dried*100:.1f}%"
     
     def test_shelf_temp_varies_over_time(self, standard_opt_pch_tsh_inputs):
         """Test that optimized shelf temperature varies during drying.
@@ -252,7 +252,7 @@ class TestOptPchTshValidation:
         
         # Joint optimization should complete successfully
         assert output_joint.shape[0] > 1, "Joint optimization should complete"
-        assert output_joint[-1, 6] > 99, "Should reach >99% dried"
+        assert output_joint[-1, 6] > 0.99, "Should reach >99% dried"
         
         # Drying time should be reasonable
         time_joint = output_joint[-1, 0]
@@ -303,7 +303,7 @@ class TestOptPchTshValidation:
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
         assert output.shape[0] > 1, "Should complete with aggressive parameters"
-        assert output[-1, 6] > 99, "Should reach >99% dried"
+        assert output[-1, 6] > 0.99, "Should reach >99% dried"
         
         # Should complete relatively quickly with aggressive optimization
         assert output[-1, 0] < 5.0, "Aggressive optimization should be < 5 hr"
