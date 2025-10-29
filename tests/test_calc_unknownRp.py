@@ -16,6 +16,12 @@ from lyopronto import calc_unknownRp
 from lyopronto.functions import Lpr0_FUN
 
 
+# Test constants for dried fraction validation (column 6 is fraction 0-1, not percentage 0-100)
+DRIED_FRACTION_MIN = 0.0  # Minimum valid dried fraction (0% complete)
+DRIED_FRACTION_MAX = 1.0  # Maximum valid dried fraction (100% complete)
+MIN_COMPLETION_FRACTION = 0.50  # Minimum acceptable completion (50%) for some tests
+
+
 class TestCalcUnknownRpBasic:
     """Basic functionality tests for parameter estimation."""
     
@@ -138,9 +144,11 @@ class TestCalcUnknownRpBasic:
         # Column 5: Flux should be non-negative
         assert np.all(output[:, 5] >= 0), "Flux should be non-negative"
         
-        # Column 6: Percent dried should be 0-100 (NOTE: it's percentage, not fraction!)
-        assert np.all(output[:, 6] >= 0), "Percent dried should be >= 0"
-        assert np.all(output[:, 6] <= 100.0), "Percent dried should be <= 100"
+        # Column 6: Dried fraction should be 0-1 (it's fraction, not percentage!)
+        assert np.all(output[:, 6] >= DRIED_FRACTION_MIN), f"Dried fraction should be >= {DRIED_FRACTION_MIN}"
+        assert np.all(
+            output[:, 6] <= DRIED_FRACTION_MAX
+        ), f"Dried fraction should be <= {DRIED_FRACTION_MAX}"
     
     def test_product_resistance_output(self, standard_inputs, temperature_data):
         """Test that product_res contains valid resistance data."""
@@ -210,7 +218,8 @@ class TestCalcUnknownRpBasic:
         final_dried_fraction = output[-1, 6]
         
         # Should reach near completion (within experimental data range)
-        assert final_dried_fraction > 0.50, f"Should dry at least 50%, got {final_dried_fraction*100:.1f}%"
+        assert final_dried_fraction > MIN_COMPLETION_FRACTION, \
+            f"Should dry at least {MIN_COMPLETION_FRACTION*100:.0f}%, got {final_dried_fraction*100:.1f}%"
     
     def test_cake_length_reaches_initial_height(self, standard_inputs, temperature_data):
         """Test that cake length approaches initial product height."""
@@ -344,5 +353,5 @@ class TestCalcUnknownRpValidation:
         # Simulation should reach reasonable drying progress
         # NOTE: column 6 is fraction (0-1), not percentage (0-100)
         final_dried_fraction = output[-1, 6]
-        assert 0.50 < final_dried_fraction <= 1.0, \
-            f"Final dried {final_dried_fraction:.4f} outside expected range (0.50, 1.0]"
+        assert MIN_COMPLETION_FRACTION < final_dried_fraction <= DRIED_FRACTION_MAX, \
+            f"Final dried {final_dried_fraction:.4f} outside expected range ({MIN_COMPLETION_FRACTION}, {DRIED_FRACTION_MAX}]"

@@ -10,6 +10,10 @@ import numpy as np
 from lyopronto import opt_Pch
 
 
+# Test constants for numerical comparison
+DECIMAL_PRECISION = 6  # Decimal places for floating-point comparison in assert_array_almost_equal
+
+
 @pytest.fixture
 def standard_opt_pch_inputs():
     """Standard inputs for opt_Pch testing (pressure optimization)."""
@@ -275,4 +279,4 @@ class TestOptPchValidation:
         output2 = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
         # Results should be identical (deterministic optimization)
-        np.testing.assert_array_almost_equal(output1, output2, decimal=6)
+        np.testing.assert_array_almost_equal(output1, output2, decimal=DECIMAL_PRECISION)

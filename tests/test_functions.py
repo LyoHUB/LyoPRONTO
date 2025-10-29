@@ -5,6 +5,10 @@ import math
 from lyopronto import functions, constant
 
 
+# Test constants for validation thresholds
+RELATIVE_VARIATION_THRESHOLD = 0.1  # Maximum relative variation (10%) for consistency checks
+
+
 class TestVaporPressure:
     """Tests for the Vapor_pressure function."""
     
@@ -321,4 +325,5 @@ class TestPhysicalConsistency:
         ratios = [p2/p1 for p1, p2 in zip(pressures[:-1], pressures[1:])]
         
         # Ratios should be consistent (exponential relationship)
-        assert np.std(ratios) / np.mean(ratios) < 0.1  # Low relative variation
+        assert np.std(ratios) / np.mean(ratios) < RELATIVE_VARIATION_THRESHOLD, \
+            f"Relative variation should be < {RELATIVE_VARIATION_THRESHOLD}"
