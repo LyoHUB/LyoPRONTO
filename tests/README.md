@@ -1,186 +1,75 @@
 # LyoPRONTO Test Suite
 
-This directory contains comprehensive tests for the LyoPRONTO lyophilization simulator.
+This document describes the testing strategy, usage, and best practices for the LyoPRONTO project.
 
-## Test Organization
+## Test Strategy
 
-### Test Files (85 tests total)
+LyoPRONTO uses a three-tier testing approach to balance rapid feedback and comprehensive validation:
 
-- **`test_calculators.py`** (26 tests) - Primary drying calculator tests
-  - Tests for `calc_knownRp.py` and `calc_unknownRp.py`
-  - Validates mass balance, energy balance, physical constraints
-  
-- **`test_functions.py`** (27 tests) - Physics function tests
-  - Vapor pressure, product resistance, heat transfer
-  - Sublimation rates, temperature calculations
-  
-- **`test_web_interface.py`** (8 tests) - Web interface calculator validation
-  - Matches web interface output (6.66 hr drying time)
-  - Temperature profile, flux profiles, mass balance
-  
-- **`test_opt_Tsh.py`** (14 tests) - Shelf temperature optimization tests (opt_Tsh module)
-  - Validates optimizer results (2.123 hr optimal time)
-  - Tests different constraints and edge cases
-  
-- **`test_freezing.py`** (3 tests) - Freezing simulation tests
-  - Basic functionality and output format
-  - Initial conditions and phase transitions
-  
-- **`test_design_space.py`** (7 tests) - Design space generator tests
-  - Three evaluation modes (shelf temp, product temp, equipment)
-  - Physical constraints and mode comparisons
-  
-- **`test_regression.py`** (10 tests) - Regression and stability tests
-  - Numerical stability across different conditions
-  - Output format consistency
+- **Fast tests**: Run on every pull request (PR) for quick feedback. These skip slow optimization tests.
+- **Full test suite**: Runs on merge to `main`/`dev-pyomo` branches, including all slow tests.
+- **Manual slow tests**: Can be triggered on demand via GitHub Actions for pre-merge or feature branch validation.
 
-### Shared Fixtures (`conftest.py`)
+## Running Tests Locally
 
-Common test fixtures used across test files:
-- Standard vial geometry
-- Standard product properties
-- Heat transfer coefficients
-- Process conditions
+- **Fast tests only** (recommended for development):
+  ```bash
+  pytest tests/ -m "not slow"
+  ```
+- **All tests** (including slow optimization tests):
+  ```bash
+  pytest tests/
+  ```
+- **Only slow tests**:
+  ```bash
+  pytest tests/ -m "slow"
+  ```
 
-## Running Tests
+## Marking Slow Tests
 
-### Run All Tests
-```bash
-pytest tests/ -v
-# Expected: 85 passed in ~43 seconds
-```
+- Slow tests are marked with `@pytest.mark.slow` in the code.
+- Criteria: Any test that takes >20 seconds or involves heavy optimization (e.g., joint/edge-case optimizers).
+- This allows CI and developers to easily include/exclude slow tests as needed.
 
-### Run Specific Test File
-```bash
-pytest tests/test_design_space.py -v
-pytest tests/test_opt_Tsh.py -v
-```
+## CI/CD Integration
 
-### Run with Coverage
-```bash
-pytest tests/ --cov=lyopronto --cov-report=html
-# Generates htmlcov/index.html
-```
+- **Python version** for all workflows is set in `.github/ci-config/ci-versions.yml` and read dynamically by all workflows.
+- **Workflows**:
+  - PRs: Run only fast tests for rapid feedback (~2-5 min on CI).
+  - Main/dev-pyomo: Run full suite after merge (~30-40 min on CI).
+  - Manual: "Slow Tests (Manual)" workflow available in GitHub Actions for on-demand slow test runs.
+- **Coverage**: All test runs report coverage using `pytest-cov` and upload to Codecov.
 
-### Run Tests in Parallel
-```bash
-pytest tests/ -n auto
-```
+## Best Practices
 
-## Test Guidelines
+- Add `@pytest.mark.slow` to any new test that takes >20s or is optimization-heavy.
+- Use `[unit]` format for all unit comments in code (e.g., `[cm]`, `[degC]`).
+- Keep test output and error messages clear and physically meaningful.
+- Use fixtures and helper functions from `conftest.py` for consistency.
+- Check physical reasonableness of simulation results using provided helpers.
 
-### Writing New Tests
+## Updating Python Version for CI
 
-1. **Use descriptive names**: `test_opt_Tsh_maintains_critical_temperature`
-2. **Add docstrings**: Explain what the test validates
-3. **Use fixtures**: Import from `conftest.py` when possible
-4. **Check physical reasonableness**: Not just numerical correctness
-5. **Document expected behavior**: Especially for edge cases
+- Edit `.github/ci-config/ci-versions.yml` to change the Python version for all CI workflows.
+- No need to update each workflow file individually.
 
-### Test Structure
-```python
-def test_something_specific():
-    """Test that [specific behavior] works correctly.
-    
-    This test validates [what it validates] by [how it validates].
-    Expected result: [what should happen]
-    """
-    # Arrange - Set up inputs
-    vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-    
-    # Act - Run the function
-    result = function_under_test(vial)
-    
-    # Assert - Check results
-    assert result > 0, "Result should be positive"
-    assert result < 100, "Result should be reasonable"
-```
+## Example Commands
 
-### Physical Validation
+- **Run a specific test file:**
+  ```bash
+  pytest tests/test_opt_Pch.py -v
+  ```
+- **Run with coverage:**
+  ```bash
+  pytest tests/ --cov=lyopronto --cov-report=html
+  ```
+- **Run with debugging:**
+  ```bash
+  pytest tests/ -v --pdb
+  ```
 
-All tests should validate:
-- **Physical constraints**: Temperatures, pressures in valid ranges
-- **Mass balance**: Ice sublimated matches expected
-- **Energy balance**: Heat in equals heat out
-- **Monotonicity**: Time increases, certain quantities monotonic
-- **Boundary conditions**: Initial and final states correct
+## Additional Resources
 
-## Test Coverage
-
-Current coverage: ~32% (focused on physics and optimization)
-
-**Well-covered**:
-- Core physics functions (vapor pressure, resistance, heat transfer)
-- Primary drying calculators
-- Optimizer functionality
-
-**Could improve**:
-- Edge cases in freezing module
-- More design space scenarios
-- Error handling paths
-
-## Continuous Integration
-
-Tests are run automatically on:
-- Every commit (via GitHub Actions - if configured)
-- Pull requests to main branch
-- Release tags
-
-**Requirements**:
-- All tests must pass
-- No new warnings introduced
-- Coverage should not decrease
-
-## Test Data
-
-Reference data for validation is stored in `test_data/`:
-- `temperature.txt` - Temperature profile input
-- `lyopronto_primary_drying_*.csv` - Web interface reference
-- `lyopronto_optimizer_*.csv` - Optimizer reference
-- `lyopronto_freezing_*.csv` - Freezing reference
-- `lyopronto_design_space_*.csv` - Design space reference
-
-## Debugging Failed Tests
-
-### View detailed output
-```bash
-pytest tests/ -v --tb=long
-```
-
-### Run specific test with debugging
-```bash
-pytest tests/test_file.py::TestClass::test_method -v --pdb
-```
-
-### Check for warnings
-```bash
-pytest tests/ --warning=error
-```
-
-## Performance
-
-- **Total tests**: 85
-- **Execution time**: ~43 seconds
-- **Parallel execution**: Can reduce to ~15 seconds with `-n auto`
-
-## Contributing
-
-When adding new functionality:
-1. Write tests first (TDD)
-2. Ensure all existing tests pass
-3. Add tests for edge cases
-4. Update this README if adding new test file
-5. Run full test suite before committing
-
-## Questions?
-
-- Check existing tests for examples
-- See `conftest.py` for available fixtures
-- Review `../docs/COEXISTENCE_PHILOSOPHY.md` for testing scipy vs Pyomo
-- See main `README.md` for getting started
-
----
-
-**Last Updated**: October 2, 2025  
-**Test Suite Version**: 1.0  
-**Total Tests**: 85 (100% passing)
+- See `docs/SLOW_TEST_STRATEGY.md` for details on the slow test policy and CI/CD approach.
+- See `lyopronto/constant.py` and `lyopronto/functions.py` for physics and unit conventions.
+- For questions, check the main project README or ask in the project discussions.
