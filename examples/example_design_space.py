@@ -33,9 +33,9 @@ def main():
     
     # Vial geometry
     vial = {
-        'Av': 3.8,      # Vial area (cm²)
-        'Ap': 3.14,     # Product area (cm²)
-        'Vfill': 2.0    # Fill volume (mL)
+        'Av': 3.8,      # Vial area [cm**2]
+        'Ap': 3.14,     # Product area [cm**2]
+        'Vfill': 2.0    # Fill volume [mL]
     }
     
     print("Vial Parameters:")
@@ -46,9 +46,9 @@ def main():
     
     # Product properties
     product = {
-        'T_pr_crit': -5.0,  # Critical product temperature (°C)
-        'cSolid': 0.05,     # Solid content (g/mL)
-        'R0': 1.4,          # Base product resistance (cm²·hr·Torr/g)
+        'T_pr_crit': -5.0,  # Critical product temperature [degC]
+        'cSolid': 0.05,     # Solid content [g/mL]
+        'R0': 1.4,          # Base product resistance [cm**2*hr*Torr/g]
         'A1': 16.0,         # Product resistance parameter A1
         'A2': 0.0           # Product resistance parameter A2
     }
@@ -76,13 +76,13 @@ def main():
     
     # Process parameters
     # Initial shelf temperature
-    Tshelf_init = -35.0  # °C
+    Tshelf_init = -35.0  # [degC]
     
     # Shelf temperature ramp rate
-    Tshelf_ramp_rate = 1.0  # °C/min
+    Tshelf_ramp_rate = 1.0  # [degC/min]
     
     # Chamber pressure ramp rate
-    Pchamber_ramp_rate = 0.5  # Torr/min
+    Pchamber_ramp_rate = 0.5  # [Torr/min]
     
     print("Process Parameters:")
     print(f"  Initial shelf temperature: {Tshelf_init} °C")
@@ -115,8 +115,8 @@ def main():
     
     # Equipment capability parameters
     eq_cap = {
-        'a': -0.182,    # Equipment capability parameter a (kg/hr)
-        'b': 11.7       # Equipment capability parameter b (kg/hr/Torr)
+        'a': -0.182,    # Equipment capability parameter a [kg/hr]
+        'b': 11.7       # Equipment capability parameter b [kg/hr/Torr]
     }
     
     print("Equipment Capability:")
@@ -131,7 +131,7 @@ def main():
     print()
     
     # Time step for integration
-    dt = 0.01  # hr
+    dt = 0.01  # [hr]
     
     # ==============================================================================
     # Run Design Space Generation

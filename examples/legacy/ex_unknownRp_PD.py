@@ -57,7 +57,7 @@ vial = dict([('Av',3.80),('Ap',3.14),('Vfill',2.0)])
 # Tf = Freezing temperature [degC]
 # Tn = Nucleation temperature [degC]
 # Product Resistance Parameters
-# R0 [cm**2]-hr-Torr/g, A1 [cm]-hr-Torr/g, A2 [1/cm]
+# R0 [cm**2*hr*Torr/g], A1 [cm*hr*Torr/g], A2 [1/cm]
 product = dict([('cSolid',0.05)])
 # Experimental product temperature measurements: format - t(hr), Tp(C)
 product_temp_filename = './temperature.dat'
@@ -67,7 +67,7 @@ product['T_pr_crit'] = -5        # [degC]
 
 # Vial Heat Transfer Parameters
 # Kv = KC + KP*Pch/(1+KD*Pch) 
-# KC [cal/s/K/cm**2], KP [cal/s/K/cm**2]/Torr, KD [1/Torr]
+# KC [cal/s/K/cm**2], KP [cal/s/K/cm**2/Torr], KD [1/Torr]
 ht = dict([('KC',2.75e-4),('KP',8.93e-4),('KD',0.46)])
 
 # Chamber Pressure
@@ -77,7 +77,7 @@ Pchamber = dict([('setpt',[0.15]),('dt_setpt',[1800.0]),('ramp_rate',0.5)])
 # init = Intial shelf temperature [degC]
 # setpt = Shelf temperature set points [degC]
 # dt_setpt = Time for which shelf temperature set points are held [min]
-# ramp_rate = Shelf temperature ramping rate [degC]/min
+# ramp_rate = Shelf temperature ramping rate [degC/min]
 Tshelf = dict([('init',-35.0),('setpt',[20.0]),('dt_setpt',[1800.0]),('ramp_rate',1.0)])
 
 # Time step
@@ -85,7 +85,7 @@ dt = 0.01    # hr
 
 # Lyophilizer equipment capability
 # Form: dm/dt [kg/hr] = a + b * Pch [Torr]
-# a [kg/hr], b [kg/hr]/Torr 
+# a [kg/hr], b [kg/hr/Torr] 
 eq_cap = dict([('a',-0.182),('b',0.0117e3)])
 
 # Equipment load
@@ -161,7 +161,7 @@ nVial = 398    # Number of vials
 #         Tbot_exp = np.append(Tbot_exp,line_string[1])
 # fi.close()
 dat = np.loadtxt(product_temp_filename)
-# File format: time(hr), temperature(°C)
+# File format: time (hr), temperature [degC]
 if dat.ndim == 1:
     # Single row case
     time = np.array([dat[0]])

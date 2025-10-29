@@ -235,7 +235,7 @@ ht = {
 
 # Process conditions
 Pchamber = {
-    'setpt': [float],      # Pressure setpoints (Torr)
+    'setpt': [float],      # Pressure setpoints [Torr]
     'dt_setpt': [float],   # Hold times (min)
     'ramp_rate': float     # Ramp rate (Torr/min)
 }

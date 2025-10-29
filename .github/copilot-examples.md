@@ -33,8 +33,8 @@ product = {
 }
 
 # Define process parameters
-Pch = 0.15       # Chamber pressure (Torr)
-Tsh = -10.0      # Shelf temperature (°C)
+Pch = 0.15       # Chamber pressure [Torr]
+Tsh = -10.0      # Shelf temperature [degC]
 
 # Run simulation
 output = calc_knownRp.dry(vial, product, Pch, Tsh, Tstep=100)
@@ -67,19 +67,19 @@ from lyopronto import opt_Pch_Tsh
 
 # Define constraints
 constraints = {
-    'T_max': -15.0,     # Maximum product temperature (°C)
-    'Pch_min': 0.05,    # Minimum chamber pressure (Torr)
-    'Pch_max': 0.5,     # Maximum chamber pressure (Torr)
-    'Tsh_min': -50.0,   # Minimum shelf temperature (°C)
-    'Tsh_max': 30.0,    # Maximum shelf temperature (°C)
+    'T_max': -15.0,     # Maximum product temperature [degC]
+    'Pch_min': 0.05,    # Minimum chamber pressure [Torr]
+    'Pch_max': 0.5,     # Maximum chamber pressure [Torr]
+    'Tsh_min': -50.0,   # Minimum shelf temperature [degC]
+    'Tsh_max': 30.0,    # Maximum shelf temperature [degC]
 }
 
 # Run optimization
 result = opt_Pch_Tsh.optimize(vial, product, constraints)
 
 # Extract optimal conditions
-Pch_opt = result['Pch']    # Optimal pressure (Torr)
-Tsh_opt = result['Tsh']    # Optimal shelf temperature (°C)
+Pch_opt = result['Pch']    # Optimal pressure [Torr]
+Tsh_opt = result['Tsh']    # Optimal shelf temperature [degC]
 t_dry = result['time']     # Drying time (hours)
 ```
 
@@ -346,7 +346,7 @@ def create_single_step_model(vial, product, Lck, constraints):
     # ===== Auxiliary Variables (for numerical stability) =====
     model.log_Psub = pyo.Var()  # log(Psub) instead of exp(...)
     model.Rp = pyo.Var(bounds=(1.0, 1000.0))  # cm²-hr-Torr/g
-    model.Kv = pyo.Var(bounds=(1e-5, 1e-2))   # cal/s/K/cm²
+    model.Kv = pyo.Var(bounds=(1e-5, 1e-2))   # [cal/s/K/cm**2]
     
     # ===== Parameters =====
     Av = vial['Av']

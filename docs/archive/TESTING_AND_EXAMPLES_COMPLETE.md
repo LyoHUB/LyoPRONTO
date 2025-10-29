@@ -88,18 +88,18 @@ vial = {
 }
 
 product = {
-    'Tpr0': 15.8,   # Initial product temperature (°C)
-    'Tf': -1.52,    # Freezing temperature (°C)
-    'Tn': -5.84,    # Nucleation temperature (°C)
+    'Tpr0': 15.8,   # Initial product temperature [degC]
+    'Tf': -1.52,    # Freezing temperature [degC]
+    'Tn': -5.84,    # Nucleation temperature [degC]
     'cSolid': 0.05  # Solid content (g/mL)
 }
 
 # Heat transfer coefficient: 38 W/m²·K
-h_freezing = 38.0 / 4.184 / 10000  # Converted to cal/s/K/cm²
+h_freezing = 38.0 / 4.184 / 10000  # Converted to [cal/s/K/cm**2]
 
 Tshelf = {
-    'init': -35.0,               # Initial shelf temperature (°C)
-    'setpt': [20.0],             # Target shelf temperature (°C)
+    'init': -35.0,               # Initial shelf temperature [degC]
+    'setpt': [20.0],             # Target shelf temperature [degC]
     'dt_setpt': [1800],          # Hold time (min)
     'ramp_rate': 1.0             # Ramp rate (°C/min)
 }

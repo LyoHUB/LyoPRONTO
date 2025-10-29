@@ -28,7 +28,7 @@ LyoPRONTO is a vial-scale lyophilization (freeze-drying) process simulator writt
 
 ### Physics Variables (Use These Names)
 ```python
-# Temperatures (°C)
+# Temperatures [degC]
 Tsub  # Sublimation front temperature
 Tbot  # Vial bottom temperature
 Tsh   # Shelf temperature
@@ -48,7 +48,7 @@ R0    # Base product resistance
 A1, A2  # Product resistance parameters
 
 # Heat transfer
-Kv    # Vial heat transfer coefficient (cal/s/K/cm²)
+Kv    # Vial heat transfer coefficient [cal/s/K/cm**2])
 KC, KP, KD  # Vial heat transfer parameters
 
 # Vial geometry
@@ -95,9 +95,9 @@ output = calc_knownRp.dry(...)  # Returns numpy array with 7 columns
 
 # Column indices and units:
 output[:, 0]  # time (hours)
-output[:, 1]  # Tsub - sublimation temperature (°C)
-output[:, 2]  # Tbot - vial bottom temperature (°C)
-output[:, 3]  # Tsh - shelf temperature (°C)
+output[:, 1]  # Tsub - sublimation temperature [degC]
+output[:, 2]  # Tbot - vial bottom temperature [degC]
+output[:, 3]  # Tsh - shelf temperature [degC]
 output[:, 4]  # Pch - chamber pressure (mTorr, NOT Torr!)
 output[:, 5]  # flux - sublimation flux (kg/hr/m²)
 output[:, 6]  # frac_dried - fraction dried (0-1, NOT percentage!)

@@ -36,7 +36,7 @@ def standard_opt_pch_inputs():
     # Vial heat transfer coefficients
     ht = {
         'KC': 0.000275,   # Kc [cal/s/K/cm**2]
-        'KP': 0.000893,   # Kp [cal/s/K/cm**2]/Torr
+        'KP': 0.000893,   # Kp [cal/s/K/cm**2/Torr]
         'KD': 0.46        # Kd dimensionless
     }
     
@@ -52,7 +52,7 @@ def standard_opt_pch_inputs():
         'init': -35.0,                        # Initial shelf temperature [degC]
         'setpt': np.array([-20.0, 120.0]),    # Set points [degC]
         'dt_setpt': np.array([300, 1800]),    # Hold times [min]
-        'ramp_rate': 1.0                      # Ramp rate [degC]/min
+        'ramp_rate': 1.0                      # Ramp rate [degC/min]
     }
     
     # Equipment capability

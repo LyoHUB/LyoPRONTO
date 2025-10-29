@@ -128,7 +128,7 @@ Then create a Pull Request on GitHub with:
 Use these standard names for consistency:
 
 ```python
-# Temperatures (°C)
+# Temperatures [degC]
 Tsub  # Sublimation front temperature
 Tbot  # Vial bottom temperature
 Tsh   # Shelf temperature
@@ -143,7 +143,7 @@ Lck   # Dried cake length
 
 # Product properties
 Rp    # Product resistance (cm²-hr-Torr/g)
-Kv    # Vial heat transfer coefficient (cal/s/K/cm²)
+Kv    # Vial heat transfer coefficient [cal/s/K/cm**2])
 
 # Rates
 dmdt  # Sublimation rate (kg/hr)

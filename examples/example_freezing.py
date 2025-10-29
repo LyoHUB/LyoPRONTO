@@ -59,13 +59,13 @@ def run_freezing_example():
         'Tpr0': 15.8,      # Initial product temperature [degC]
         'Tf': -1.52,       # Freezing temperature [degC]
         'Tn': -5.84,       # Nucleation temperature [degC]
-        'cSolid': 0.05     # Solid content in g/mL
+        'cSolid': 0.05     # Solid content [g/mL]
     }
     
     # Heat transfer coefficient
-    # Convert from W/m²·K to cal/s/K/cm²
+    # Convert from W/m²·K to [cal/s/K/cm**2]
     # 38 W/m²·K = 38 J/s/m²/K = 38/4.184 cal/s/m²/K = 38/4.184/10000 cal/s/cm²/K
-    h_freezing = 38.0 / 4.184 / 10000  # cal/s/K/cm²
+    h_freezing = 38.0 / 4.184 / 10000  # [cal/s/K/cm**2]
     
     # Shelf temperature settings
     # Initial: -35°C, ramp at 1°C/min to 20°C setpoint
@@ -74,7 +74,7 @@ def run_freezing_example():
         'init': -35.0,                   # Initial shelf temperature [degC]
         'setpt': np.array([20.0]),       # Target shelf temperature [degC]
         'dt_setpt': np.array([1800]),    # Hold time at setpoint [min] (30 hours)
-        'ramp_rate': 1.0                 # Ramp rate [degC]/min
+        'ramp_rate': 1.0                 # Ramp rate [degC/min]
     }
     
     # Time step

@@ -134,14 +134,14 @@ product = {
 
 # Vial Heat Transfer
 ht = {
-    'KC': 0.000275,   # Contact coefficient (cal/s/K/cm²)
-    'KP': 0.000893,   # Pressure-dependent coefficient (cal/s/K/cm²/Torr)
+    'KC': 0.000275,   # Contact coefficient [cal/s/K/cm**2]
+    'KP': 0.000893,   # Pressure-dependent coefficient [cal/s/K/cm**2/Torr]
     'KD': 0.46        # Dimensionless coefficient
 }
 
 # Chamber Pressure (Fixed)
 Pchamber = {
-    'setpt': [0.15],      # Setpoint (Torr) = 150 mTorr
+    'setpt': [0.15],      # Setpoint [Torr] = 150 mTorr
     'dt_setpt': [1800],   # Hold time (min)
     'ramp_rate': 0.5      # Ramp rate (Torr/min)
 }

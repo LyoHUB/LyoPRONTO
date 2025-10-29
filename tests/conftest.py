@@ -80,9 +80,9 @@ def assert_physically_reasonable_output(output):
         
     Column descriptions:
         [0] time (hours)
-        [1] Tsub - sublimation temperature (°C)
-        [2] Tbot - vial bottom temperature (°C)
-        [3] Tsh - shelf temperature (°C)
+        [1] Tsub - sublimation temperature [degC]
+        [2] Tbot - vial bottom temperature [degC]
+        [3] Tsh - shelf temperature [degC]
         [4] Pch - chamber pressure (mTorr, NOT Torr!)
         [5] flux - sublimation flux (kg/hr/m²)
         [6] frac_dried - fraction dried (0-1, NOT percentage!)

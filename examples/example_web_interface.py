@@ -38,21 +38,21 @@ from lyopronto import calc_knownRp
 
 # Vial and fill properties
 vial = {
-    'Av': 3.8,      # Vial area (cm²)
-    'Ap': 3.14,     # Product area (cm²)
-    'Vfill': 2.0,   # Fill volume (mL)
+    'Av': 3.8,      # Vial area [cm**2]
+    'Ap': 3.14,     # Product area [cm**2]
+    'Vfill': 2.0,   # Fill volume [mL]
 }
 
 # Product properties
 product = {
-    'R0': 1.4,           # Base resistance (cm²-hr-Torr/g)
-    'A1': 16.0,          # Resistance parameter A1 (cm-hr-Torr/g)
-    'A2': 0.0,           # Resistance parameter A2 (1/cm)
-    'cSolid': 0.05,      # Solid content (g/mL) - note: API uses 'cSolid' not 'rho_solid'
+    'R0': 1.4,           # Base resistance [cm**2*hr*Torr/g]
+    'A1': 16.0,          # Resistance parameter A1 [cm*hr*Torr/g]
+    'A2': 0.0,           # Resistance parameter A2 [1/cm]
+    'cSolid': 0.05,      # Solid content [g/mL] - note: API uses 'cSolid' not 'rho_solid'
 }
 
 # Critical product temperature
-T_pr_crit = -5.0  # °C (at least 2-3°C below collapse/Tg)
+T_pr_crit = -5.0  # [degC] (at least 2-3°C below collapse/Tg)
 
 # Vial heat transfer parameters
 ht = {
@@ -62,27 +62,27 @@ ht = {
 }
 
 # Process conditions
-Pch = 0.15  # Chamber pressure (Torr)
-Tsh = 20.0  # Final shelf temperature (°C)
+Pch = 0.15  # Chamber pressure [Torr]
+Tsh = 20.0  # Final shelf temperature [degC]
 
 # Initial conditions
-T_init = -35.0  # Initial shelf temperature (°C)
+T_init = -35.0  # Initial shelf temperature [degC]
 
 # Ramp rates
-shelf_ramp_rate = 1.0  # °C/min
-pressure_ramp_rate = 0.5  # Torr/min
+shelf_ramp_rate = 1.0  # [degC/min]
+pressure_ramp_rate = 0.5  # [Torr/min]
 
 # Equipment capability
 equipment_capability = {
-    'a': -0.182,  # kg/hr
-    'b': 11.7,    # kg/hr/Torr
+    'a': -0.182,  # [kg/hr]
+    'b': 11.7,    # [kg/hr/Torr]
 }
 
 # Number of vials
 n_vials = 398
 
 # Time parameters
-dt = 0.01  # Time step (hr)
+dt = 0.01  # Time step [hr]
 
 # ============================================================================
 # LOAD VIAL BOTTOM TEMPERATURE PROFILE (if available)
@@ -94,7 +94,7 @@ def load_temperature_profile(filepath='test_data/temperature.txt'):
     
     Expected format: tab-separated values
     Column 1: Time (hr)
-    Column 2: Temperature (°C)
+    Column 2: Temperature [degC]
     
     Args:
         filepath (str): Path to temperature file (relative to repo root)
@@ -163,7 +163,7 @@ def run_primary_drying_simulation():
     # Prepare Pchamber dictionary
     Pchamber = {
         'setpt': [Pch],
-        'dt_setpt': [1800.0],  # 1800 minutes hold time
+        'dt_setpt': [1800.0],  # 1800 [min] hold time
         'ramp_rate': pressure_ramp_rate
     }
     
@@ -171,7 +171,7 @@ def run_primary_drying_simulation():
     Tshelf = {
         'init': T_init,
         'setpt': [Tsh],
-        'dt_setpt': [1800.0],  # 1800 minutes hold time
+        'dt_setpt': [1800.0],  # 1800 [min] hold time
         'ramp_rate': shelf_ramp_rate
     }
     

@@ -68,8 +68,8 @@ def main():
     # ==================== PRODUCT PROPERTIES ====================
     
     product = {
-        'cSolid': 0.05,        # Fractional solute concentration (g/mL)
-        'T_pr_crit': -5.0      # Critical product temperature (°C)
+        'cSolid': 0.05,        # Fractional solute concentration [g/mL]
+        'T_pr_crit': -5.0      # Critical product temperature [degC]
     }
     
     print("Product Properties:")
@@ -83,9 +83,9 @@ def main():
     
     # Kv = KC + KP*Pch/(1+KD*Pch)
     ht = {
-        'KC': 2.75e-4,  # cal/s/K/cm²
-        'KP': 8.93e-4,  # cal/s/K/cm²/Torr
-        'KD': 0.46      # 1/Torr
+        'KC': 2.75e-4,  # [cal/s/K/cm**2]
+        'KP': 8.93e-4,  # [cal/s/K/cm**2/Torr]
+        'KD': 0.46      # [1/Torr]
     }
     
     print("Heat Transfer Coefficients:")
@@ -98,17 +98,17 @@ def main():
     
     # Chamber pressure
     Pchamber = {
-        'setpt': [0.15],        # Torr
-        'dt_setpt': [1800.0],   # min
-        'ramp_rate': 0.5        # Torr/min
+        'setpt': [0.15],        # [Torr]
+        'dt_setpt': [1800.0],   # [min]
+        'ramp_rate': 0.5        # [Torr/min]
     }
     
     # Shelf temperature
     Tshelf = {
-        'init': -35.0,          # °C
-        'setpt': [20.0],        # °C
-        'dt_setpt': [1800.0],   # min
-        'ramp_rate': 1.0        # °C/min
+        'init': -35.0,          # [degC]
+        'setpt': [20.0],        # [degC]
+        'dt_setpt': [1800.0],   # [min]
+        'ramp_rate': 1.0        # [degC/min]
     }
     
     print("Process Conditions:")
@@ -139,11 +139,11 @@ def main():
         time_exp = np.array([data[0]])
         Tbot_exp = np.array([data[1]])
     elif data.shape[1] == 2:
-        # Two column format: time(hr), temperature(°C)
+        # Two column format: time [hr], temperature [degC]
         time_exp = data[:, 0]
         Tbot_exp = data[:, 1]
     else:
-        # Three column format: vial_number, time(hr), temperature(°C)
+        # Three column format: vial_number, time [hr], temperature [degC]
         time_exp = data[:, 1]
         Tbot_exp = data[:, 2]
     
