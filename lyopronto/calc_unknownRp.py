@@ -80,11 +80,11 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
         dL = (dmdt*constant.kg_To_g)*dt[iStep]/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
 
         # Update record as functions of the cycle time
-        if (iStep==0):
-            output_saved =np.array([[t, float(Tsub), Tbot_exp[iStep], Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]])
+        if iStep == 0:
+            output_saved =np.array([[t, float(Tsub), Tbot_exp[iStep], Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried/100.0]])
             product_res =np.array([[t, float(Lck), float(Rp)]])
         else:
-            output_saved = np.append(output_saved, [[t, float(Tsub), Tbot_exp[iStep], Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]],axis=0)
+            output_saved = np.append(output_saved, [[t, float(Tsub), Tbot_exp[iStep], Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried/100.0]],axis=0)
             product_res = np.append(product_res, [[t, float(Lck), float(Rp)]],axis=0)
     
         # Advance counters
@@ -118,7 +118,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
             else:
                 Pch = max(Pchamber['setpt'][j-1] - Pchamber['ramp_rate']*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
           
-    output_saved = np.append(output_saved, [[t, float(Tsub), Tbot_exp[iStep], Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]],axis=0)
+    output_saved = np.append(output_saved, [[t, float(Tsub), Tbot_exp[iStep], Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried/100.0]],axis=0)
     product_res = np.append(product_res, [[t, float(Lck), float(Rp)]],axis=0)
 
     ######################################################
