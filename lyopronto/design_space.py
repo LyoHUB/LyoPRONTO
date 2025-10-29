@@ -108,13 +108,18 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             ######################################################
 
-            T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1])    # Maximum product temperature in C
+            T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1]) if len(output_saved) > 0 else 0.0    # Maximum product temperature in C
             drying_time[i_Tsh,i_Pch] = t    # Total drying time in hr
             del_t = output_saved[1:,0]-output_saved[:-1,0]
-            del_t = np.append(del_t,del_t[-1])
-            sub_flux_avg[i_Tsh,i_Pch] = np.sum(output_saved[:,2]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
-            sub_flux_max[i_Tsh,i_Pch] = np.max(output_saved[:,2])    # Maximum sublimation flux in kg/hr/m^2
-            sub_flux_end[i_Tsh,i_Pch] = output_saved[-1,2]    # Sublimation flux at the end of primary drying in kg/hr/m^2
+            if len(del_t) > 0:
+                del_t = np.append(del_t,del_t[-1])
+                sub_flux_avg[i_Tsh,i_Pch] = np.sum(output_saved[:,2]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
+                sub_flux_max[i_Tsh,i_Pch] = np.max(output_saved[:,2])    # Maximum sublimation flux in kg/hr/m^2
+                sub_flux_end[i_Tsh,i_Pch] = output_saved[-1,2]    # Sublimation flux at the end of primary drying in kg/hr/m^2
+            else:
+                sub_flux_avg[i_Tsh,i_Pch] = 0.0
+                sub_flux_max[i_Tsh,i_Pch] = 0.0
+                sub_flux_end[i_Tsh,i_Pch] = 0.0
 
     ###########################################################################
 
@@ -175,10 +180,15 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
         drying_time_pr[j] = t    # Total drying time in hr
         del_t = output_saved[1:,0]-output_saved[:-1,0]
-        del_t = np.append(del_t,del_t[-1])
-        sub_flux_avg_pr[j] = np.sum(output_saved[:,1]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
-        sub_flux_min_pr[j] = np.min(output_saved[:,1])    # Minimum sublimation flux in kg/hr/m^2
-        sub_flux_end_pr[j] = output_saved[-1,1]    # Sublimation flux at the end of primary drying in kg/hr/m^2
+        if len(del_t) > 0:
+            del_t = np.append(del_t,del_t[-1])
+            sub_flux_avg_pr[j] = np.sum(output_saved[:,1]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
+            sub_flux_min_pr[j] = np.min(output_saved[:,1])    # Minimum sublimation flux in kg/hr/m^2
+            sub_flux_end_pr[j] = output_saved[-1,1]    # Sublimation flux at the end of primary drying in kg/hr/m^2
+        else:
+            sub_flux_avg_pr[j] = 0.0
+            sub_flux_min_pr[j] = 0.0
+            sub_flux_end_pr[j] = 0.0
 
     ###########################################################################
 
