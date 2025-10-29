@@ -206,11 +206,11 @@ class TestCalcUnknownRpBasic:
             vial, product, ht, Pchamber, Tshelf, time, Tbot_exp
         )
         
-        # NOTE: column 6 is PERCENTAGE (0-100), not fraction (0-1)
-        final_dried_percent = output[-1, 6]
+        # NOTE: column 6 is now FRACTION (0-1), not percentage (0-100)
+        final_dried_fraction = output[-1, 6]
         
         # Should reach near completion (within experimental data range)
-        assert final_dried_percent > 50, f"Should dry at least 50%, got {final_dried_percent:.1f}%"
+        assert final_dried_fraction > 0.50, f"Should dry at least 50%, got {final_dried_fraction*100:.1f}%"
     
     def test_cake_length_reaches_initial_height(self, standard_inputs, temperature_data):
         """Test that cake length approaches initial product height."""
@@ -342,7 +342,7 @@ class TestCalcUnknownRpValidation:
         assert 0 <= A2 < 5, f"A2 = {A2} outside expected range [0, 5)"
         
         # Simulation should reach reasonable drying progress
-        # NOTE: column 6 is PERCENTAGE (0-100), not fraction (0-1)
-        final_dried_percent = output[-1, 6]
-        assert 50 < final_dried_percent <= 100, \
-            f"Final dried {final_dried_percent:.1f}% outside expected range (50%, 100%]"
+        # NOTE: column 6 is fraction (0-1), not percentage (0-100)
+        final_dried_fraction = output[-1, 6]
+        assert 0.50 < final_dried_fraction <= 1.0, \
+            f"Final dried {final_dried_fraction:.4f} outside expected range (0.50, 1.0]"

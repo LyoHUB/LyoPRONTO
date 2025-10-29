@@ -86,9 +86,9 @@ class TestOptimizerWebInterface:
         assert results is not None
         assert len(results) > 0
         
-        # Check that drying completes (percent dried reaches ~100%)
+        # Check that drying completes (fraction dried reaches ~1.0, was percentage 0-100, now fraction 0-1)
         percent_dried = results[:, 6]
-        assert percent_dried[-1] >= 0.99, f"Drying incomplete: {percent_dried[-1]}% dried"
+        assert percent_dried[-1] >= 0.99, f"Drying incomplete: {percent_dried[-1]*100}% dried"
     
     def test_optimizer_output_shape(self, optimizer_params):
         """Test that optimizer output has correct shape and columns."""
