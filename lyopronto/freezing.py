@@ -129,7 +129,8 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]], axis=0)
 
         iStep = iStep + 1 # Time iteration number
-        t = iStep*dt  # [hr] ######################################################
+        t = iStep*dt  # [hr]
+        ######################################################
 
     ################ Solidification ######################
 
