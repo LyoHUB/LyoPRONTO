@@ -148,7 +148,7 @@ def Rp_finder(T_sub,Lpr0,Lck,Pch,Tbot):
 
     P_sub = Vapor_pressure(T_sub)   # Vapor pressure at the sublimation temperature [Torr]
 
-    Rp = (Lpr0-Lck)*(P_sub-Pch)*constant.dHs/(Tbot-T_sub)/constant.hr_To_s/constant.k_ice	# Product resistance [cm]^2-Torr-hr/g
+    Rp = (Lpr0-Lck)*(P_sub-Pch)*constant.dHs/(Tbot-T_sub)/constant.hr_To_s/constant.k_ice	# Product resistance [cm**2*Torr*hr/g]
 
     return Rp
 
