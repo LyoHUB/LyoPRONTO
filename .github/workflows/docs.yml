@@ -20,15 +20,14 @@ jobs:
     name: Deploy docs
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
       - name: Read CI version config
         id: versions
         uses: mikefarah/yq@v4.44.1
         with:
           cmd: yq eval '.python-version' .github/workflows/ci-versions.yml
-      - name: Checkout main
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
