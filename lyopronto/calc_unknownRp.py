@@ -69,7 +69,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
         Tsub = sp.fsolve(functions.T_sub_Rp_finder, Tbot_exp[iStep], args = (vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Tbot_exp[iStep],Tsh))[0] # Sublimation front temperature array [degC]
         # Q = Kv*vial['Av']*(Tsh - Tbot_exp[iStep])
         # Tsub = Tbot_exp[iStep] - Q/vial['Ap']/constant.k_ice*(Lpr0-Lck)
-        Rp = functions.Rp_finder(Tsub,Lpr0,Lck,Pch,Tbot_exp[iStep])    #     Product resistance [cm]^2-Torr-hr/g
+        Rp = functions.Rp_finder(Tsub,Lpr0,Lck,Pch,Tbot_exp[iStep])    #     Product resistance [cm**2*Torr*hr/g]
         dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array [kg/hr]
         if dmdt<0:
             print(f"No sublimation. t={t:1.2f}, Tsh={Tsh:2.1f}, Tsub={Tsub:3.1f}, dmdt={dmdt:1.2e}, Rp={Rp:1.2f}, Lck={Lck:1.2f}")

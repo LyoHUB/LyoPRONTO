@@ -200,7 +200,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     ############  Equipment Capability ##########
 
     dmdt_eq_cap = eq_cap['a'] + eq_cap['b']*np.array(Pchamber['setpt'])    # Sublimation rate [kg/hr]
-    sub_flux_eq_cap = dmdt_eq_cap/nVial/(vial['Ap']*constant.cm_To_m**2)    # Sublimation flux [kg/hr]/m^2
+    sub_flux_eq_cap = dmdt_eq_cap/nVial/(vial['Ap']*constant.cm_To_m**2)    # Sublimation flux [kg/hr/m**2]
     
     drying_time_eq_cap = Lpr0/((dmdt_eq_cap/nVial*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute))    # Drying time [hr]
 
