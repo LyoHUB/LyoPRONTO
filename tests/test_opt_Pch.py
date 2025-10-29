@@ -19,53 +19,53 @@ def standard_opt_pch_inputs():
     """Standard inputs for opt_Pch testing (pressure optimization)."""
     # Vial geometry
     vial = {
-        'Av': 3.8,     # Vial area in cm^2
-        'Ap': 3.14,    # Product area in cm^2
-        'Vfill': 2.0   # Fill volume in mL
+        'Av': 3.8,     # Vial area [cm**2]
+        'Ap': 3.14,    # Product area [cm**2]
+        'Vfill': 2.0   # Fill volume [mL]
     }
     
     # Product properties
     product = {
-        'T_pr_crit': -5.0,   # Critical product temperature in degC
-        'cSolid': 0.05,      # Solid content in g/mL
-        'R0': 1.4,           # Product resistance coefficient R0 in cm^2-hr-Torr/g
-        'A1': 16.0,          # Product resistance coefficient A1 in 1/cm
-        'A2': 0.0            # Product resistance coefficient A2 in 1/cm^2
+        'T_pr_crit': -5.0,   # Critical product temperature [degC]
+        'cSolid': 0.05,      # Solid content [g/mL]
+        'R0': 1.4,           # Product resistance coefficient R0 [cm**2-hr-Torr/g]
+        'A1': 16.0,          # Product resistance coefficient A1 [1/cm]
+        'A2': 0.0            # Product resistance coefficient A2 [1/cm**2]
     }
     
     # Vial heat transfer coefficients
     ht = {
-        'KC': 0.000275,   # Kc in cal/s/K/cm^2
-        'KP': 0.000893,   # Kp in cal/s/K/cm^2/Torr
+        'KC': 0.000275,   # Kc [cal/s/K/cm**2]
+        'KP': 0.000893,   # Kp [cal/s/K/cm**2]/Torr
         'KD': 0.46        # Kd dimensionless
     }
     
     # Chamber pressure optimization settings
     # NOTE: Minimum pressure for optimization (website suggests 0.05 to 1000 Torr)
     Pchamber = {
-        'min': 0.05  # Minimum chamber pressure in Torr
+        'min': 0.05  # Minimum chamber pressure [Torr]
     }
     
     # Shelf temperature settings (FIXED for opt_Pch)
     # Multi-step profile: start at -35°C, ramp to -20°C, then 120°C
     Tshelf = {
-        'init': -35.0,                        # Initial shelf temperature in degC
-        'setpt': np.array([-20.0, 120.0]),    # Set points in degC
-        'dt_setpt': np.array([300, 1800]),    # Hold times in min
-        'ramp_rate': 1.0                      # Ramp rate in degC/min
+        'init': -35.0,                        # Initial shelf temperature [degC]
+        'setpt': np.array([-20.0, 120.0]),    # Set points [degC]
+        'dt_setpt': np.array([300, 1800]),    # Hold times [min]
+        'ramp_rate': 1.0                      # Ramp rate [degC]/min
     }
     
     # Equipment capability
     eq_cap = {
-        'a': -0.182,   # Equipment capability coefficient a in kg/hr
-        'b': 11.7      # Equipment capability coefficient b in kg/hr/Torr
+        'a': -0.182,   # Equipment capability coefficient a [kg]/hr
+        'b': 11.7      # Equipment capability coefficient b [kg]/hr/Torr
     }
     
     # Number of vials
     nVial = 398
     
     # Time step
-    dt = 0.01   # Time step in hr
+    dt = 0.01   # Time step [hr]
     
     return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
 
@@ -114,7 +114,7 @@ class TestOptPchBasic:
         assert np.all(output[:, 3] >= -50), "Tsh should be above -50°C"
         assert np.all(output[:, 3] <= 130), "Tsh should be below 130°C"
         
-        # Column 4: Pch should be positive and in mTorr
+        # Column 4: Pch should be positive and [mTorr]
         assert np.all(output[:, 4] > 0), "Chamber pressure should be positive"
         # Pch should be >= min pressure (0.05 Torr = 50 mTorr)
         assert np.all(output[:, 4] >= 50), f"Pch should be >= 50 mTorr (min), got min {output[:, 4].min()}"

@@ -23,29 +23,29 @@ class TestOptimizerWebInterface:
         Returns all input parameters for the optimizer test case.
         """
         vial = {
-            'Av': 3.8,     # Vial area in cm^2
-            'Ap': 3.14,    # Product area in cm^2
-            'Vfill': 2.0   # Fill volume in mL
+            'Av': 3.8,     # Vial area [cm**2]
+            'Ap': 3.14,    # Product area [cm**2]
+            'Vfill': 2.0   # Fill volume [mL]
         }
         
         product = {
-            'T_pr_crit': -5.0,   # Critical product temperature in degC
-            'cSolid': 0.05,      # Solid content in g/mL
-            'R0': 1.4,           # Product resistance coefficient R0
-            'A1': 16.0,          # Product resistance coefficient A1
-            'A2': 0.0            # Product resistance coefficient A2
+            'T_pr_crit': -5.0,   # Critical product temperature [degC]
+            'cSolid': 0.05,      # Solid content [g/mL]
+            'R0': 1.4,           # Product resistance coefficient R0 [cm**2-hr-Torr/g]
+            'A1': 16.0,          # Product resistance coefficient A1 [1/cm]
+            'A2': 0.0            # Product resistance coefficient A2 [1/cm**2]
         }
         
         ht = {
-            'KC': 0.000275,   # Kc in cal/s/K/cm^2
-            'KP': 0.000893,   # Kp in cal/s/K/cm^2/Torr
+            'KC': 0.000275,   # Kc [cal/s/K/cm**2]
+            'KP': 0.000893,   # Kp [cal/s/K/cm**2/Torr]
             'KD': 0.46        # Kd dimensionless
         }
         
         Pchamber = {
-            'setpt': np.array([0.15]),      # Set point in Torr
-            'dt_setpt': np.array([1800]),   # Hold time in min
-            'ramp_rate': 0.5                # Ramp rate in Torr/min
+            'setpt': np.array([0.15]),      # Set point [Torr]
+            'dt_setpt': np.array([1800]),   # Hold time [min]
+            'ramp_rate': 0.5                # Ramp rate [Torr/min]
         }
         
         Tshelf = {
@@ -53,8 +53,8 @@ class TestOptimizerWebInterface:
             'max': 120.0,                   # Maximum shelf temperature
             'init': -35.0,                  # Initial shelf temperature
             'setpt': np.array([120.0]),     # Target set point
-            'dt_setpt': np.array([1800]),   # Hold time in min
-            'ramp_rate': 1.0                # Ramp rate in degC/min
+            'dt_setpt': np.array([1800]),   # Hold time [min]
+            'ramp_rate': 1.0                # Ramp rate [degC/min]
         }
         
         eq_cap = {
@@ -63,7 +63,7 @@ class TestOptimizerWebInterface:
         }
         
         nVial = 398
-        dt = 0.01   # Time step in hr
+        dt = 0.01   # Time step [hr]
         
         return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
     

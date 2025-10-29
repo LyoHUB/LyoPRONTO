@@ -23,8 +23,8 @@ class TestOptPchOnly:
         Tshelf = {
             'init': -40.0,
             'setpt': [-20.0, -10.0],
-            'dt_setpt': [120.0, 120.0],  # 2 hours each in minutes
-            'ramp_rate': 1.0  # Ramp rate in degC/min
+            'dt_setpt': [120.0, 120.0],  # 2 hours in [min]
+            'ramp_rate': 1.0  # Ramp rate [degC/min]
         }
         
         # Pressure bounds (will be optimized)
@@ -33,7 +33,7 @@ class TestOptPchOnly:
             'max': 0.200
         }
         
-        dt = 0.01  # Time step in hours
+        dt = 0.01  # Time step [hr]
         
         # Equipment capability
         eq_cap = {'a': 5.0, 'b': 10.0}
@@ -143,14 +143,14 @@ class TestOptPchOnly:
             opt_pch_setup['nVial']
         )
         
-        flux = output[:, 5]  # Sublimation flux in kg/hr/m²
-        Ap_m2 = opt_pch_setup['vial']['Ap'] / 100**2  # Convert cm² to m²
+        flux = output[:, 5]  # Sublimation flux [kg/hr/m**2]
+        Ap_m2 = opt_pch_setup['vial']['Ap'] / 100**2  # Convert [cm**2] to [m**2]
         
         # Total sublimation rate per vial
-        dmdt = flux * Ap_m2  # kg/hr per vial
+        dmdt = flux * Ap_m2  # [kg/hr/vial]
         
         # Equipment capability at different pressures
-        Pch = output[:, 4] / 1000  # Torr
+        Pch = output[:, 4] / 1000  # [Torr]
         eq_cap_max = (opt_pch_setup['eq_cap']['a'] + 
                       opt_pch_setup['eq_cap']['b'] * Pch) / opt_pch_setup['nVial']
         
@@ -230,7 +230,7 @@ class TestOptPchOnly:
             opt_pch_setup['nVial']
         )
         
-        Pch = output[:, 4] / 1000  # Torr
+        Pch = output[:, 4] / 1000  # [Torr]
         
         # Pressure should vary during optimization
         P_range = np.max(Pch) - np.min(Pch)

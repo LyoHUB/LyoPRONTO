@@ -19,15 +19,15 @@ class TestCalcUnknownRp:
         Tshelf = {
             'init': -40.0,
             'setpt': [-20.0, -10.0],  # Two ramp stages
-            'dt_setpt': [120.0, 120.0],  # 2 hours each in minutes
+            'dt_setpt': [120.0, 120.0],  # 2 hours in [min]
             'ramp_rate': 0.1  # deg/min
         }
         
         # Time-varying chamber pressure
         Pchamber = {
             'setpt': [0.060, 0.080, 0.100],  # Three pressure stages
-            'dt_setpt': [60.0, 120.0, 120.0],  # Time at each stage in minutes
-            'ramp_rate': 0.5  # Ramp rate in Torr/min
+            'dt_setpt': [60.0, 120.0, 120.0],  # Time at each stage [min]
+            'ramp_rate': 0.5  # Ramp rate [Torr/min]
         }
         
         # Load experimental temperature data

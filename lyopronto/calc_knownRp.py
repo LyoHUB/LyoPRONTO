@@ -28,7 +28,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     ##################  Initialization ################
 
     # Initial fill height
-    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
+    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])    # [cm]
 
     Pch_t = lambda t: Pchamber['setpt'][0] # TODO: allow ramps
     Tsh_t = lambda t: min(Tshelf['setpt'][0], t*60*Tshelf['ramp_rate'] + Tshelf['init'])
@@ -43,18 +43,18 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
         Lck = u[0]
         Tsh = Tsh_t(t)
         Pch = Pch_t(t)
-        Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
-        Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
-        Tsub = fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
-        dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
+        Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient [cal/s/K/cm**2]
+        Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance [cm**2*hr*Torr/g]
+        Tsub = fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array [degC]
+        dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array [kg/hr]
         if dmdt<0:
             # print("Shelf temperature is too low for sublimation.")
             dmdt = 0.0
             dLdt = 0
             return [dLdt]
-        # Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
+        # Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array [degC]
 
-        dLdt = (dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
+        dLdt = (dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # [cm]
         return [dLdt]
 
     ### ------ Condition for ending simulation: completed drying

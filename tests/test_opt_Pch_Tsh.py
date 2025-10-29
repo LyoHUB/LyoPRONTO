@@ -18,51 +18,51 @@ def standard_opt_pch_tsh_inputs():
     """Standard inputs for opt_Pch_Tsh testing (joint optimization)."""
     # Vial geometry
     vial = {
-        'Av': 3.8,     # Vial area in cm^2
-        'Ap': 3.14,    # Product area in cm^2
-        'Vfill': 2.0   # Fill volume in mL
+        'Av': 3.8,     # Vial area [cm**2]
+        'Ap': 3.14,    # Product area [cm**2]
+        'Vfill': 2.0   # Fill volume [mL]
     }
     
     # Product properties
     product = {
-        'T_pr_crit': -5.0,   # Critical product temperature in degC
-        'cSolid': 0.05,      # Solid content in g/mL
-        'R0': 1.4,           # Product resistance coefficient R0 in cm^2-hr-Torr/g
-        'A1': 16.0,          # Product resistance coefficient A1 in 1/cm
-        'A2': 0.0            # Product resistance coefficient A2 in 1/cm^2
+        'T_pr_crit': -5.0,   # Critical product temperature [degC]
+        'cSolid': 0.05,      # Solid content [g/mL]
+        'R0': 1.4,           # Product resistance coefficient R0 [cm**2-hr-Torr/g]
+        'A1': 16.0,          # Product resistance coefficient A1 [1/cm]
+        'A2': 0.0            # Product resistance coefficient A2 [1/cm**2]
     }
     
     # Vial heat transfer coefficients
     ht = {
-        'KC': 0.000275,   # Kc in cal/s/K/cm^2
-        'KP': 0.000893,   # Kp in cal/s/K/cm^2/Torr
+        'KC': 0.000275,   # Kc [cal/s/K/cm**2]
+        'KP': 0.000893,   # Kp [cal/s/K/cm**2/Torr]
         'KD': 0.46        # Kd dimensionless
     }
     
     # Chamber pressure optimization settings
-    # NOTE: Minimum pressure for optimization (website suggests 0.05 to 1000 Torr)
+    # NOTE: Minimum pressure for optimization (website suggests 0.05 to 1000 [Torr])
     Pchamber = {
-        'min': 0.05  # Minimum chamber pressure in Torr
+        'min': 0.05  # Minimum chamber pressure [Torr]
     }
     
     # Shelf temperature optimization settings
     # Optimize within range -45 to 120°C
     Tshelf = {
-        'min': -45.0,   # Minimum shelf temperature in degC
-        'max': 120.0    # Maximum shelf temperature in degC
+        'min': -45.0,   # Minimum shelf temperature [degC]
+        'max': 120.0    # Maximum shelf temperature [degC]
     }
     
     # Equipment capability
     eq_cap = {
-        'a': -0.182,   # Equipment capability coefficient a in kg/hr
-        'b': 11.7      # Equipment capability coefficient b in kg/hr/Torr
+        'a': -0.182,   # Equipment capability coefficient a [kg]/hr
+        'b': 11.7      # Equipment capability coefficient b [kg]/hr/Torr
     }
     
     # Number of vials
     nVial = 398
     
     # Time step
-    dt = 0.01   # Time step in hr
+    dt = 0.01   # Time step [hr]
     
     return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
 
@@ -113,7 +113,7 @@ class TestOptPchTshBasic:
         assert np.all(output[:, 3] <= Tshelf['max'] + 1), \
             f"Tsh should be <= max ({Tshelf['max']}°C)"
         
-        # Column 4: Pch should be positive and in mTorr
+        # Column 4: Pch should be positive and [mTorr]
         assert np.all(output[:, 4] > 0), "Chamber pressure should be positive"
         # Pch should be >= min pressure (0.05 Torr = 50 mTorr)
         assert np.all(output[:, 4] >= 50), f"Pch should be >= 50 mTorr (min), got min {output[:, 4].min()}"
@@ -230,12 +230,12 @@ class TestOptPchTshEdgeCases:
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_tsh_inputs
         
         # Higher minimum pressure
-        Pchamber['min'] = 0.10  # Torr = 100 mTorr
+        Pchamber['min'] = 0.10  # [Torr] = 100 [mTorr]
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
         assert output.shape[0] > 1, "Should complete drying"
-        # All pressures should be >= 100 mTorr
+        # All pressures should be >= 100 [mTorr]
         assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
 
 

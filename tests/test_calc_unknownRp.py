@@ -138,8 +138,8 @@ class TestCalcUnknownRpBasic:
         assert np.all(output[:, 2] >= -50), "Tbot should be above -50°C"
         assert np.all(output[:, 2] <= 25), "Tbot should be below 25°C"
         
-        # Column 4: Pch should be in mTorr (150 mTorr = 0.15 Torr)
-        assert np.allclose(output[:, 4], 150.0, atol=1.0), "Pch should be ~150 mTorr"
+        # Column 4: Pch should be [mTorr] (150 mTorr = 0.15 Torr)
+        assert np.allclose(output[:, 4], 150.0, atol=1.0), "Pch should be ~150 [mTorr]"
         
         # Column 5: Flux should be non-negative
         assert np.all(output[:, 5] >= 0), "Flux should be non-negative"

@@ -216,9 +216,9 @@ class TestWebInterfaceExample:
         assert output[0, 0] == 0.0, "Time should start at 0"
         assert np.all(np.diff(output[:, 0]) > 0), "Time should increase"
         
-        # Column 4: Pch should be in mTorr (not Torr)
+        # Column 4: Pch should be [mTorr] (not Torr)
         assert output[0, 4] == pytest.approx(150.0, abs=1.0), \
-            "Pch should be in mTorr (150, not 0.15)"
+            "Pch should be [mTorr] (150, not 0.15)"
         
         # Column 6: Dried should be fraction 0-1 (not percentage)
         assert 0 <= output[0, 6] <= 1.0, "Dried should be fraction 0-1"

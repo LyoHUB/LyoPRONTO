@@ -31,7 +31,7 @@ class TestOptPchTsh:
             'max': 0.200
         }
         
-        dt = 0.01  # Time step in hours
+        dt = 0.01  # Time step [hr]
         
         # Equipment capability
         eq_cap = {'a': 5.0, 'b': 10.0}
@@ -163,14 +163,14 @@ class TestOptPchTsh:
             opt_both_setup['nVial']
         )
         
-        flux = output[:, 5]  # Sublimation flux in kg/hr/m²
-        Ap_m2 = opt_both_setup['vial']['Ap'] / 100**2  # Convert cm² to m²
+        flux = output[:, 5]  # Sublimation flux [kg/hr/m**2]
+        Ap_m2 = opt_both_setup['vial']['Ap'] / 100**2  # Convert [cm**2] to [m**2]
         
         # Total sublimation rate per vial
-        dmdt = flux * Ap_m2  # kg/hr per vial
+        dmdt = flux * Ap_m2  # [kg/hr/vial]
         
         # Equipment capability at different pressures
-        Pch = output[:, 4] / 1000  # Torr
+        Pch = output[:, 4] / 1000  # [Torr]
         eq_cap_max = (opt_both_setup['eq_cap']['a'] + 
                       opt_both_setup['eq_cap']['b'] * Pch) / opt_both_setup['nVial']
         

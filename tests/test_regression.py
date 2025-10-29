@@ -56,7 +56,7 @@ class TestRegressionStandardCase:
         assert np.isclose(initial_time, 0.0, atol=0.001)
         assert initial_Tsub < -30.0  # Should start very cold
         assert np.isclose(initial_Tsh, -35.0, atol=0.1)  # Initial shelf temp
-        assert np.isclose(initial_Pch_mTorr, 150.0, rtol=0.01)  # Chamber pressure in mTorr
+        assert np.isclose(initial_Pch_mTorr, 150.0, rtol=0.01)  # Chamber pressure [mTorr]
         assert np.isclose(initial_fraction, 0.0, atol=0.01)  # Starting at 0 fraction dried
     
     def test_reference_sublimation_temperatures(self, reference_case):

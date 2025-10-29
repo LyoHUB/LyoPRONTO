@@ -28,14 +28,14 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
     ##################  Initialization ################
 
     # Initial fill height
-    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
+    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])    # [cm]
 
     # Initialization of cake length
-    Lck = 0.0    # Cake length in cm
+    Lck = 0.0    # Cake length [cm]
     percent_dried = Lck/Lpr0*100.0        # Percent dried
 
     # Initial shelf temperature
-    Tsh = Tshelf['init']        # degC
+    Tsh = Tshelf['init']         # [degC]
     Tshelf = Tshelf.copy() # Don't edit the original argument!!
     Tshelf['setpt'] = np.insert(Tshelf['setpt'],0,Tshelf['init'])        # Include initial shelf temperature in set point array
     # Shelf temperature control time
@@ -44,7 +44,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
             Tshelf['t_setpt'] = np.append(Tshelf['t_setpt'],Tshelf['t_setpt'][-1]+dt_i/constant.hr_To_min)
 
     # Initial chamber pressure
-    Pch = Pchamber['setpt'][0]        # Torr
+    Pch = Pchamber['setpt'][0]         # [Torr]
     Pchamber = Pchamber.copy() # Don't edit the original argument!!
     Pchamber['setpt'] = np.insert(Pchamber['setpt'],0,Pchamber['setpt'][0])        # Include initial chamber pressure in set point array
     # Chamber pressure control time
@@ -53,7 +53,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
             Pchamber['t_setpt'] = np.append(Pchamber['t_setpt'],Pchamber['t_setpt'][-1]+dt_j/constant.hr_To_min) 
        
     # Intial product temperature
-    T0=Tsh   # degC
+    T0=Tsh    # [degC]
 
     ######################################################
 
@@ -64,20 +64,20 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
 
     for iStep,t in enumerate(time): # Loop through for the time specified in the input file
 
-        Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
+        Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient [cal/s/K/cm**2]
 
-        Tsub = sp.fsolve(functions.T_sub_Rp_finder, Tbot_exp[iStep], args = (vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Tbot_exp[iStep],Tsh))[0] # Sublimation front temperature array in degC
+        Tsub = sp.fsolve(functions.T_sub_Rp_finder, Tbot_exp[iStep], args = (vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Tbot_exp[iStep],Tsh))[0] # Sublimation front temperature array [degC]
         # Q = Kv*vial['Av']*(Tsh - Tbot_exp[iStep])
         # Tsub = Tbot_exp[iStep] - Q/vial['Ap']/constant.k_ice*(Lpr0-Lck)
-        Rp = functions.Rp_finder(Tsub,Lpr0,Lck,Pch,Tbot_exp[iStep])    #     Product resistance in cm^2-Torr-hr/g
-        dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
+        Rp = functions.Rp_finder(Tsub,Lpr0,Lck,Pch,Tbot_exp[iStep])    #     Product resistance [cm]^2-Torr-hr/g
+        dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array [kg/hr]
         if dmdt<0:
             print(f"No sublimation. t={t:1.2f}, Tsh={Tsh:2.1f}, Tsub={Tsub:3.1f}, dmdt={dmdt:1.2e}, Rp={Rp:1.2f}, Lck={Lck:1.2f}")
             dmdt = 0.0
             Rp = 0.0
 
         # Sublimated ice length
-        dL = (dmdt*constant.kg_To_g)*dt[iStep]/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
+        dL = (dmdt*constant.kg_To_g)*dt[iStep]/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # [cm]
 
         # Update record as functions of the cycle time
         if iStep == 0:
@@ -88,8 +88,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
             product_res = np.append(product_res, [[t, float(Lck), float(Rp)]], axis=0)
     
         # Advance counters
-        Lck_prev = Lck # Previous cake length in cm
-        Lck = Lck + dL # Cake length in cm
+        Lck_prev = Lck # Previous cake length [cm]
+        Lck = Lck + dL # Cake length [cm]
 
         percent_dried = Lck/Lpr0*100   # Percent dried
 
