@@ -101,12 +101,12 @@ Successfully created comprehensive test suites for `opt_Pch.py` and `opt_Pch_Tsh
 
 ### Output Format (Both Modules)
 ```python
-output[:, 0]  # time (hours)
-output[:, 1]  # Tsub - sublimation temperature (°C)
-output[:, 2]  # Tbot - vial bottom temperature (°C)
-output[:, 3]  # Tsh - shelf temperature (°C)
-output[:, 4]  # Pch - chamber pressure (mTorr, NOT Torr!)
-output[:, 5]  # flux - sublimation flux (kg/hr/m²)
+output[:, 0]  # time [hr]
+output[:, 1]  # Tsub - sublimation temperature [degC]
+output[:, 2]  # Tbot - vial bottom temperature [degC]
+output[:, 3]  # Tsh - shelf temperature [degC]
+output[:, 4]  # Pch - chamber pressure [mTorr]
+output[:, 5]  # flux - sublimation flux [kg/hr/m**2]
 output[:, 6]  # percent_dried - percent dried (0-100%, NOT fraction!)
 ```
 

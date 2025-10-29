@@ -94,12 +94,12 @@ When working with simulation output, remember:
 output = calc_knownRp.dry(...)  # Returns numpy array with 7 columns
 
 # Column indices and units:
-output[:, 0]  # time (hours)
+output[:, 0]  # time [hr]
 output[:, 1]  # Tsub - sublimation temperature [degC]
 output[:, 2]  # Tbot - vial bottom temperature [degC]
 output[:, 3]  # Tsh - shelf temperature [degC]
-output[:, 4]  # Pch - chamber pressure (mTorr, NOT Torr!)
-output[:, 5]  # flux - sublimation flux (kg/hr/m²)
+output[:, 4]  # Pch - chamber pressure mTorr, NOT Torr!)
+output[:, 5]  # flux - sublimation flux [kg/hr/m**2]
 output[:, 6]  # frac_dried - fraction dried (0-1, NOT percentage!)
 ```
 

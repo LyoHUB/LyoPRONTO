@@ -80,7 +80,7 @@ result = opt_Pch_Tsh.optimize(vial, product, constraints)
 # Extract optimal conditions
 Pch_opt = result['Pch']    # Optimal pressure [Torr]
 Tsh_opt = result['Tsh']    # Optimal shelf temperature [degC]
-t_dry = result['time']     # Drying time (hours)
+t_dry = result['time']     # Drying time [hr]
 ```
 
 ---

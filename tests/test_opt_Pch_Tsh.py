@@ -10,7 +10,7 @@ import numpy as np
 from lyopronto import opt_Pch_Tsh
 
 # Constants for test assertions
-MAX_AGGRESSIVE_OPTIMIZATION_TIME = 5.0  # Maximum expected drying time with aggressive optimization (hours)
+MAX_AGGRESSIVE_OPTIMIZATION_TIME = 5.0  # Maximum expected drying time with aggressive optimization [hr]
 
 
 @pytest.fixture

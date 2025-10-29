@@ -79,12 +79,12 @@ def assert_physically_reasonable_output(output):
         output: numpy array with columns [time, Tsub, Tbot, Tsh, Pch_mTorr, flux, frac_dried]
         
     Column descriptions:
-        [0] time (hours)
+        [0] time [hr]
         [1] Tsub - sublimation temperature [degC]
         [2] Tbot - vial bottom temperature [degC]
         [3] Tsh - shelf temperature [degC]
-        [4] Pch - chamber pressure (mTorr, NOT Torr!)
-        [5] flux - sublimation flux (kg/hr/m²)
+        [4] Pch - chamber pressure [mTorr]
+        [5] flux - sublimation flux [kg/hr/m**2]
         [6] frac_dried - fraction dried (0-1, NOT percentage!)
     """
     assert output.shape[1] == 7, "Output should have 7 columns"
