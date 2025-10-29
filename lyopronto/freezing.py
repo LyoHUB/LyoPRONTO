@@ -94,13 +94,13 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             Tpr = functions.lumped_cap_Tpr(t-t_tr[i-1],Tpr0,constant.rho_solution,constant.Cp_solution,vial['Vfill'],h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])    # degC
 
         # Update record as functions of the cycle time
-            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)    
+            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]], axis=0)    
 
     ######################################################
 
     ################ Nucleation ######################
 
-    freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, product['Tn']]],axis=0)
+    freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, product['Tn']]], axis=0)
 
     ######################################################
 
@@ -126,7 +126,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             Tpr = product['Tf']    # degC
 
         # Update record as functions of the cycle time
-            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
+            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]], axis=0)
 
         iStep = iStep + 1 # Time iteration number
         t = iStep*dt # hr    
@@ -140,7 +140,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
         Tpr = functions.lumped_cap_Tpr(t-ts,product['Tf'],constant.rho_ice,constant.Cp_ice,V_frozen,h_freezing,vial['Av'],Tsh,Tsh,0.0)
 
         # Update record as functions of the cycle time
-        freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
+        freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]], axis=0)
 
         iStep = iStep + 1 # Time iteration number
         t = iStep*dt # hr

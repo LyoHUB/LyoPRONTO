@@ -163,9 +163,9 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             # Update record as functions of the cycle time
             if (iStep==0):
-                output_saved =np.array([[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]])
+                output_saved = np.array([[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]])
             else:
-                output_saved = np.append(output_saved, [[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]],axis=0)
+                output_saved = np.append(output_saved, [[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]], axis=0)
         
             # Advance counters
             Lck_prev = Lck # Previous cake length in cm
