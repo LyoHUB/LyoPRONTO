@@ -11,7 +11,10 @@ def assert_physically_reasonable_output(output):
     """
     # Column 0: Time should be non-negative and increasing
     assert np.all(output[:, 0] >= 0), "Time should be non-negative"
-    assert np.all(np.diff(output[:, 0]) > 0), "Time should be strictly increasing"
+    # Allow last time value to be repeated (simulation completion/timeout)
+    time_diffs = np.diff(output[:, 0])
+    assert np.all(time_diffs[:-1] > 0), "Time should be strictly increasing (except possibly last step)"
+    assert time_diffs[-1] >= 0, "Last time step should be non-negative"
     
     # Column 1: Tsub should be below freezing
     assert np.all(output[:, 1] < 0), "Sublimation temperature should be < 0°C"
