@@ -20,7 +20,7 @@ Execute:
 ```
 python3 LyoPronto.main -m
 ```
-This will execute the file `main.py` in an appropriate scope. Parameters can be changed in `main.py`. Files listing the inputs and outputs will be generated in the current directory, along with some plots of temperature, pressure, and drying progress vs. time.
+LyoPRONTO is a vial-scale lyophilization (freeze-drying) process simulator written in Python. It models the freezing and primary drying phases using heat and mass transfer equations.
 A video tutorial by the authors illustrating this process can be found [on LyoHUB's YouTube channel](https://youtu.be/DI-Gz0pBI0w).
 
 ## Modern Examples

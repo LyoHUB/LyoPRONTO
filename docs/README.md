@@ -3,6 +3,25 @@
 This directory contains all technical documentation for the LyoPRONTO lyophilization simulator.
 
 ## Core Documentation
+## Testing & Continuous Integration
+
+LyoPRONTO uses a modern, robust CI/CD pipeline and a comprehensive test suite. The test suite is divided into fast and slow tests, with all code and documentation changes automatically validated via GitHub Actions.
+
+- **Fast/Slow Test Separation:**
+    - Fast tests run on every PR and push (under 60 seconds).
+    - Slow tests (marked with `@pytest.mark.slow`) run nightly and on demand.
+- **Centralized Python Version Management:**
+    - All workflows use the Python version(s) specified in `.github/ci-config/ci-versions.yml`.
+- **CI Workflows:**
+    - PRs and pushes: Fast tests (`pr-tests.yml`)
+    - Main branch: Full suite (`tests.yml`)
+    - Nightly/manual: Slow tests (`slow-tests.yml`)
+    - Docs: Build and link check (`docs.yml`)
+- **Coverage & Linting:**
+    - Coverage is reported for all test runs.
+    - Linting and formatting are enforced in CI.
+
+See [`../tests/README.md`](../tests/README.md) for full details on running, writing, and debugging tests, as well as CI workflow explanations.
 
 ### For Developers
 - **[GETTING_STARTED.md](GETTING_STARTED.md)** - Setup, installation, and first steps

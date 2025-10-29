@@ -2,6 +2,33 @@
 
 Thank you for your interest in contributing to LyoPRONTO! This document provides guidelines and instructions for contributing.
 
+## Testing & Continuous Integration (CI)
+
+LyoPRONTO uses a modern, robust CI/CD pipeline and a comprehensive test suite. All contributions must pass automated tests and follow the project's testing strategy:
+
+- **Fast/Slow Test Separation:**
+    - Fast tests run on every PR and push (under 60 seconds).
+    - Slow tests (marked with `@pytest.mark.slow`) run nightly and on demand.
+- **Centralized Python Version Management:**
+    - All workflows use the Python version(s) specified in `.github/ci-config/ci-versions.yml`.
+- **CI Workflows:**
+    - PRs and pushes: Fast tests (`pr-tests.yml`)
+    - Main branch: Full suite (`tests.yml`)
+    - Nightly/manual: Slow tests (`slow-tests.yml`)
+    - Docs: Build and link check (`docs.yml`)
+- **Coverage & Linting:**
+    - Coverage is reported for all test runs.
+    - Linting and formatting are enforced in CI.
+
+**Contributor Checklist:**
+
+- Mark slow tests with `@pytest.mark.slow`.
+- Add or update tests for all new features and bugfixes.
+- Ensure all tests pass locally before submitting a PR (`pytest tests/ -v`).
+- Review [`tests/README.md`](tests/README.md) for full details on running, writing, and debugging tests, as well as CI workflow explanations.
+
+---
+
 ## Table of Contents
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
