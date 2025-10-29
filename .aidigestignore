@@ -1,0 +1,49 @@
+# AI Digest Ignore
+# Files that AI assistants should ignore or deprioritize
+
+# Generated output
+htmlcov/
+*.pyc
+__pycache__/
+.pytest_cache/
+.coverage
+*.egg-info/
+
+# Temporary files
+debug_*.py
+scratch_*.py
+temp_*.py
+test_temp*.py
+
+# Large data files
+*.csv
+*.xlsx
+*.h5
+*.hdf5
+
+# Binary files
+*.png
+*.jpg
+*.pdf
+
+# Build artifacts
+dist/
+build/
+*.so
+*.dylib
+*.dll
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git files
+.git/
+.gitignore
+
+# Documentation builds
+docs/_build/
+site/

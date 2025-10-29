@@ -167,9 +167,9 @@ class TestOptPchBasic:
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        # Percent dried (column 6) should reach > 99%
+        # Fraction dried (column 6) should reach > 0.99 (was percentage 0-100, now fraction 0-1)
         final_dried = output[-1, 6]
-        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+        assert final_dried > 0.99, f"Should dry to >99%, got {final_dried*100:.1f}%"
 
 
 class TestOptPchEdgeCases:
@@ -212,7 +212,7 @@ class TestOptPchEdgeCases:
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
         assert output.shape[0] > 1, "Should complete with single setpoint"
-        assert output[-1, 6] > 99, "Should complete drying"
+        assert output[-1, 6] > 0.99, "Should complete drying"
     
     def test_higher_min_pressure(self, standard_opt_pch_inputs):
         """Test with higher minimum pressure constraint (0.10 Torr)."""

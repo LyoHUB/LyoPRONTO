@@ -24,19 +24,19 @@ def large_vial():
 @pytest.fixture
 def standard_product():
     """Standard product configuration (5% solids)."""
-    return {'cSolid': 0.05, 'R0': 1.4, 'A1': 16.0, 'A2': 0.0}
+    return {'cSolid': 0.05, 'R0': 1.4, 'A1': 16.0, 'A2': 0.0, 'T_pr_crit': -25.0}
 
 
 @pytest.fixture
 def dilute_product():
     """Dilute product configuration (1% solids)."""
-    return {'cSolid': 0.01, 'R0': 1.0, 'A1': 10.0, 'A2': 0.0}
+    return {'cSolid': 0.01, 'R0': 1.0, 'A1': 10.0, 'A2': 0.0, 'T_pr_crit': -25.0}
 
 
 @pytest.fixture
 def concentrated_product():
     """Concentrated product configuration (10% solids)."""
-    return {'cSolid': 0.10, 'R0': 2.0, 'A1': 20.0, 'A2': 0.1}
+    return {'cSolid': 0.10, 'R0': 2.0, 'A1': 20.0, 'A2': 0.1, 'T_pr_crit': -25.0}
 
 
 @pytest.fixture

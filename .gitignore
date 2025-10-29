@@ -4,35 +4,29 @@
 *.pyc
 __pycache__/
 *.py[cod]
+*$py.class
 
-# Generated output files (exclude from repo)
-*.pdf
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Data files
 *.csv
-*_saved_*.csv
-*_saved_*.pdf
-lyopronto_primary_drying_*.csv
-lyopronto_optimizer_*.csv
-lyopronto_freezing_*.csv
-lyopronto_design_space_*.csv
-lyopronto_parameter_estimation_*.csv
-primary_drying_results.png
-parameter_estimation_results.png
-freezing_results.png
-design_space_results.png
-optimizer_results.png
-
-# Debug scripts
-debug_*.py
-
-# But keep test data and documentation
-!test_data/*.csv
-!test_data/*.txt
-!examples/outputs/.gitkeep
-!examples/outputs/README.md
-
-# Coverage reports
-.coverage
-htmlcov/
 
 docs/build
 ################################################################################

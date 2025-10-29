@@ -1,36 +1,13 @@
 """
 Comprehensive tests for opt_Pch_Tsh.py - Joint pressure and temperature optimization module.
 
-This module optimizes both chamber pressure and shelf temperature si        # Product temperature should not exceed critical temp
-        T_cri        # High resistance should take longer
-        drying_time = output[-1, 0]
-        assert drying_time > MIN_DRYING_TIME_HIGH_RESISTANCE, (
-            f"High resistance should take > {MIN_DRYING_TIME_HIGH_RESISTANCE} hr, "
-            f"got {drying_time:.2f} hr"
-        )product['T_pr_crit']
-        assert np.all(output[:, 2] <= T_crit + TEMPERATURE_TOLERANCE), 
-            f"T_product should be <= T_crit + {TEMPERATURE_TOLERANCE}°C, max: {output[:, 2].max():.2f}°C"taneously.
+This module optimizes both chamber pressure and shelf temperature simultaneously.
 Tests based on working example_optimizer.py structure.
 """
 
 import pytest
 import numpy as np
 from lyopronto import opt_Pch_Tsh
-
-
-# Test constants for validation thresholds
-MAX_DRYING_TIME_AGGRESSIVE = 5.0  # hours - expected max for aggressive optimization
-MIN_DRYING_TIME_HIGH_RESISTANCE = 1.0  # hours - minimum for high resistance products
-MIN_SHELF_TEMP_VARIATION = 1.0  # °C - minimum expected variation in optimized Tsh
-TEMPERATURE_TOLERANCE = 0.5  # °C - tolerance for critical temperature constraints
-MAX_PERCENT_DRIED = 100.0  # % - maximum possible drying percentage
-MIN_PERCENT_DRIED = 99.0  # % - target completion threshold
-
-# Reasonable bounds for validation
-MIN_REASONABLE_DRYING_TIME = 0.3  # hours
-MAX_REASONABLE_DRYING_TIME = 10.0  # hours
-MIN_REASONABLE_FLUX = 0.1  # kg/hr/m²
-MAX_REASONABLE_FLUX = 10.0  # kg/hr/m²
 
 
 @pytest.fixture
@@ -143,8 +120,7 @@ class TestOptPchTshBasic:
         
         # Column 6: Percent dried should be 0-100
         assert np.all(output[:, 6] >= 0), "Percent dried should be >= 0"
-        assert np.all(output[:, 6] <= MAX_PERCENT_DRIED), \
-            f"Percent dried should be <= {MAX_PERCENT_DRIED}"
+        assert np.all(output[:, 6] <= 100.0), "Percent dried should be <= 100"
     
     def test_both_variables_optimized(self, standard_opt_pch_tsh_inputs):
         """Test that both pressure and temperature are optimized (vary over time)."""
@@ -182,9 +158,9 @@ class TestOptPchTshBasic:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        # Percent dried (column 6) should reach > 99%
+        # Fraction dried (column 6) should reach > 0.99
         final_dried = output[-1, 6]
-        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+        assert final_dried > 0.99, f"Should dry to >99%, got {final_dried*100:.1f}%"
     
     def test_shelf_temp_varies_over_time(self, standard_opt_pch_tsh_inputs):
         """Test that optimized shelf temperature varies during drying.
@@ -244,11 +220,7 @@ class TestOptPchTshEdgeCases:
         
         assert output.shape[0] > 1, "Should complete drying"
         # Higher resistance should lead to longer drying time
-        drying_time = output[-1, 0]
-        assert drying_time > MIN_DRYING_TIME_HIGH_RESISTANCE, (
-            f"High resistance should take > {MIN_DRYING_TIME_HIGH_RESISTANCE} hr, "
-            f"got {drying_time:.2f} hr"
-        )
+        assert output[-1, 0] > 1.0, "High resistance should take longer to dry"
     
     def test_higher_min_pressure(self, standard_opt_pch_tsh_inputs):
         """Test with higher minimum pressure constraint (0.10 Torr)."""
@@ -280,14 +252,12 @@ class TestOptPchTshValidation:
         
         # Joint optimization should complete successfully
         assert output_joint.shape[0] > 1, "Joint optimization should complete"
-        assert output_joint[-1, 6] > 99, "Should reach >99% dried"
+        assert output_joint[-1, 6] > 0.99, "Should reach >99% dried"
         
         # Drying time should be reasonable
         time_joint = output_joint[-1, 0]
-        assert MIN_REASONABLE_DRYING_TIME < time_joint < MAX_REASONABLE_DRYING_TIME, (
-            f"Joint optimization time {time_joint:.2f} hr should be reasonable "
-            f"({MIN_REASONABLE_DRYING_TIME}-{MAX_REASONABLE_DRYING_TIME} hr)"
-        )
+        assert 0.3 < time_joint < 10, \
+            f"Joint optimization time {time_joint:.2f} hr should be reasonable"
     
     def test_optimization_finds_reasonable_solution(self, standard_opt_pch_tsh_inputs):
         """Test that optimization finds physically reasonable solution."""
@@ -295,26 +265,20 @@ class TestOptPchTshValidation:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        # Drying time should be reasonable
+        # Drying time should be reasonable (0.3 to 10 hours)
         drying_time = output[-1, 0]
-        assert MIN_REASONABLE_DRYING_TIME < drying_time < MAX_REASONABLE_DRYING_TIME, (
-            f"Drying time {drying_time:.2f} hr should be reasonable "
-            f"({MIN_REASONABLE_DRYING_TIME}-{MAX_REASONABLE_DRYING_TIME} hr)"
-        )
+        assert 0.3 < drying_time < 10, \
+            f"Drying time {drying_time:.2f} hr should be reasonable (0.3-10 hr)"
         
         # Average flux should be positive and reasonable
         avg_flux = output[:, 5].mean()
-        assert MIN_REASONABLE_FLUX < avg_flux < MAX_REASONABLE_FLUX, (
-            f"Average flux {avg_flux:.2f} kg/hr/m² should be reasonable "
-            f"({MIN_REASONABLE_FLUX}-{MAX_REASONABLE_FLUX})"
-        )
+        assert 0.1 < avg_flux < 10, \
+            f"Average flux {avg_flux:.2f} kg/hr/m² should be reasonable (0.1-10)"
         
         # Shelf temperature should vary during optimization
         Tsh_range = output[:, 3].max() - output[:, 3].min()
-        assert Tsh_range > MIN_SHELF_TEMP_VARIATION, (
-            f"Optimizer should vary Tsh by > {MIN_SHELF_TEMP_VARIATION}°C, "
-            f"got {Tsh_range:.1f}°C range"
-        )
+        assert Tsh_range > 1.0, \
+            f"Optimizer should vary Tsh, got {Tsh_range:.1f}°C range"
     
     def test_consistent_results(self, standard_opt_pch_tsh_inputs):
         """Test that repeated runs give consistent results."""
@@ -339,10 +303,7 @@ class TestOptPchTshValidation:
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
         assert output.shape[0] > 1, "Should complete with aggressive parameters"
-        assert output[-1, 6] > MIN_PERCENT_DRIED, \
-            f"Should reach >{MIN_PERCENT_DRIED}% dried"
+        assert output[-1, 6] > 0.99, "Should reach >99% dried"
         
         # Should complete relatively quickly with aggressive optimization
-        drying_time = output[-1, 0]
-        assert drying_time < MAX_DRYING_TIME_AGGRESSIVE, \
-            f"Aggressive optimization should complete in < {MAX_DRYING_TIME_AGGRESSIVE} hr, got {drying_time:.2f} hr"
+        assert output[-1, 0] < 5.0, "Aggressive optimization should be < 5 hr"

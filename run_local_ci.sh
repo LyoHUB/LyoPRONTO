@@ -36,8 +36,6 @@ echo "   Installing core dependencies..."
 pip install -r requirements.txt -q
 echo "   Installing dev dependencies..."
 pip install -r requirements-dev.txt -q
-echo "   Installing lyopronto package in editable mode..."
-pip install -e . -q
 echo "   ✅ Dependencies installed"
 echo ""
 

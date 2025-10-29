@@ -1,0 +1,111 @@
+# Cursor AI Rules for LyoPRONTO
+
+## Project Overview
+LyoPRONTO is a lyophilization (freeze-drying) process simulator. Currently transitioning from scipy to Pyomo for optimization.
+
+## Code Generation Preferences
+
+### Always
+- Use NumPy-style docstrings
+- Include type hints in function signatures
+- Add units in comments for physical variables
+- Write tests before implementing features (TDD)
+- Use descriptive variable names matching physics conventions
+
+### Never
+- Don't use `if` statements in Pyomo constraint expressions
+- Don't assume output columns are in obvious units (check documentation)
+- Don't use bare `except:` clauses
+- Don't repeat code - use functions and fixtures
+- Don't skip writing tests
+
+## Physics Variable Standards
+
+Use these exact names for consistency:
+- `Tsub` (sublimation temperature, °C)
+- `Tbot` (vial bottom temperature, °C)  
+- `Tsh` (shelf temperature, °C)
+- `Pch` (chamber pressure, Torr in input, mTorr in output)
+- `Rp` (product resistance, cm²-hr-Torr/g)
+- `dmdt` (sublimation rate, kg/hr)
+- `Lck` (cake length, cm)
+- `Lpr0` (initial product length, cm)
+
+## Testing Requirements
+
+For every new function:
+1. Write at least 2 unit tests (normal case + edge case)
+2. Test physical bounds and monotonicity
+3. Use fixtures from `tests/conftest.py`
+4. Add docstring explaining what's being tested
+
+Example test structure:
+```python
+def test_my_function_normal_case():
+    """Test my_function with typical input values."""
+    result = my_function(typical_input)
+    assert result > 0
+    assert np.isclose(result, expected, rtol=0.01)
+
+def test_my_function_edge_case():
+    """Test my_function with boundary conditions."""
+    result = my_function(edge_case_input)
+    assert result is physically_reasonable
+```
+
+## Output Format Reminder
+
+**CRITICAL**: When working with `calc_knownRp.dry()` output:
+```python
+# output[:, 4] is in mTorr, not Torr!
+# output[:, 6] is fraction 0-1, not percentage 0-100!
+```
+
+Always reference `TEST_FIXES_SUMMARY.md` when working with outputs.
+
+## Pyomo Model Guidelines
+
+1. **Initialization**: Always warmstart with scipy solution
+2. **Bounds**: Use physically reasonable bounds on all variables
+3. **Exponentials**: Use log-transform for vapor pressure equation
+4. **Constraints**: Make implicit equations explicit equality constraints
+
+## File Organization
+
+- Physics equations → `lyopronto/functions.py`
+- Simulators → `lyopronto/calc_*.py`
+- Tests → `tests/test_*.py`
+- Pyomo models → `lyopronto/pyomo_models/` (create if needed)
+
+## Performance Considerations
+
+- Profile before optimizing
+- Benchmark Pyomo against scipy baseline
+- Target <3x scipy performance for Pyomo
+- Use sparse Jacobian structures for large models
+
+## Documentation
+
+Every module should have:
+```python
+"""Brief module description.
+
+This module contains [what it does]. 
+
+Key functions:
+    - function1: Brief description
+    - function2: Brief description
+    
+Notes:
+    Important physics assumptions or numerical considerations.
+"""
+```
+
+## Current Priority
+
+Focus on Phase 1 of Pyomo transition:
+1. Single time-step optimization model
+2. Comparison tests with scipy
+3. Validation against existing behavior
+
+Refer to `PYOMO_ROADMAP.md` for detailed plan.

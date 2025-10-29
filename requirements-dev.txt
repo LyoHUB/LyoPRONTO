@@ -1,8 +1,19 @@
-# Development dependencies for testing and linting
+# Development and testing dependencies for LyoPRONTO
+# These are additional packages needed for development, testing, and CI
+
+# Testing framework
 pytest>=7.4.0
 pytest-cov>=4.1.0
-pytest-xdist>=3.3.0  # for parallel test execution
-hypothesis>=6.82.0  # for property-based testing
-black>=23.7.0  # code formatter
-flake8>=6.1.0  # linter
-mypy>=1.4.0  # type checker
+pytest-xdist>=3.3.0
+
+# Property-based testing
+hypothesis>=6.82.0
+
+# Code formatting and linting
+black>=23.7.0
+flake8>=6.1.0
+mypy>=1.4.0
+
+# Documentation (optional, uncomment if needed)
+# mkdocs>=1.5.0
+# mkdocs-material>=9.1.0
