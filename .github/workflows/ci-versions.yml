@@ -1,0 +1,4 @@
+# Centralized CI version configuration for LyoPRONTO
+# Update this file to change Python version across all workflows
+
+python-version: '3.13'

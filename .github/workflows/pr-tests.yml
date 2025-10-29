@@ -15,6 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/workflows/ci-versions.yml
+
     - name: Determine test mode
       id: mode
       run: |
@@ -28,10 +34,10 @@ jobs:
     
     - uses: actions/checkout@v4
     
-    - name: Set up Python 3.13
+    - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.13'
+        python-version: ${{ steps.versions.outputs.result }}
         cache: 'pip'
         cache-dependency-path: |
           requirements.txt
