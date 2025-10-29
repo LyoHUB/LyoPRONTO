@@ -55,7 +55,7 @@ def standard_opt_pch_tsh_inputs():
     # Equipment capability
     eq_cap = {
         'a': -0.182,   # Equipment capability coefficient a [kg]/hr
-        'b': 11.7      # Equipment capability coefficient b [kg]/hr/Torr
+        'b': 11.7      # Equipment capability coefficient b [kg/hr/Torr]
     }
     
     # Number of vials
