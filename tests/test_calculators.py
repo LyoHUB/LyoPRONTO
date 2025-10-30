@@ -321,15 +321,15 @@ class TestMassBalance:
         water_mass_initial = Vfill * constant.rho_solution * (1 - cSolid) / constant.kg_To_g  # kg
         
         # Integrate sublimation flux over time
-        times = output[:, 0]  # hours
-        fluxes = output[:, 5]  # kg/hr/m²
-        Ap_m2 = standard_setup['vial']['Ap'] * constant.cm_To_m**2  # m²
-        
-        # Convert flux to total mass rate: flux (kg/hr/m²) * area (m²) = kg/hr
-        mass_rates = fluxes * Ap_m2  # kg/hr
+        times = output[:, 0]  # [hr]
+        fluxes = output[:, 5]  # [kg/hr/m**2]
+        Ap_m2 = standard_setup['vial']['Ap'] * constant.cm_To_m**2  # [m**2]
+
+        # Convert flux to total mass rate: flux [kg/hr/m**2] * area [m**2] = [kg/hr]
+        mass_rates = fluxes * Ap_m2  # [kg/hr]
         
         # Numerical integration using trapezoidal rule
-        mass_removed = np.trapz(mass_rates, times)  # kg
+        mass_removed = np.trapz(mass_rates, times)  # [kg]
         
         # Should be approximately equal (within 2% due to numerical integration)
         # Note: Trapezoidal rule on 100 points gives ~2% error
