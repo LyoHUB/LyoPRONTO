@@ -32,7 +32,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     sub_flux_end = np.zeros([np.size(Tshelf['setpt']),np.size(Pchamber['setpt'])])
     
     # Initial fill height
-    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
+    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])    # [cm]
 
     ############  Shelf temperature isotherms ##########
 
@@ -44,20 +44,20 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             # Initialization of time
             iStep = 0      # Time iteration number
-            t = 0.0    # Time in hr
+            t = 0.0    # Time [hr]
 
             # Initialization of cake length
-            Lck = 0.0    # Cake length in cm
+            Lck = 0.0    # Cake length [cm]
 
             # Initial shelf temperature
-            Tsh = Tshelf['init']        # degC
-            # Time at which shelf temperature reaches set point in hr
+            Tsh = Tshelf['init']         # [degC]
+            # Time at which shelf temperature reaches set point [hr]
             t_setpt = abs(Tsh_setpt-Tshelf['init'])/Tshelf['ramp_rate']/constant.hr_To_min
        
             # Intial product temperature
-            T0=Tsh   # degC
+            T0=Tsh    # [degC]
 
-            # Vial heat transfer coefficient in cal/s/K/cm^2
+            # Vial heat transfer coefficient [cal/s/K/cm**2]
             Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch) 
 
             ######################################################
@@ -66,33 +66,36 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             while(Lck<=Lpr0): # Dry the entire frozen product
     
-                Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
+                Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance [cm**2*hr*Torr/g]
 
-                Tsub = sp.fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh)) # Sublimation front temperature array in degC
-                dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
+                Tsub = sp.fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh)) # Sublimation front temperature array [degC]
+                dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array [kg/hr]
                 if dmdt<0:
                     print("Shelf temperature is too low for sublimation.")
                     dmdt = 0.0
-                Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
+                Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array [degC]
 
                 # Sublimated ice length
-                dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
+                dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # [cm]
             
             # Update record as functions of the cycle time
+                # Note: iStep==0 check handles first timestep initialization
+                # Single timestep completion can occur with aggressive conditions (high shelf temp, low pressure)
+                # This is a valid physical scenario where drying completes within dt, not an error
                 if (iStep==0):
                     output_saved = np.array([[t, float(Tbot), dmdt/(vial['Ap']*constant.cm_To_m**2)]])
                 else:
                     output_saved = np.append(output_saved, [[t, float(Tbot), dmdt/(vial['Ap']*constant.cm_To_m**2)]],axis=0)
     
                 # Advance counters
-                Lck_prev = Lck # Previous cake length in cm
-                Lck = Lck + dL # Cake length in cm
+                Lck_prev = Lck # Previous cake length [cm]
+                Lck = Lck + dL # Cake length [cm]
                 if (Lck_prev < Lpr0) and (Lck > Lpr0):
-                    Lck = Lpr0    # Final cake length in cm
-                    dL = Lck - Lck_prev   # Cake length dried in cm
-                    t = iStep*dt + dL/((dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)) # hr
+                    Lck = Lpr0    # Final cake length [cm]
+                    dL = Lck - Lck_prev   # Cake length dried [cm]
+                    t = iStep*dt + dL/((dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute))  # [hr]
                 else:
-                    t = (iStep+1) * dt # Time in hr
+                    t = (iStep+1) * dt # Time [hr]
 
                 # Shelf temperature
                 if t<t_setpt:
@@ -108,13 +111,18 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             ######################################################
 
-            T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1])    # Maximum product temperature in C
-            drying_time[i_Tsh,i_Pch] = t    # Total drying time in hr
+            T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1]) if output_saved.size > 0 else 0.0    # Maximum product temperature [degC]
+            drying_time[i_Tsh,i_Pch] = t    # Total drying time [hr]
             del_t = output_saved[1:,0]-output_saved[:-1,0]
-            del_t = np.append(del_t,del_t[-1])
-            sub_flux_avg[i_Tsh,i_Pch] = np.sum(output_saved[:,2]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
-            sub_flux_max[i_Tsh,i_Pch] = np.max(output_saved[:,2])    # Maximum sublimation flux in kg/hr/m^2
-            sub_flux_end[i_Tsh,i_Pch] = output_saved[-1,2]    # Sublimation flux at the end of primary drying in kg/hr/m^2
+            if del_t.size > 0:
+                del_t = np.append(del_t,del_t[-1])
+                sub_flux_avg[i_Tsh,i_Pch] = np.sum(output_saved[:,2]*del_t)/np.sum(del_t)    # Average sublimation flux [kg/hr]/m^2
+                sub_flux_max[i_Tsh,i_Pch] = np.max(output_saved[:,2])    # Maximum sublimation flux [kg/hr]/m^2
+                sub_flux_end[i_Tsh,i_Pch] = output_saved[-1,2]    # Sublimation flux at the end of primary drying [kg/hr]/m^2
+            else:
+                sub_flux_avg[i_Tsh,i_Pch] = 0.0
+                sub_flux_max[i_Tsh,i_Pch] = 0.0
+                sub_flux_end[i_Tsh,i_Pch] = 0.0
 
     ###########################################################################
 
@@ -131,12 +139,12 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
         # Initialization of time
         iStep = 0      # Time iteration number
-        t = 0.0    # Time in hr
+        t = 0.0    # Time [hr]
 
         # Initialization of cake length
-        Lck = 0.0    # Cake length in cm
+        Lck = 0.0    # Cake length [cm]
 
-        # Vial heat transfer coefficient in cal/s/K/cm^2
+        # Vial heat transfer coefficient [cal/s/K/cm**2]
         Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch) 
 
         ######################################################        
@@ -145,40 +153,45 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
         while(Lck<=Lpr0): # Dry the entire frozen product
     
-            Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
+            Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance [cm**2*hr*Torr/g]
     
-            Tsub = sp.fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp)) # Sublimation front temperature array in degC
-            dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
+            Tsub = sp.fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp)) # Sublimation front temperature array [degC]
+            dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array [kg/hr]
                 
             # Sublimated ice length
-            dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
+            dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)  # [cm]
 
             # Update record as functions of the cycle time
             if (iStep==0):
-                output_saved =np.array([[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]])
+                output_saved = np.array([[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]])
             else:
-                output_saved = np.append(output_saved, [[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]],axis=0)
+                output_saved = np.append(output_saved, [[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]], axis=0)
         
             # Advance counters
-            Lck_prev = Lck # Previous cake length in cm
-            Lck = Lck + dL # Cake length in cm
+            Lck_prev = Lck # Previous cake length [cm]
+            Lck = Lck + dL # Cake length [cm]
             if (Lck_prev < Lpr0) and (Lck > Lpr0):
-                Lck = Lpr0    # Final cake length in cm
-                dL = Lck - Lck_prev   # Cake length dried in cm
-                t = iStep*dt + dL/((dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)) # hr
+                Lck = Lpr0    # Final cake length [cm]
+                dL = Lck - Lck_prev   # Cake length dried [cm]
+                t = iStep*dt + dL/((dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute))  # [hr]
             else:
-                t = (iStep+1) * dt # Time in hr
+                t = (iStep+1) * dt # Time [hr]
 
                 iStep = iStep + 1 # Time iteration number
 
         ######################################################
 
-        drying_time_pr[j] = t    # Total drying time in hr
+        drying_time_pr[j] = t    # Total drying time [hr]
         del_t = output_saved[1:,0]-output_saved[:-1,0]
-        del_t = np.append(del_t,del_t[-1])
-        sub_flux_avg_pr[j] = np.sum(output_saved[:,1]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
-        sub_flux_min_pr[j] = np.min(output_saved[:,1])    # Minimum sublimation flux in kg/hr/m^2
-        sub_flux_end_pr[j] = output_saved[-1,1]    # Sublimation flux at the end of primary drying in kg/hr/m^2
+        if del_t.size > 0:
+            del_t = np.append(del_t,del_t[-1])
+            sub_flux_avg_pr[j] = np.sum(output_saved[:,1]*del_t)/np.sum(del_t)    # Average sublimation flux [kg/hr]/m^2
+            sub_flux_min_pr[j] = np.min(output_saved[:,1])    # Minimum sublimation flux [kg/hr]/m^2
+            sub_flux_end_pr[j] = output_saved[-1,1]    # Sublimation flux at the end of primary drying [kg/hr]/m^2
+        else:
+            sub_flux_avg_pr[j] = 0.0
+            sub_flux_min_pr[j] = 0.0
+            sub_flux_end_pr[j] = 0.0
 
     ###########################################################################
 
@@ -186,15 +199,15 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
     ############  Equipment Capability ##########
 
-    dmdt_eq_cap = eq_cap['a'] + eq_cap['b']*np.array(Pchamber['setpt'])    # Sublimation rate in kg/hr
-    sub_flux_eq_cap = dmdt_eq_cap/nVial/(vial['Ap']*constant.cm_To_m**2)    # Sublimation flux in kg/hr/m^2
+    dmdt_eq_cap = eq_cap['a'] + eq_cap['b']*np.array(Pchamber['setpt'])    # Sublimation rate [kg/hr]
+    sub_flux_eq_cap = dmdt_eq_cap/nVial/(vial['Ap']*constant.cm_To_m**2)    # Sublimation flux [kg/hr/m**2]
     
-    drying_time_eq_cap = Lpr0/((dmdt_eq_cap/nVial*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute))    # Drying time in hr
+    drying_time_eq_cap = Lpr0/((dmdt_eq_cap/nVial*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute))    # Drying time [hr]
 
-    Lck = np.linspace(0,Lpr0,100)    # Cake length in cm
-    Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])    # Product resistance in cm^2-hr-Torr/g
+    Lck = np.linspace(0,Lpr0,100)    # Cake length [cm]
+    Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])    # Product resistance [cm**2*hr*Torr/g]
     for k,Pch in enumerate(Pchamber['setpt']):
-        T_max_eq_cap[k] = functions.Tbot_max_eq_cap(Pch,dmdt_eq_cap[k],Lpr0,Lck,Rp,vial['Ap'])        # Maximum product temperature in degC
+        T_max_eq_cap[k] = functions.Tbot_max_eq_cap(Pch,dmdt_eq_cap[k],Lpr0,Lck,Rp,vial['Ap'])        # Maximum product temperature [degC]
 
     #####################################################
 

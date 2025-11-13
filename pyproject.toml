@@ -1,0 +1,83 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lyopronto"
+version = "1.0.0"
+description = "LyoPRONTO: An open-source lyophilization process optimization tool"
+readme = "README.md"
+license = {text = "GPL-3.0-or-later"}
+authors = [
+    {name = "Gayathri Shivkumar"},
+    {name = "Petr S. Kazarin"},
+    {name = "Alina A. Alexeenko"},
+    {name = "Isaac S. Wheeler"},
+]
+maintainers = [
+    {name = "Isaac S. Wheeler"},
+]
+requires-python = ">=3.8"
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "matplotlib>=3.7.0",
+    "pandas>=2.0.0",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Chemistry",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-xdist>=3.3.0",
+    "hypothesis>=6.82.0",
+    "black>=23.7.0",
+    "flake8>=6.1.0",
+    "mypy>=1.4.0",
+]
+
+[project.urls]
+Homepage = "http://lyopronto.geddes.rcac.purdue.edu"
+Repository = "https://github.com/SECQUOIA/LyoPRONTO"
+Documentation = "https://secquoia.github.io/LyoPRONTO/"
+"Bug Tracker" = "https://github.com/SECQUOIA/LyoPRONTO/issues"
+
+[tool.setuptools.packages.find]
+include = ["lyopronto*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--tb=short",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311', 'py312', 'py313']
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true

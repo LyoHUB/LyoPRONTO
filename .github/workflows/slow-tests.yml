@@ -1,0 +1,77 @@
+name: Slow Tests (Manual)
+
+# Manual workflow for running slow optimization tests
+# Useful for:
+# - Testing before merge if concerned about slow test failures
+# - Running comprehensive tests on feature branches
+# - Validating optimization behavior changes
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_all:
+        description: 'Run all tests (true) or only slow tests (false)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  slow-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.versions.outputs.result }}
+        cache: 'pip'
+        cache-dependency-path: |
+          requirements.txt
+          requirements-dev.txt
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt -r requirements-dev.txt
+        pip install -e . --no-build-isolation
+    
+    - name: Run slow tests
+      run: |
+        if [ "${{ inputs.run_all }}" == "true" ]; then
+          echo "🔍 Running ALL tests (including slow optimization tests)"
+          echo "⏱️ This may take 30-40 minutes on CI"
+          pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
+        else
+          echo "🐌 Running ONLY slow tests (marked with @pytest.mark.slow)"
+          echo "⏱️ This focuses on optimization tests that take minutes"
+          pytest tests/ -n auto -v -m "slow" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+        fi
+    
+    - name: Upload coverage
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: slow-tests
+        name: slow-tests-coverage
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}
+    
+    - name: Test Summary
+      if: always()
+      run: |
+        if [ "${{ inputs.run_all }}" == "true" ]; then
+          echo "✅ Complete test suite finished"
+        else
+          echo "🐌 Slow tests completed"
+        fi
+        echo "📊 Coverage uploaded to Codecov"

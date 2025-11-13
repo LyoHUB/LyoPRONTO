@@ -16,14 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import sys
 import scipy.optimize as sp
 import numpy as np
+import math
 import csv
-import matplotlib.pyplot as plt
-from matplotlib import rc as matplotlibrc
-import time
 
-# from lyopronto.calc_unknownRp import dry
+# from lyopronto.calc_knownRp import dry
 
 from lyopronto import *
 # from . import constant
@@ -36,6 +35,9 @@ from lyopronto import *
 # from . import opt_Tsh
 # from . import functions
 
+import matplotlib.pyplot as plt
+from matplotlib import rc as matplotlibrc
+import time
 
 current_time = time.strftime("%y%m%d_%H%M",time.localtime())
 
@@ -43,41 +45,52 @@ current_time = time.strftime("%y%m%d_%H%M",time.localtime())
 
 ######################## Inputs ########################
 
-sim = dict([('tool','Primary Drying Calculator'),('Kv_known','Y'),('Rp_known','N'),('Variable_Pch','N'),('Variable_Tsh','N')])
+# Simulation type
+# 4 Tools available: 'Freezing Calculator', 'Primary Drying Calculator', 'Design-Space-Generator', 'Optimizer'
+# For 'Freezing Calculator': h_freezeing, Tpr0, Tf and Tn must be provided
+#                 No Variable Tsh - set point must be specified
+# For 'Primary Drying Calculator': If Kv and Rp are known, drying time can be determined
+#            If drying time and Rp are known, Kv can be determined
+#            If Kv and product temperature are known, Rp can be determined
+#            No Variable Pch and Tsh - set points must be specified
+# For 'Design-Space-Generator': Kv and Rp must be known, Tpr_crit must be provided
+#                No Variable Pch and Tsh - set points must be specified
+# For 'Optimizer': Kv and Rp must be known, Tpr_crit must be provided
+#           Can use variable Pch and/or Tsh
+sim = dict([('tool','Primary Drying Calculator'),('Kv_known','Y'),('Rp_known','Y'),('Variable_Pch','N'),('Variable_Tsh','N')])
 
 # Vial and fill properties
-# Av = Vial area in cm^2
-# Ap = Product Area in cm^2
-# Vfill = Fill volume in mL
+# Av = Vial area [cm**2]
+# Ap = Product Area [cm**2]
+# Vfill = Fill volume [mL]
 vial = dict([('Av',3.80),('Ap',3.14),('Vfill',2.0)])
 
 #Product properties
 # cSolid = Fractional concentration of solute in the frozen solution
-# Tpr0 = Initial product temperature for freezing in degC
-# Tf = Freezing temperature in degC
-# Tn = Nucleation temperature in degC
+# Tpr0 = Initial product temperature for freezing [degC]
+# Tf = Freezing temperature [degC]
+# Tn = Nucleation temperature [degC]
 # Product Resistance Parameters
-# R0 in cm^2-hr-Torr/g, A1 in cm-hr-Torr/g, A2 in 1/cm
-product = dict([('cSolid',0.05)])
-# Experimental product temperature measurements: format - t(hr), Tp(C)
-product_temp_filename = './temperature.dat'
+# R0 [cm**2*hr*Torr/g], A1 [cm*hr*Torr/g], A2 [1/cm]
+product = dict([('cSolid',0.05),('R0',1.4),('A1',16.0),('A2',0.0)])
+
 # Critical product temperature
 # At least 2 to 3 deg C below collapse or glass transition temperature
-product['T_pr_crit'] = -5        # in degC
+product['T_pr_crit'] = -5        # [degC]
 
 # Vial Heat Transfer Parameters
-# Kv = KC + KP*Pch/(1+KD*Pch) 
-# KC in cal/s/K/cm^2, KP in cal/s/K/cm^2/Torr, KD in 1/Torr
 ht = dict([('KC',2.75e-4),('KP',8.93e-4),('KD',0.46)])
 
 # Chamber Pressure
+# setpt = Chamber pressure set points in Torr
+# dt_setpt = Time for which chamber pressure set points are held [min]
+# ramp_rate = Chamber pressure ramping rate in Torr/min
 Pchamber = dict([('setpt',[0.15]),('dt_setpt',[1800.0]),('ramp_rate',0.5)])
 
-# Shelf Temperature
-# init = Intial shelf temperature in C
-# setpt = Shelf temperature set points in C
-# dt_setpt = Time for which shelf temperature set points are held in min
-# ramp_rate = Shelf temperature ramping rate in C/min
+# init = Intial shelf temperature [degC]
+# setpt = Shelf temperature set points [degC]
+# dt_setpt = Time for which shelf temperature set points are held [min]
+# ramp_rate = Shelf temperature ramping rate [degC/min]
 Tshelf = dict([('init',-35.0),('setpt',[20.0]),('dt_setpt',[1800.0]),('ramp_rate',1.0)])
 
 # Time step
@@ -85,7 +98,7 @@ dt = 0.01    # hr
 
 # Lyophilizer equipment capability
 # Form: dm/dt [kg/hr] = a + b * Pch [Torr]
-# a in kg/hr, b in kg/hr/Torr 
+# a [kg/hr], b [kg/hr/Torr] 
 eq_cap = dict([('a',-0.182),('b',0.0117e3)])
 
 # Equipment load
@@ -98,80 +111,94 @@ nVial = 398    # Number of vials
 # Write data to files
 #save input_saved.csv
 
-# csvfile = open('input_saved_'+current_time+'.csv', 'w')
+csvfile = open('input_saved_'+current_time+'.csv', 'w')
 
-# try:
-#     writer = csv.writer(csvfile)
-#     writer.writerow(['Tool:',sim['tool']])
-#     writer.writerow(['Kv known?:',sim['Kv_known']])
-#     writer.writerow(['Rp known?:',sim['Rp_known']])
-#     writer.writerow(['Variable Pch?:',sim['Variable_Pch']])
-#     writer.writerow(['Variable Tsh?:',sim['Variable_Tsh']])
-#     writer.writerow([''])
+try:
+    writer = csv.writer(csvfile)
+    writer.writerow(['Tool:',sim['tool']])
+    writer.writerow(['Kv known?:',sim['Kv_known']])
+    writer.writerow(['Rp known?:',sim['Rp_known']])
+    writer.writerow(['Variable Pch?:',sim['Variable_Pch']])
+    writer.writerow(['Variable Tsh?:',sim['Variable_Tsh']])
+    writer.writerow([''])
     
-#     writer.writerow(['Vial area [cm^2]',vial['Av']])
-#     writer.writerow(['Product area [cm^2]',vial['Ap']])
-#     writer.writerow(['Vial fill volume [mL]',vial['Vfill']])
-#     writer.writerow([''])
+    writer.writerow(['Vial area [cm^2]',vial['Av']])
+    writer.writerow(['Product area [cm^2]',vial['Ap']])
+    writer.writerow(['Vial fill volume [mL]',vial['Vfill']])
+    writer.writerow([''])
     
-#     writer.writerow(['Fractional solute concentration:',product['cSolid']])
-#     writer.writerow(['Critical product temperature [C]:', product['T_pr_crit']])
-#     writer.writerow([''])
+    writer.writerow(['Fractional solute concentration:',product['cSolid']])
+    if sim['tool'] == 'Freezing Calculator':
+        writer.writerow(['Intial product temperature [C]:',product['Tpr0']])
+        writer.writerow(['Freezing temperature [C]:',product['Tf']])
+        writer.writerow(['Nucleation temperature [C]:',product['Tn']])
+    elif not(sim['tool'] == 'Primary Drying Calculator' and sim['Rp_known'] == 'N'):
+        writer.writerow(['R0 [cm^2-hr-Torr/g]:',product['R0']])
+        writer.writerow(['A1 [cm-hr-Torr/g]:',product['A1']])
+        writer.writerow(['A2 [1/cm]:',product['A2']])
+    if not(sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
+        writer.writerow(['Critical product temperature [C]:', product['T_pr_crit']])
+    writer.writerow([''])
     
-#     writer.writerow(['KC [cal/s/K/cm^2]:',ht['KC']])
-#     writer.writerow(['KP [cal/s/K/cm^2/Torr]:',ht['KP']])
-#     writer.writerow(['KD [1/Torr]:',ht['KD']])
-#     writer.writerow([''])
+    if sim['tool'] == 'Freezing Calculator':
+        writer.writerow(['h_freezing [W/m^2/K]:',h_freezing])
+    elif sim['Kv_known'] == 'Y':
+        writer.writerow(['KC [cal/s/K/cm^2]:',ht['KC']])
+        writer.writerow(['KP [cal/s/K/cm^2/Torr]:',ht['KP']])
+        writer.writerow(['KD [1/Torr]:',ht['KD']])
+    elif sim['Kv_known'] == 'N':
+        writer.writerow(['Kv range [cal/s/K/cm^2]:',Kv_range[:]])
+        writer.writerow(['Experimental drying time [hr]:',t_dry_exp])
+    writer.writerow([''])
     
-#     for i in range(len(Pchamber['setpt'])):
-#         writer.writerow(['Chamber pressure setpoint [Torr]:',Pchamber['setpt'][i],'Duration [min]:',Pchamber['dt_setpt'][i]])
-#     writer.writerow(['Chamber pressure ramping rate [Torr/min]:',Pchamber['ramp_rate']])
-#     writer.writerow([''])
+    if sim['tool'] == 'Freezing Calculator':
+        0
+    elif sim['tool'] == 'Design-Space-Generator':
+        writer.writerow(['Chamber pressure set points [Torr]:',Pchamber['setpt'][:]])
+    elif not(sim['tool'] == 'Optimizer' and sim['Variable_Pch'] == 'Y'):
+        for i in range(len(Pchamber['setpt'])):
+            writer.writerow(['Chamber pressure setpoint [Torr]:',Pchamber['setpt'][i],'Duration [min]:',Pchamber['dt_setpt'][i]])
+        writer.writerow(['Chamber pressure ramping rate [Torr/min]:',Pchamber['ramp_rate']])
+    else:
+        writer.writerow(['Minimum chamber pressure [Torr]:',Pchamber['min']])
+        writer.writerow(['Maximum chamber pressure [Torr]:',Pchamber['max']])
+    writer.writerow([''])
     
-#     for i in range(len(Tshelf['setpt'])):
-#         writer.writerow(['Shelf temperature setpoint [C]:',Tshelf['setpt'][i],'Duration [min]:',Tshelf['dt_setpt'][i]])
-#     writer.writerow(['Shelf temperature ramping rate [C/min]:',Tshelf['ramp_rate']])
-#     writer.writerow([''])
+    if sim['tool'] == 'Design-Space-Generator':
+        writer.writerow(['Intial shelf temperature [C]:',Tshelf['init']])
+        writer.writerow(['Shelf temperature set points [C]:',Tshelf['setpt'][:]])
+        writer.writerow(['Shelf temperature ramping rate [C/min]:',Tshelf['ramp_rate']])
+    elif not(sim['tool'] == 'Optimizer' and sim['Variable_Tsh'] == 'Y'):
+        for i in range(len(Tshelf['setpt'])):
+            writer.writerow(['Shelf temperature setpoint [C]:',Tshelf['setpt'][i],'Duration [min]:',Tshelf['dt_setpt'][i]])
+        writer.writerow(['Shelf temperature ramping rate [C/min]:',Tshelf['ramp_rate']])
+    else:
+        writer.writerow(['Minimum shelf temperature [C]:',Tshelf['min']])
+        writer.writerow(['Maximum shelf temperature [C]:',Tshelf['max']])
+    writer.writerow([''])
     
-#     writer.writerow(['Time step [hr]:',dt])
-#     writer.writerow([''])
+    writer.writerow(['Time step [hr]:',dt])
+    writer.writerow([''])
     
-#     writer.writerow(['Equipment capability parameters:','a [kg/hr]:',eq_cap['a'],'b [kg/hr/Torr]:',eq_cap['b']])
-#     writer.writerow(['Number of vials:',nVial])    
+    if not (sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
+        writer.writerow(['Equipment capability parameters:','a [kg/hr]:',eq_cap['a'],'b [kg/hr/Torr]:',eq_cap['b']])
+        writer.writerow(['Number of vials:',nVial])    
 
-# finally:
-#     csvfile.close()
+finally:
+    csvfile.close()
     
+########################################################
 
 ################### Execute  ##########################
 
+#################
+
+#################
 
 ###### Primary Drying Calculator Tool
 
 #### Known Kv and Rp
-#### Determine Rp based on product temperature
-
-## Load temperature file
-# time = []
-# Tbot_exp = []
-# with open(product_temp_filename) as fi:
-#     for line in fi:
-#         line_string = np.fromstring(line,sep=' ')
-#         time = np.append(time,line_string[0])
-#         Tbot_exp = np.append(Tbot_exp,line_string[1])
-# fi.close()
-dat = np.loadtxt(product_temp_filename)
-time = dat[:,1]
-Tbot_exp = dat[:,2]
-
-output_saved, product_res = dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp)
-params,params_covariance = sp.curve_fit(lambda h,r,a1,a2: r+h*a1/(1+h*a2),product_res[:,1],product_res[:,2],p0=[1.0,0.0,0.0])
-print("R0 = "+str(params[0])+"\n")
-print("A1 = "+str(params[1])+"\n")
-print("A2 = "+str(params[2])+"\n")
-#################
-
-##########################
+output_saved = calc_knownRp.dry(vial,product,ht,Pchamber,Tshelf,dt)
 
 # LaTeX setup
 matplotlibrc('text.latex', preamble=r'\usepackage{color}')
@@ -198,12 +225,12 @@ Color_list = ['b','m','g','c','r','y','k']    # Line colors
 csvfile = open('output_saved_'+current_time+'.csv', 'w')
 
 try:
-        writer = csv.writer(csvfile)
-        writer.writerow(['Time [hr]','Sublimation Temperature [C]','Vial Bottom Temperature [C]', 'Shelf Temperature [C]','Chamber Pressure [mTorr]','Sublimation Flux [kg/hr/m^2]','Percent Dried'])
-        for i in range(0,len(output_saved)):
-            writer.writerow(output_saved[i])
+    writer = csv.writer(csvfile)
+    writer.writerow(['Time [hr]','Sublimation Temperature [C]','Vial Bottom Temperature [C]', 'Shelf Temperature [C]','Chamber Pressure [mTorr]','Sublimation Flux [kg/hr/m^2]','Percent Dried'])
+    for i in range(0,len(output_saved)):
+        writer.writerow(output_saved[i])
 finally:
-        csvfile.close()
+    csvfile.close()
 
 fig = plt.figure(0,figsize=(figwidth,figheight))
 ax1 = fig.add_subplot(1,1,1)

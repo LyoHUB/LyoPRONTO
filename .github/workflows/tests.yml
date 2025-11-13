@@ -1,0 +1,55 @@
+name: Main Branch Tests
+
+# Full tests with coverage for main branch
+# (PRs are handled by pr-tests.yml)
+
+on:
+  push:
+    branches: [ main, dev-pyomo ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.versions.outputs.result }}
+        cache: 'pip'
+        cache-dependency-path: |
+          requirements.txt
+          requirements-dev.txt
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt -r requirements-dev.txt
+        pip install -e . --no-build-isolation
+    
+    - name: Run ALL tests with pytest and coverage (including slow tests)
+      run: |
+        echo "🔍 Running complete test suite including slow tests"
+        echo "⏱️ This may take 30-40 minutes on CI (includes optimization tests)"
+        pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}
+    
+    - name: Coverage Summary
+      if: always()
+      run: |
+        echo "✅ Full coverage tests completed for main branch"
+        echo "📊 Coverage metrics updated in Codecov"
