@@ -9,6 +9,7 @@ plugins:
     - mike:
         version_selector: true
         canonical_version: latest
+    - ipynb
 extra:
     version:
         provider: mike
@@ -18,6 +19,7 @@ nav:
     - index.md
     - tutorials.md
     - how-to-guides.md
+        - ex_knownRp_PD.py
     - explanation.md
     - reference.md
 
