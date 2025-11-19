@@ -569,6 +569,7 @@ dt = 0.01    # hr
 #     csvfile.close()
 </code></pre>
 <p>Finally, it's a good idea to plot everything. Here, again, you could save plots to disk by uncommenting the lines below.</p>
+<p>Some default styling of the axes is carried out with <code>lyopronto.plot_styling.axis_style_*</code>, like turning on minor ticks and setting tick labels to be bold. However, this is entirely up to aesthetic taste and leaving it out does not affect the basic logic of the plots.</p>
 <pre><code class="language-python">matplotlibrc('text.latex', preamble=r'\usepackage{color}')
 matplotlibrc('text',usetex=False)
 plt.rcParams['font.family'] = 'Arial'
@@ -592,7 +593,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/0790424d121f4af586677a6a25ac6db6.png" /></p>
+<p><img alt="img" src="../_data/7780e4d3f06240b9b59ecd7859d65f97.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 lp.plot_styling.axis_style_percdried(ax)
@@ -602,7 +603,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/5855158c01884215ad5d20caa2759e15.png" /></p>
+<p><img alt="img" src="../_data/c64c43b3035e44dfa5fec716949daa5e.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 lp.plot_styling.axis_style_temperature(ax)
@@ -617,7 +618,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/eb95c7c61a274acabb5778eef2912881.png" /></p>
+<p><img alt="img" src="../_data/4625ac8dc69e4353ac8f3c2bd445eb1f.png" /></p>
 
 
 
