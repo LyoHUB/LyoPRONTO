@@ -23,7 +23,7 @@
     
     
       
-        <title>Fitting Unknown $R_p$ to Process Data - LyoPRONTO Documentation</title>
+        <title>Fitting Unknown Rp to Process Data - LyoPRONTO Documentation</title>
       
     
     
@@ -66,7 +66,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#fitting-unknown-r_p-to-process-data" class="md-skip">
+        <a href="#fitting-unknown-rp-to-process-data" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +106,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Fitting Unknown $R_p$ to Process Data
+              Fitting Unknown Rp to Process Data
             
           </span>
         </div>
@@ -336,7 +336,7 @@
   <span class="md-ellipsis">
     
   
-    Fitting Unknown $R_p$ to Process Data
+    Fitting Unknown Rp to Process Data
   
 
     
@@ -447,7 +447,7 @@
 
 
 
-<h1 id="fitting-unknown-r_p-to-process-data">Fitting Unknown $R_p$ to Process Data</h1>
+<h1 id="fitting-unknown-rp-to-process-data">Fitting Unknown Rp to Process Data</h1>
 <pre><code class="language-python"># Since this is running in a Jupyter notebook, need to help it find LyoPRONTO
 # For the documentation, the path is nearby.
 # If you have already installed LyoPRONTO as a Python package,
@@ -606,31 +606,19 @@ matplotlibrc('font',family='Arial')
 figwidth = 30
 figheight = 20
 lineWidth = 5
-textFontSize = 60
-gcafontSize = 60
 markerSize = 20
-labelPad = 30
-majorTickWidth = 5
-minorTickWidth = 3
-majorTickLength = 30
-minorTickLength = 20
-
-Color_list = ['b','m','g','c','r','y','k']    # Line colors
-
-# Write data to files
-#save output_saved.csv
-# Plot data and save figures
-# csvfile = open('output_saved_'+current_time+'.csv', 'w')
-
-# try:
-#         writer = csv.writer(csvfile)
-#         writer.writerow(['Time [hr]','Sublimation Temperature [C]','Vial Bottom Temperature [C]', 'Shelf Temperature [C]','Chamber Pressure [mTorr]','Sublimation Flux [kg/hr/m^2]','Percent Dried'])
-#         for i in range(0,len(output_saved)):
-#             writer.writerow(output_saved[i])
-# finally:
-#         csvfile.close()
-
-fig = plt.figure(0,figsize=(figwidth,figheight))
+</code></pre>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
+ax = fig.add_subplot(111)
+plot_styling.axis_style_rp(ax)
+ax.plot(product_res[:,1],product_res[:,2],'o', markevery=5, markersize=markerSize,label='$R_p$ from Temperature Data')
+ax.plot(product_res[:,1],params[0]+product_res[:,1]*params[1]/(1+product_res[:,1]*params[2]),'-',linewidth=lineWidth,label='Fitted $R_p$')
+plt.legend(fontsize=40, loc='best')
+</code></pre>
+<pre><code>&lt;matplotlib.legend.Legend at 0x2305ecba990&gt;
+</code></pre>
+<p><img alt="img" src="../_data/f50a8e574a5445b094b01f21d8356a8e.png" /></p>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
 plt.axes(ax1)
@@ -659,7 +647,18 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/a7520c08492c44a98bd2af9810319798.png" /></p>
+<pre><code class="language-python">---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+Cell In[6], line 8
+      6 plt.axes(ax2)
+      7 plt.minorticks_on()
+----&gt; 8 plt.setp(ax1.get_xticklabels(),fontsize=gcafontSize,fontweight='bold',)
+      9 plt.setp(ax1.get_yticklabels(),fontsize=gcafontSize,color='b',fontweight='bold',)
+     10 plt.setp(ax2.get_yticklabels(),fontsize=gcafontSize,color=[0,0.7,0.3],fontweight='bold',)
+
+NameError: name 'gcafontSize' is not defined
+</code></pre>
+<p><img alt="img" src="../_data/6eb5d2f39c7245d3837a53a393c9fe7f.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 plt.axes(ax)
@@ -680,7 +679,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/edf2d39ebdf64fbd8a3d9e7782f4028f.png" /></p>
+<p><img alt="img" src="../_data/149189d8d5cc473197ff464de57714de.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 plt.axes(ax)
@@ -707,7 +706,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/b2502ca1917847fc824c396092f053e1.png" /></p>
+<p><img alt="img" src="../_data/d0e7162e4f8b400eb72ab39c62f7588e.png" /></p>
 
 
 
