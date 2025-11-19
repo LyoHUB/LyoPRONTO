@@ -27,4 +27,4 @@ jobs:
         uses: actions/setup-python@v4
       - run: pip install ruamel.yaml scipy numpy matplotlib papermill
       - name: Run notebooks
-        run: papermill docs/examples/${{ matrix.notebook }} docs/examples/${{ matrix.notebook }}; done
+        run: papermill docs/examples/${{ matrix.notebook }} docs/examples/${{ matrix.notebook }}
