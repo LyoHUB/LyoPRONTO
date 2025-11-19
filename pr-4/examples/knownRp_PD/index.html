@@ -1,0 +1,630 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>knownRp PD - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              knownRp PD
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LyoPRONTO: Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides.md - ex_knownRp_PD.py" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    None
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Explanations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Full listing of all docstrings by module
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>knownRp PD</h1>
+
+<pre><code class="language-python"># Since this is running in a Jupyter notebook, need to help it find LyoPRONTO
+# For the documentation, the path is nearby.
+# If you have already installed LyoPRONTO as a Python package,
+# this should be unnecessary.
+import sys
+sys.path.append('../../')
+
+from lyopronto import *
+</code></pre>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+from matplotlib import rc as matplotlibrc
+import time
+</code></pre>
+<pre><code class="language-python">sim = dict([('tool','Primary Drying Calculator'),('Kv_known','Y'),('Rp_known','Y'),('Variable_Pch','N'),('Variable_Tsh','N')])
+
+# Vial and fill properties
+# Av = Vial area in cm^2
+# Ap = Product Area in cm^2
+# Vfill = Fill volume in mL
+vial = dict([('Av',3.80),('Ap',3.14),('Vfill',2.0)])
+</code></pre>
+<p>Info on product properties here.</p>
+<pre><code class="language-python"># Product properties
+# cSolid = Fractional concentration of solute in the frozen solution
+# Product Resistance Parameters
+# R0 in cm^2-hr-Torr/g, A1 in cm-hr-Torr/g, A2 in 1/cm
+product = dict([('cSolid',0.05),('R0',1.4),('A1',16.0),('A2',0.0)])
+
+# Critical product temperature
+# At least 2 to 3 deg C below collapse or glass transition temperature
+product['T_pr_crit'] = -5        # in degC
+</code></pre>
+<pre><code class="language-python"># Vial Heat Transfer Parameters
+ht = dict([('KC',2.75e-4),('KP',8.93e-4),('KD',0.46)])
+
+# Chamber Pressure
+# setpt = Chamber pressure set points in Torr
+# dt_setpt = Time for which chamber pressure set points are held in min
+# ramp_rate = Chamber pressure ramping rate in Torr/min
+Pchamber = dict([('setpt',[0.15]),('dt_setpt',[1800.0]),('ramp_rate',0.5)])
+
+# init = Intial shelf temperature in C
+# setpt = Shelf temperature set points in C
+# dt_setpt = Time for which shelf temperature set points are held in min
+# ramp_rate = Shelf temperature ramping rate in C/min
+Tshelf = dict([('init',-35.0),('setpt',[20.0]),('dt_setpt',[1800.0]),('ramp_rate',1.0)])
+
+# Time step
+dt = 0.01    # hr
+
+# Lyophilizer equipment capability
+# Form: dm/dt [kg/hr] = a + b * Pch [Torr]
+# a in kg/hr, b in kg/hr/Torr 
+eq_cap = dict([('a',-0.182),('b',0.0117e3)])
+
+# Equipment load
+nVial = 398    # Number of vials
+</code></pre>
+<pre><code class="language-python">########################################################
+
+#################### Input file saved ##################
+
+# Write data to files
+#save input_saved.csv
+
+
+# csvfile = open('input_saved_'+current_time+'.csv', 'w')
+
+# try:
+#     writer = csv.writer(csvfile)
+#     writer.writerow(['Tool:',sim['tool']])
+#     writer.writerow(['Kv known?:',sim['Kv_known']])
+#     writer.writerow(['Rp known?:',sim['Rp_known']])
+#     writer.writerow(['Variable Pch?:',sim['Variable_Pch']])
+#     writer.writerow(['Variable Tsh?:',sim['Variable_Tsh']])
+#     writer.writerow([''])
+
+#     writer.writerow(['Vial area [cm^2]',vial['Av']])
+#     writer.writerow(['Product area [cm^2]',vial['Ap']])
+#     writer.writerow(['Vial fill volume [mL]',vial['Vfill']])
+#     writer.writerow([''])
+
+#     writer.writerow(['Fractional solute concentration:',product['cSolid']])
+#     if sim['tool'] == 'Freezing Calculator':
+#         writer.writerow(['Intial product temperature [C]:',product['Tpr0']])
+#         writer.writerow(['Freezing temperature [C]:',product['Tf']])
+#         writer.writerow(['Nucleation temperature [C]:',product['Tn']])
+#     elif not(sim['tool'] == 'Primary Drying Calculator' and sim['Rp_known'] == 'N'):
+#         writer.writerow(['R0 [cm^2-hr-Torr/g]:',product['R0']])
+#         writer.writerow(['A1 [cm-hr-Torr/g]:',product['A1']])
+#         writer.writerow(['A2 [1/cm]:',product['A2']])
+#     if not(sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
+#         writer.writerow(['Critical product temperature [C]:', product['T_pr_crit']])
+#     writer.writerow([''])
+
+#     if sim['tool'] == 'Freezing Calculator':
+#         writer.writerow(['h_freezing [W/m^2/K]:',h_freezing])
+#     elif sim['Kv_known'] == 'Y':
+#         writer.writerow(['KC [cal/s/K/cm^2]:',ht['KC']])
+#         writer.writerow(['KP [cal/s/K/cm^2/Torr]:',ht['KP']])
+#         writer.writerow(['KD [1/Torr]:',ht['KD']])
+#     elif sim['Kv_known'] == 'N':
+#         writer.writerow(['Kv range [cal/s/K/cm^2]:',Kv_range[:]])
+#         writer.writerow(['Experimental drying time [hr]:',t_dry_exp])
+#     writer.writerow([''])
+
+#     if sim['tool'] == 'Freezing Calculator':
+#         0
+#     elif sim['tool'] == 'Design-Space-Generator':
+#         writer.writerow(['Chamber pressure set points [Torr]:',Pchamber['setpt'][:]])
+#     elif not(sim['tool'] == 'Optimizer' and sim['Variable_Pch'] == 'Y'):
+#         for i in range(len(Pchamber['setpt'])):
+#             writer.writerow(['Chamber pressure setpoint [Torr]:',Pchamber['setpt'][i],'Duration [min]:',Pchamber['dt_setpt'][i]])
+#         writer.writerow(['Chamber pressure ramping rate [Torr/min]:',Pchamber['ramp_rate']])
+#     else:
+#         writer.writerow(['Minimum chamber pressure [Torr]:',Pchamber['min']])
+#         writer.writerow(['Maximum chamber pressure [Torr]:',Pchamber['max']])
+#     writer.writerow([''])
+
+#     if sim['tool'] == 'Design-Space-Generator':
+#         writer.writerow(['Intial shelf temperature [C]:',Tshelf['init']])
+#         writer.writerow(['Shelf temperature set points [C]:',Tshelf['setpt'][:]])
+#         writer.writerow(['Shelf temperature ramping rate [C/min]:',Tshelf['ramp_rate']])
+#     elif not(sim['tool'] == 'Optimizer' and sim['Variable_Tsh'] == 'Y'):
+#         for i in range(len(Tshelf['setpt'])):
+#             writer.writerow(['Shelf temperature setpoint [C]:',Tshelf['setpt'][i],'Duration [min]:',Tshelf['dt_setpt'][i]])
+#         writer.writerow(['Shelf temperature ramping rate [C/min]:',Tshelf['ramp_rate']])
+#     else:
+#         writer.writerow(['Minimum shelf temperature [C]:',Tshelf['min']])
+#         writer.writerow(['Maximum shelf temperature [C]:',Tshelf['max']])
+#     writer.writerow([''])
+
+#     writer.writerow(['Time step [hr]:',dt])
+#     writer.writerow([''])
+
+#     if not (sim['tool'] == 'Freezing Calculator' and sim['tool'] == 'Primary Drying Calculator'):
+#         writer.writerow(['Equipment capability parameters:','a [kg/hr]:',eq_cap['a'],'b [kg/hr/Torr]:',eq_cap['b']])
+#         writer.writerow(['Number of vials:',nVial])    
+
+# finally:
+#     csvfile.close()
+</code></pre>
+<pre><code class="language-python">output_saved = calc_knownRp.dry(vial,product,ht,Pchamber,Tshelf,dt)
+</code></pre>
+<pre><code class="language-python">matplotlibrc('text.latex', preamble=r'\usepackage{color}')
+matplotlibrc('text',usetex=False)
+plt.rcParams['font.family'] = 'Arial'
+
+figwidth = 30
+figheight = 20
+lineWidth = 5
+textFontSize = 60
+gcafontSize = 60
+markerSize = 20
+labelPad = 30
+majorTickWidth = 5
+minorTickWidth = 3
+majorTickLength = 30
+minorTickLength = 20
+
+Color_list = ['b','m','g','c','r','y','k']    # Line colors
+
+# Write data to files
+#save output_saved.csv
+# Plot data and save figures
+# csvfile = open('output_saved_'+current_time+'.csv', 'w')
+
+# try:
+#     writer = csv.writer(csvfile)
+#     writer.writerow(['Time [hr]','Sublimation Temperature [C]','Vial Bottom Temperature [C]', 'Shelf Temperature [C]','Chamber Pressure [mTorr]','Sublimation Flux [kg/hr/m^2]','Percent Dried'])
+#     for i in range(0,len(output_saved)):
+#         writer.writerow(output_saved[i])
+# finally:
+#     csvfile.close()
+</code></pre>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
+ax1 = fig.add_subplot(1,1,1)
+ax2 = ax1.twinx()
+plt.axes(ax1)
+plt.minorticks_on()
+plt.axes(ax2)
+plt.minorticks_on()
+plt.setp(ax1.get_xticklabels(),fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+plt.setp(ax1.get_yticklabels(),fontsize=gcafontSize,color='b',fontweight='bold',fontname=&quot;Arial&quot;)
+plt.setp(ax2.get_yticklabels(),fontsize=gcafontSize,color=[0,0.7,0.3],fontweight='bold',fontname=&quot;Arial&quot;)
+ax1.tick_params(axis='x',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
+ax1.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,color='b')
+ax2.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,color=[0,0.7,0.3])
+ax1.tick_params(axis='x',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,bottom=1,top=0)
+ax1.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,color='b')
+ax2.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,color=[0,0.7,0.3])
+ax1.plot(output_saved[:,0],output_saved[:,4],'-o',color='b',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Chamber Pressure&quot;)
+ax1.set_xlabel(&quot;Time [hr]&quot;,fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+ax1.set_ylabel(&quot;Chamber Pressure [mTorr]&quot;,fontsize=gcafontSize,color='b',fontweight='bold',fontname=&quot;Arial&quot;)
+ax2.plot(output_saved[:,0],output_saved[:,5],'-',color=[0,0.7,0.3],linewidth=lineWidth, label = &quot;Sublimation Flux&quot;)
+ax2.set_ylabel(&quot;Sublimation Flux [kg/hr/m$^2$]&quot;,fontsize=gcafontSize,color=[0,0.7,0.3],fontweight='bold',fontname=&quot;Arial&quot;)
+ax1.xaxis.labelpad = labelPad
+ax1.yaxis.labelpad = labelPad
+ax2.yaxis.labelpad = labelPad
+plt.tight_layout()
+# figure_name = 'Pressure,SublimationFlux_'+current_time+'.pdf'
+# plt.savefig(figure_name)
+# plt.close()
+</code></pre>
+<p><img alt="img" src="../_data/cac87f5faf4246e3a0e3b61ff884606a.png" /></p>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
+ax = fig.add_subplot(1,1,1)
+plt.axes(ax)
+plt.minorticks_on()
+plt.setp(ax.get_xticklabels(),fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+plt.setp(ax.get_yticklabels(),fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+ax.tick_params(axis='x',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
+ax.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,left=1,right=0)
+ax.tick_params(axis='x',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,bottom=1,top=0)
+ax.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,left=1,right=0)
+ax.plot(output_saved[:,0],output_saved[:,-1],'-k',linewidth=lineWidth, label = &quot;Percent Dried&quot;)
+ax.set_xlabel(&quot;Time [hr]&quot;,fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+ax.set_ylabel(&quot;Percent Dried&quot;,fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+ax.xaxis.labelpad = labelPad
+ax.yaxis.labelpad = labelPad
+plt.tight_layout()
+# figure_name = 'PercentDried_'+current_time+'.pdf'
+# plt.savefig(figure_name)
+# plt.close()
+</code></pre>
+<p><img alt="img" src="../_data/ccf6d636bfa4439d91758c472bd6daf3.png" /></p>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
+ax = fig.add_subplot(1,1,1)
+plt.axes(ax)
+plt.minorticks_on()
+plt.setp(ax.get_xticklabels(),fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+plt.setp(ax.get_yticklabels(),fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+ax.tick_params(axis='x',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
+ax.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,left=1,right=0)
+ax.tick_params(axis='x',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,bottom=1,top=0)
+ax.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,left=1,right=0)
+ax.plot(output_saved[:,0],output_saved[:,1],'-b',linewidth=lineWidth, label = &quot;Sublimation Front Temperature&quot;)
+ax.plot(output_saved[:,0],output_saved[:,2],'-r',linewidth=lineWidth, label = &quot;Maximum Product Temperature&quot;)
+ax.plot(output_saved[:,0],output_saved[:,3],'-o',color='k',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Shelf Temperature&quot;)
+ax.set_xlabel(&quot;Time [hr]&quot;,fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+ax.set_ylabel(&quot;Temperature [C]&quot;,fontsize=gcafontSize,fontweight='bold',fontname=&quot;Arial&quot;)
+ax.xaxis.labelpad = labelPad
+ax.yaxis.labelpad = labelPad
+handles, labels = ax.get_legend_handles_labels()
+plt.legend(handles, labels, prop={'size':40},loc='best')
+ll,ul = ax.get_ylim()
+ax.set_ylim([ll,ul+5.0])
+plt.tight_layout()
+# figure_name = 'Temperatures_'+current_time+'.pdf'
+# plt.savefig(figure_name)
+# plt.close()
+</code></pre>
+<p><img alt="img" src="../_data/22346c9ddc5d498da07050daedd8bae4.png" /></p>
+<pre><code class="language-python">
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
