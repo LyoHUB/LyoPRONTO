@@ -1,0 +1,32 @@
+name: Publish docs to GitHub Pages
+on:
+  # For drafting purposes, build a docs version for each new PR.
+  # Will have to be manually deleted later with `mike delete pr-####` from a local CLI
+  pull_request:
+  # On pushing to master, rebuild docs with current version number and push as "dev"
+  push:
+    branches:
+      - main
+    
+jobs:
+  docdeploy:
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GIT_COMMITTER_NAME: ${{ github.actor }}
+      GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
+
+    name: Run docs as if as doctest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - run: pip install ruamel.yaml scipy numpy matplotlib
+      - uses: yaananth/run-notebook@v2
+        env:
+          RUNNER: ${{ toJson(runner) }}
+          SECRETS: ${{ toJson(secrets) }}
+          GITHUB: ${{ toJson(github) }}
+        with:
+          notebook: "docs/example/knownRp_PD.ipynb"
+      # Deploy docs according to type of event
