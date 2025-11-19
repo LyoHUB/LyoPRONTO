@@ -138,5 +138,30 @@ def axis_style_temperature(
         labelPad = labelPad,
     )
     
+def axis_style_rp(
+        ax,
+        gcafontSize = 60,
+        labelPad = 30,
+        color = 'k',
+        majorTickWidth = 5,
+        minorTickWidth = 3,
+        majorTickLength = 30,
+        minorTickLength = 20,
+    ):  
+    """ Function to set styling for axes, with dry layer height on x and product resistance on y """
+
+    ax.set_xlabel("Dry Layer Height [cm]",fontsize=gcafontSize,fontweight='bold',fontname="Arial")
+    ax.set_ylabel('Product Resistance [cm$^2$ hr Torr/g]',fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
+
+    axis_tick_styling(
+        ax,
+        color = color,
+        gcafontSize = gcafontSize,
+        majorTickWidth = majorTickWidth,
+        minorTickWidth = minorTickWidth,
+        majorTickLength = majorTickLength,
+        minorTickLength = minorTickLength,
+        labelPad = labelPad,
+    )
 
 
