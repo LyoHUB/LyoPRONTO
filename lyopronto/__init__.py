@@ -23,3 +23,4 @@ from . import opt_Pch_Tsh
 from . import opt_Pch
 from . import opt_Tsh
 from . import functions
+from . import plot_styling
