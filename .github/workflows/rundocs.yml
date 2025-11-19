@@ -9,24 +9,25 @@ on:
       - main
     
 jobs:
-  docdeploy:
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GIT_COMMITTER_NAME: ${{ github.actor }}
-      GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
-
+  doctests:
+    # env:
+    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   GIT_COMMITTER_NAME: ${{ github.actor }}
+    #   GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
     name: Run docs as if as doctest
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        notebook: 
+         - knownRp_PD.ipynb
+         - unknownRp_PD.ipynb
     steps:
       - uses: actions/checkout@v5
       - name: Set up Python
         uses: actions/setup-python@v4
       - run: pip install ruamel.yaml scipy numpy matplotlib papermill
       - name: Run notebooks
-        env:
-          notebook_folder: docs/examples
           files:
             - knownRp_PD.ipynb
             - unknownRp_PD.ipynb
-        run: |
-          for f in $files; do papermill $notebook_folder/$f $notebook_folder/$f; done
+        run: papermill docs/examples/${{ matrix.notebook }} docs/examples/${{ matrix.notebook }}; done
