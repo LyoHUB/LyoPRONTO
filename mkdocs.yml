@@ -19,7 +19,9 @@ nav:
     - index.md
     - tutorials.md
     - how-to-guides.md
-    - examples/ex_knownRp_PD.ipynb
+    - Examples:
+        - examples/knownRp_PD.ipynb
+        - examples/unknownRp_PD.ipynb
     - explanation.md
     - reference.md
 
