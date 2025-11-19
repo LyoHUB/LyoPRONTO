@@ -1,4 +1,4 @@
-name: Run doc notebooks to check for errors
+name: Run doc notebooks as tests
 on:
   # For drafting purposes, build a docs version for each new PR.
   # Will have to be manually deleted later with `mike delete pr-####` from a local CLI
@@ -14,7 +14,7 @@ jobs:
     #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #   GIT_COMMITTER_NAME: ${{ github.actor }}
     #   GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
-    name: Run docs as if as doctest
+    name: Notebook
     runs-on: ubuntu-latest
     strategy:
       matrix:
