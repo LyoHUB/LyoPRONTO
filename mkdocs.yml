@@ -19,7 +19,7 @@ nav:
     - index.md
     - tutorials.md
     - how-to-guides.md
-        - ex_knownRp_PD.py
+    - examples/ex_knownRp_PD.ipynb
     - explanation.md
     - reference.md
 
