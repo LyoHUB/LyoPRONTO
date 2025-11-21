@@ -1,0 +1,958 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../how-to-guides/">
+      
+      
+        <link rel="next" href="../unknownRp_PD/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Simulate primary drying with known Kv and Rp - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#simulate-primary-drying-with-known-kv-and-rp" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Simulate primary drying with known Kv and Rp
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lyopronto.calc_knownRp.dry" class="md-nav__link">
+    <span class="md-ellipsis">
+      dry
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lyopronto.calc_knownRp.dry" class="md-nav__link">
+    <span class="md-ellipsis">
+      dry
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="simulate-primary-drying-with-known-kv-and-rp">Simulate primary drying with known Kv and Rp</h1>
+<p>Since this documentation example is a Jupyter notebook, inside the LyoPRONTO file structure, it needs to be directed to the LyoPRONTO code, which means adding <code>../../</code> to <code>sys.path</code>.
+However, this step will in general not be necessary.</p>
+<pre><code class="language-python">import sys
+sys.path.append('../../')
+</code></pre>
+<p>We need a few imports:</p>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+from matplotlib import rc as matplotlibrc
+from ruamel.yaml import YAML
+yaml = YAML()
+
+import lyopronto as lp
+</code></pre>
+<p>Then, we provide all the necessary simulation parameters.</p>
+<pre><code class="language-python"># Set up the simulation settings
+# This needs to be a dict with string keys, which can be expressed in YAML as well
+sim = yaml.load(&quot;&quot;&quot;
+tool: Primary Drying Calculator
+Kv_known: Y
+Rp_known: Y
+Variable_Pch: N
+Variable_Tsh: N
+&quot;&quot;&quot;)
+# Or, equivalently:
+sim = {
+    'tool':'Primary Drying Calculator',
+    'Kv_known':'Y',
+    'Rp_known':'Y',
+    'Variable_Pch':'N',
+    'Variable_Tsh':'N'}
+
+
+# Vial and fill properties
+vial = {
+    # Av = Vial area in cm^2
+    'Av': 3.80,
+    # Ap = Product Area in cm^2
+    'Ap': 3.14,
+    # Vfill = Fill volume in mL
+    'Vfill': 2.0
+}
+</code></pre>
+<pre><code class="language-python"># Product properties
+product = {
+    # cSolid = Fractional concentration of solute in the frozen solution
+    'cSolid': 0.05,
+    # Product Resistance Parameters
+    'R0': 1.4, # cm^2-hr-Torr/g
+    'A1': 16.0, # cm-hr-Torr/g
+    'A2': 0.0, # 1/cm
+    # Critical product temperature
+    # At least 2 to 3 deg C below collapse or glass transition temperature
+    'T_pr_crit': - 5 # in deg C
+}
+</code></pre>
+<pre><code class="language-python"># Vial Heat Transfer Parameters
+ht = {
+    'KC': 2.75e-4, # cal/s-cm^2-K
+    'KP': 8.93e-4, # cal/s-cm^2-K-Torr
+    'KD': 0.46     # 1/Torr
+}
+
+# Chamber Pressure
+Pchamber = {
+    # setpt = Chamber pressure set points in Torr
+    'setpt': [0.15],
+    # dt_setpt = Time for which chamber pressure set points are held in min
+    'dt_setpt': [1800.0],
+    # ramp_rate = Chamber pressure ramping rate in Torr/min
+    'ramp_rate': 0.5
+}
+
+Tshelf = {
+    # init = Intial shelf temperature in C
+    'init': -35.0,
+    # setpt = Shelf temperature set points in C
+    'setpt': [20.0],
+    # dt_setpt = Time for which shelf temperature set points are held in min
+    'dt_setpt': [1800.0],
+    # ramp_rate = Shelf temperature ramping rate in C/min
+    'ramp_rate': 1.0
+}
+
+# Time step
+dt = 0.01    # hr
+</code></pre>
+<p>Now, we are ready to actually run the simulation, which is <code>lyopronto.calc_knownRp.dry</code>.</p>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<a id="lyopronto.calc_knownRp.dry"></a>
+    <div class="doc doc-contents first">
+
+        <p>Some placeholder docs.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>vial</code>
+            </td>
+            <td>
+                  <code><span title="_type_">_type_</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><em>description</em></p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>product</code>
+            </td>
+            <td>
+                  <code><span title="_type_">_type_</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><em>description</em></p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>ht</code>
+            </td>
+            <td>
+                  <code><span title="_type_">_type_</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><em>description</em></p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>Pchamber</code>
+            </td>
+            <td>
+                  <code><span title="_type_">_type_</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><em>description</em></p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>Tshelf</code>
+            </td>
+            <td>
+                  <code><span title="_type_">_type_</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><em>description</em></p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>dt</code>
+            </td>
+            <td>
+                  <code><span title="_type_">_type_</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><em>description</em></p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>_type_</code></td>            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p><em>description</em></p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>lyopronto\calc_knownRp.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dry</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">ht</span><span class="p">,</span><span class="n">Pchamber</span><span class="p">,</span><span class="n">Tshelf</span><span class="p">,</span><span class="n">dt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Some placeholder docs.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vial (_type_): _description_</span>
+<span class="sd">        product (_type_): _description_</span>
+<span class="sd">        ht (_type_): _description_</span>
+<span class="sd">        Pchamber (_type_): _description_</span>
+<span class="sd">        Tshelf (_type_): _description_</span>
+<span class="sd">        dt (_type_): _description_</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        _type_: _description_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">##################  Initialization ################</span>
+
+    <span class="c1"># Initial fill height</span>
+    <span class="n">Lpr0</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">Lpr0_FUN</span><span class="p">(</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Vfill&#39;</span><span class="p">],</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;cSolid&#39;</span><span class="p">])</span>   <span class="c1"># cm</span>
+
+    <span class="n">Pch_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">Pchamber</span><span class="p">[</span><span class="s1">&#39;setpt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># TODO: allow ramps</span>
+    <span class="n">Tsh_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">Tshelf</span><span class="p">[</span><span class="s1">&#39;setpt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="n">Tshelf</span><span class="p">[</span><span class="s1">&#39;ramp_rate&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">Tshelf</span><span class="p">[</span><span class="s1">&#39;init&#39;</span><span class="p">])</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">ht</span><span class="p">,</span> <span class="n">Pch_t</span><span class="p">,</span> <span class="n">Tsh_t</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">Lpr0</span><span class="p">)</span>
+
+    <span class="n">Lck0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+    <span class="n">T0</span> <span class="o">=</span> <span class="n">Tsh_t</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1">################ Set up dynamic equation ######################</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_dLdt</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="n">Lck</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Tsh</span> <span class="o">=</span> <span class="n">Tsh_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">Pch</span> <span class="o">=</span> <span class="n">Pch_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">Kv</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">Kv_FUN</span><span class="p">(</span><span class="n">ht</span><span class="p">[</span><span class="s1">&#39;KC&#39;</span><span class="p">],</span><span class="n">ht</span><span class="p">[</span><span class="s1">&#39;KP&#39;</span><span class="p">],</span><span class="n">ht</span><span class="p">[</span><span class="s1">&#39;KD&#39;</span><span class="p">],</span><span class="n">Pch</span><span class="p">)</span>  <span class="c1"># Vial heat transfer coefficient in cal/s/K/cm^2</span>
+        <span class="n">Rp</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">Rp_FUN</span><span class="p">(</span><span class="n">Lck</span><span class="p">,</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;R0&#39;</span><span class="p">],</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;A1&#39;</span><span class="p">],</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;A2&#39;</span><span class="p">])</span>  <span class="c1"># Product resistance in cm^2-hr-Torr/g</span>
+        <span class="n">Tsub</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">functions</span><span class="o">.</span><span class="n">T_sub_solver_FUN</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">Pch</span><span class="p">,</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Av&#39;</span><span class="p">],</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span><span class="n">Kv</span><span class="p">,</span><span class="n">Lpr0</span><span class="p">,</span><span class="n">Lck</span><span class="p">,</span><span class="n">Rp</span><span class="p">,</span><span class="n">Tsh</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Sublimation front temperature array in degC</span>
+        <span class="n">dmdt</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">sub_rate</span><span class="p">(</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span><span class="n">Rp</span><span class="p">,</span><span class="n">Tsub</span><span class="p">,</span><span class="n">Pch</span><span class="p">)</span>   <span class="c1"># Total sublimation rate array in kg/hr</span>
+        <span class="k">if</span> <span class="n">dmdt</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># print(&quot;Shelf temperature is too low for sublimation.&quot;)</span>
+            <span class="n">dmdt</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">dLdt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">dLdt</span><span class="p">]</span>
+        <span class="c1"># Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC</span>
+
+        <span class="n">dLdt</span> <span class="o">=</span> <span class="p">(</span><span class="n">dmdt</span><span class="o">*</span><span class="n">constant</span><span class="o">.</span><span class="n">kg_To_g</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;cSolid&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solution</span><span class="o">/</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solute</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_ice</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;cSolid&#39;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solution</span><span class="o">-</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_ice</span><span class="p">)</span><span class="o">/</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solute</span><span class="p">)</span> <span class="c1"># cm</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">dLdt</span><span class="p">]</span>
+
+    <span class="c1">### ------ Condition for ending simulation: completed drying</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Lpr0</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">finish</span><span class="o">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+    <span class="c1"># ------- Solve the equations</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">calc_dLdt</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="o">*</span><span class="mi">14</span><span class="p">),</span> <span class="n">Lck0</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">finish</span><span class="p">,</span> 
+                    <span class="n">vectorized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dense_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;BDF&quot;</span><span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">fill_output</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output</span>    
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><pre><code class="language-python">output_table = lp.calc_knownRp.dry(vial,product,ht,Pchamber,Tshelf,dt)
+</code></pre>
+<p>It's a good idea, particularly when you are exploring interactively, to write the simulation input and output to disk together so that as you do later analysis, you have a record of what you did. Uncommenting the following code will do so.</p>
+<p>Previously the inputs were recorded as a two-column CSV, which records info but isn't very readable (and frankly not very useful to a machine either). YAML provides a somewhat more sensible format, and fortunately a Python dictionary can be readily represented in YAML.</p>
+<pre><code class="language-python">sim_setup = {
+    'sim': sim,
+    'vial': vial,
+    'product': product,
+    'ht': ht,
+    'Pchamber': Pchamber,
+    'Tshelf': Tshelf,
+    'dt': dt,
+}
+
+# # Write input data to disk as YAML
+# import time
+# current_time = time.strftime(&quot;%Y%m%d_%H%M%S&quot;)
+# try:
+#     yamlfile = open('lyopronto_input_'+current_time+'.yaml', 'w')
+#     yaml.dump(sim_setup, yamlfile)
+# finally:
+#     yamlfile.close()
+
+# # Write simulation data to disk as CSV
+# try:
+#     csvfile = open('lyopronto_output_'+current_time+'.csv', 'w')
+#     writer = csv.writer(csvfile)
+#     writer.writerow(['Time [hr]','Sublimation Temperature [C]','Vial Bottom Temperature [C]', 'Shelf Temperature [C]','Chamber Pressure [mTorr]','Sublimation Flux [kg/hr/m^2]','Percent Dried'])
+#     for i in range(0,len(output_table)):
+#         writer.writerow(output_table[i])
+# finally:
+#     csvfile.close()
+</code></pre>
+<p>Finally, it's a good idea to plot everything. Here, again, you could save plots to disk by uncommenting the lines below.</p>
+<p>Some default styling of the axes is carried out with <code>lyopronto.plot_styling.axis_style_*</code>, like turning on minor ticks and setting tick labels to be bold. However, this is entirely up to aesthetic taste and leaving it out does not affect the basic logic of the plots.</p>
+<pre><code class="language-python">matplotlibrc('text.latex', preamble=r'\usepackage{color}')
+matplotlibrc('text',usetex=False)
+plt.rcParams['font.family'] = 'Arial'
+
+figwidth = 30
+figheight = 20
+lineWidth = 5
+markerSize = 20
+</code></pre>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
+ax1 = fig.add_subplot(1,1,1)
+ax2 = ax1.twinx()
+ax1.plot(output_table[:,0],output_table[:,4],'-o',color='b',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Chamber Pressure&quot;)
+ax2.plot(output_table[:,0],output_table[:,5],'-',color=[0,0.7,0.3],linewidth=lineWidth, label = &quot;Sublimation Flux&quot;)
+
+lp.plot_styling.axis_style_pressure(ax1)
+lp.plot_styling.axis_style_subflux(ax2)
+
+plt.tight_layout()
+# figure_name = 'lyopronto_pressure_subflux_'+current_time+'.pdf'
+# plt.savefig(figure_name)
+# plt.close()
+</code></pre>
+<p><img alt="img" src="../_data/27058edc80b24645905f96298e32f6ec.png" /></p>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
+ax = fig.add_subplot(1,1,1)
+lp.plot_styling.axis_style_percdried(ax)
+ax.plot(output_table[:,0],output_table[:,-1],'-k',linewidth=lineWidth, label = &quot;Percent Dried&quot;)
+plt.tight_layout()
+# figure_name = 'lyopronto_percentdried_'+current_time+'.pdf'
+# plt.savefig(figure_name)
+# plt.close()
+</code></pre>
+<p><img alt="img" src="../_data/09afbaaa5b3d41d6b77eb3fb153cd84d.png" /></p>
+<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
+ax = fig.add_subplot(1,1,1)
+lp.plot_styling.axis_style_temperature(ax)
+ax.plot(output_table[:,0],output_table[:,1],'-b',linewidth=lineWidth, label = &quot;Sublimation Front Temperature&quot;)
+ax.plot(output_table[:,0],output_table[:,2],'-r',linewidth=lineWidth, label = &quot;Maximum Product Temperature&quot;)
+ax.plot(output_table[:,0],output_table[:,3],'-o',color='k',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Shelf Temperature&quot;)
+plt.legend(fontsize=40,loc='best')
+ll,ul = ax.get_ylim()
+ax.set_ylim([ll,ul+5.0])
+plt.tight_layout()
+# figure_name = 'lyopronto_temperatures_'+current_time+'.pdf'
+# plt.savefig(figure_name)
+# plt.close()
+</code></pre>
+<p><img alt="img" src="../_data/6ecb3405f8524d2ba271261e2b02df15.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>
