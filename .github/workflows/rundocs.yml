@@ -1,0 +1,33 @@
+name: Run doc notebooks as tests
+on:
+  # For drafting purposes, build a docs version for each new PR.
+  # Will have to be manually deleted later with `mike delete pr-####` from a local CLI
+  pull_request:
+  # On pushing to master, rebuild docs with current version number and push as "dev"
+  push:
+    branches:
+      - main
+    
+jobs:
+  doctests:
+    # env:
+    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   GIT_COMMITTER_NAME: ${{ github.actor }}
+    #   GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
+    name: Notebook
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./docs/examples
+    strategy:
+      matrix:
+        notebook: 
+         - knownRp_PD.ipynb
+         - unknownRp_PD.ipynb
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - run: pip install ruamel.yaml scipy numpy matplotlib papermill ipykernel
+      - name: Run notebooks
+        run: papermill ${{ matrix.notebook }} ${{ matrix.notebook }} -k python

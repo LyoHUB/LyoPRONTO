@@ -24,6 +24,26 @@ from . import functions
 ################# Primary drying at fixed set points ###############
 
 def dry(vial,product,ht,Pchamber,Tshelf,dt):
+    """Simulate the primary drying process for known condiditions and parameters.
+
+    Args:
+        vial (dict): see master simulation inputs
+        product (dict): see master simulation inputs
+        ht (dict): see master simulation inputs
+        Pchamber (dict): see master simulation inputs
+        Tshelf (dict): see master simulation inputs
+        dt (float): Fixed time step for output [hours]
+
+    Returns:
+        output_table (ndarray): Simulation output table with columns for:
+            0. Time [hr],
+            1. Sublimation front temperature [°C],
+            2. Vial bottom temperature [°C],
+            3. Shelf temperature [°C],
+            4. Chamber pressure [mTorr],
+            5. Sublimation flux [kg/hr/m²],
+            6. Drying fraction [-]
+    """
 
     ##################  Initialization ################
 
