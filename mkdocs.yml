@@ -2,6 +2,8 @@ site_name: LyoPRONTO Documentation
 
 theme:
     name: "material"
+    features:
+        - content.code.copy
 
 plugins:
     - mkdocstrings:
@@ -13,6 +15,17 @@ plugins:
 extra:
     version:
         provider: mike
+
+markdown_extensions:
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - admonition
+    - pymdownx.details
+    - pymdownx.superfences
+    - pymdownx.highlight:
+        anchor_linenums: true
+        line_spans: __span
+        pygments_lang_class: true
 
 nav:
     # List of web pages to show, in order
