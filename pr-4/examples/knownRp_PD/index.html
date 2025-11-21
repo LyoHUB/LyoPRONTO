@@ -546,6 +546,8 @@ Tshelf = {
 dt = 0.01    # hr
 </code></pre>
 <p>Now, we are ready to actually run the simulation, which is <code>lyopronto.calc_knownRp.dry</code>.</p>
+<p>Here is that function's documentation:
+</p>
 
 
 <div class="doc doc-object doc-function">
@@ -555,7 +557,7 @@ dt = 0.01    # hr
 <a id="lyopronto.calc_knownRp.dry"></a>
     <div class="doc doc-contents first">
 
-        <p>Some placeholder docs.</p>
+        <p>Simulate the primary drying process for known condiditions and parameters.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -574,11 +576,11 @@ dt = 0.01    # hr
                 <code>vial</code>
             </td>
             <td>
-                  <code><span title="_type_">_type_</span></code>
+                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><em>description</em></p>
+                <p>see master simulation inputs</p>
               </div>
             </td>
             <td>
@@ -590,11 +592,11 @@ dt = 0.01    # hr
                 <code>product</code>
             </td>
             <td>
-                  <code><span title="_type_">_type_</span></code>
+                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><em>description</em></p>
+                <p>see master simulation inputs</p>
               </div>
             </td>
             <td>
@@ -606,11 +608,11 @@ dt = 0.01    # hr
                 <code>ht</code>
             </td>
             <td>
-                  <code><span title="_type_">_type_</span></code>
+                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><em>description</em></p>
+                <p>see master simulation inputs</p>
               </div>
             </td>
             <td>
@@ -622,11 +624,11 @@ dt = 0.01    # hr
                 <code>Pchamber</code>
             </td>
             <td>
-                  <code><span title="_type_">_type_</span></code>
+                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><em>description</em></p>
+                <p>see master simulation inputs</p>
               </div>
             </td>
             <td>
@@ -638,11 +640,11 @@ dt = 0.01    # hr
                 <code>Tshelf</code>
             </td>
             <td>
-                  <code><span title="_type_">_type_</span></code>
+                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><em>description</em></p>
+                <p>see master simulation inputs</p>
               </div>
             </td>
             <td>
@@ -654,11 +656,11 @@ dt = 0.01    # hr
                 <code>dt</code>
             </td>
             <td>
-                  <code><span title="_type_">_type_</span></code>
+                  <code><span title="float">float</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><em>description</em></p>
+                <p>Fixed time step for output [hours]</p>
               </div>
             </td>
             <td>
@@ -679,11 +681,18 @@ dt = 0.01    # hr
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>_type_</code></td>            <td>
+<td><code>ndarray</code></td>            <td>
             </td>
             <td>
               <div class="doc-md-description">
-                <p><em>description</em></p>
+                <p>Simulation output table with columns for:
+- Time [hr]
+- Sublimation front temperature [°C]
+- Vial bottom temperature [°C]
+- Shelf temperature [°C]
+- Chamber pressure [mTorr]
+- Sublimation flux [kg/hr/m²]
+- Drying fraction [-]</p>
               </div>
             </td>
           </tr>
@@ -752,19 +761,33 @@ dt = 0.01    # hr
 <span class="normal">82</span>
 <span class="normal">83</span>
 <span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dry</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">ht</span><span class="p">,</span><span class="n">Pchamber</span><span class="p">,</span><span class="n">Tshelf</span><span class="p">,</span><span class="n">dt</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Some placeholder docs.</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dry</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">ht</span><span class="p">,</span><span class="n">Pchamber</span><span class="p">,</span><span class="n">Tshelf</span><span class="p">,</span><span class="n">dt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulate the primary drying process for known condiditions and parameters.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        vial (_type_): _description_</span>
-<span class="sd">        product (_type_): _description_</span>
-<span class="sd">        ht (_type_): _description_</span>
-<span class="sd">        Pchamber (_type_): _description_</span>
-<span class="sd">        Tshelf (_type_): _description_</span>
-<span class="sd">        dt (_type_): _description_</span>
+<span class="sd">        vial (dict): see master simulation inputs</span>
+<span class="sd">        product (dict): see master simulation inputs</span>
+<span class="sd">        ht (dict): see master simulation inputs</span>
+<span class="sd">        Pchamber (dict): see master simulation inputs</span>
+<span class="sd">        Tshelf (dict): see master simulation inputs</span>
+<span class="sd">        dt (float): Fixed time step for output [hours]</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        _type_: _description_</span>
+<span class="sd">        ndarray: Simulation output table with columns for:</span>
+<span class="sd">            - Time [hr]</span>
+<span class="sd">            - Sublimation front temperature [°C]</span>
+<span class="sd">            - Vial bottom temperature [°C]</span>
+<span class="sd">            - Shelf temperature [°C]</span>
+<span class="sd">            - Chamber pressure [mTorr]</span>
+<span class="sd">            - Sublimation flux [kg/hr/m²]</span>
+<span class="sd">            - Drying fraction [-]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">##################  Initialization ################</span>
@@ -874,7 +897,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/27058edc80b24645905f96298e32f6ec.png" /></p>
+<p><img alt="img" src="../_data/90a067a0c1b04669ba81a478bd3fde15.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 lp.plot_styling.axis_style_percdried(ax)
@@ -884,7 +907,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/09afbaaa5b3d41d6b77eb3fb153cd84d.png" /></p>
+<p><img alt="img" src="../_data/e54b3f8298cd4fdabff74ada4d0d666c.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 lp.plot_styling.axis_style_temperature(ax)
@@ -899,7 +922,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/6ecb3405f8524d2ba271261e2b02df15.png" /></p>
+<p><img alt="img" src="../_data/372cec070a894bda8eec9379515b11b8.png" /></p>
 
 
 
