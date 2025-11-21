@@ -28,5 +28,5 @@ jobs:
       - run: pip install ruamel.yaml scipy numpy matplotlib papermill ipykernel
       - name: Run notebooks
         run: \
-          cd docs/examples
+          cd docs/examples && \
           papermill ${{ matrix.notebook }} ${{ matrix.notebook }} -k python
