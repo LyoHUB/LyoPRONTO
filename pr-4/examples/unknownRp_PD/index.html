@@ -455,7 +455,7 @@
 import sys
 sys.path.append('../../')
 </code></pre>
-<pre><code class="language-python">import scipy.optimize as sp
+<pre><code class="language-python">from scipy.optimize import curve_fit
 import numpy as np
 import csv
 import matplotlib.pyplot as plt
@@ -486,8 +486,6 @@ vial = dict([('Av',3.80),('Ap',3.14),('Vfill',2.0)])
 # Product Resistance Parameters
 # R0 in cm^2-hr-Torr/g, A1 in cm-hr-Torr/g, A2 in 1/cm
 product = dict([('cSolid',0.05)])
-# Experimental product temperature measurements: format - t(hr), Tp(C)
-product_temp_filename = './temperature.txt'
 # Critical product temperature
 # At least 2 to 3 deg C below collapse or glass transition temperature
 product['T_pr_crit'] = -5        # in degC
@@ -517,74 +515,20 @@ eq_cap = dict([('a',-0.182),('b',0.0117e3)])
 
 # Equipment load
 nVial = 398    # Number of vials
-
-########################################################
-
-#################### Input file saved ##################
-
-# Write data to files
-#save input_saved.csv
-
-# current_time = time.strftime(&quot;%y%m%d_%H%M&quot;,time.localtime())
-# csvfile = open('input_saved_'+current_time+'.csv', 'w')
-
-# try:
-#     writer = csv.writer(csvfile)
-#     writer.writerow(['Tool:',sim['tool']])
-#     writer.writerow(['Kv known?:',sim['Kv_known']])
-#     writer.writerow(['Rp known?:',sim['Rp_known']])
-#     writer.writerow(['Variable Pch?:',sim['Variable_Pch']])
-#     writer.writerow(['Variable Tsh?:',sim['Variable_Tsh']])
-#     writer.writerow([''])
-
-#     writer.writerow(['Vial area [cm^2]',vial['Av']])
-#     writer.writerow(['Product area [cm^2]',vial['Ap']])
-#     writer.writerow(['Vial fill volume [mL]',vial['Vfill']])
-#     writer.writerow([''])
-
-#     writer.writerow(['Fractional solute concentration:',product['cSolid']])
-#     writer.writerow(['Critical product temperature [C]:', product['T_pr_crit']])
-#     writer.writerow([''])
-
-#     writer.writerow(['KC [cal/s/K/cm^2]:',ht['KC']])
-#     writer.writerow(['KP [cal/s/K/cm^2/Torr]:',ht['KP']])
-#     writer.writerow(['KD [1/Torr]:',ht['KD']])
-#     writer.writerow([''])
-
-#     for i in range(len(Pchamber['setpt'])):
-#         writer.writerow(['Chamber pressure setpoint [Torr]:',Pchamber['setpt'][i],'Duration [min]:',Pchamber['dt_setpt'][i]])
-#     writer.writerow(['Chamber pressure ramping rate [Torr/min]:',Pchamber['ramp_rate']])
-#     writer.writerow([''])
-
-#     for i in range(len(Tshelf['setpt'])):
-#         writer.writerow(['Shelf temperature setpoint [C]:',Tshelf['setpt'][i],'Duration [min]:',Tshelf['dt_setpt'][i]])
-#     writer.writerow(['Shelf temperature ramping rate [C/min]:',Tshelf['ramp_rate']])
-#     writer.writerow([''])
-
-#     writer.writerow(['Time step [hr]:',dt])
-#     writer.writerow([''])
-
-#     writer.writerow(['Equipment capability parameters:','a [kg/hr]:',eq_cap['a'],'b [kg/hr/Torr]:',eq_cap['b']])
-#     writer.writerow(['Number of vials:',nVial])    
-
-# finally:
-#     csvfile.close()
-
-
-################### Execute  ##########################
-
-
-###### Primary Drying Calculator Tool
-
-#### Known Kv and Rp
-#### Determine Rp based on product temperature
-
+</code></pre>
+<p>To estimate $R_p$, we need to provide experimentally measured temperatures. The format preferred by the web interface is a CSV with no headers, time in hours in the first column, and temperature in degrees Celsius in the second column.</p>
+<p>If you are loading these yourself in a script, you should provide it with those units, but you can load it from whatever file makes sense and simply provide it to the call to <code>calc_unknownRp.dry</code> below.</p>
+<pre><code class="language-python">product_temp_filename = './temperature.txt'
 dat = np.loadtxt(product_temp_filename)
 time = dat[:,0]
 Tbot_exp = dat[:,1]
-
-output_saved, product_res = calc_unknownRp.dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp)
-params,params_covariance = sp.curve_fit(lambda h,r,a1,a2: r+h*a1/(1+h*a2),product_res[:,1],product_res[:,2],p0=[1.0,0.0,0.0])
+</code></pre>
+<p>The call to <code>calc_unkonwRp.dry</code> provides an array of simulation output, as well as an array with time, dry layer height, and $R_p$ in the three columns. </p>
+<pre><code class="language-python">output_table, product_res = calc_unknownRp.dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp)
+</code></pre>
+<p>The web interface simply feeds the computed resistance vs dry layer height to SciPy's <code>scipy.optimize.curve_fit</code> in order to estimate the simple nonlinear form:
+$$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
+<pre><code class="language-python">params,params_covariance = curve_fit(lambda h,r,a1,a2: r+h*a1/(1+h*a2),product_res[:,1],product_res[:,2],p0=[1.0,0.0,0.0])
 print(&quot;R0 = &quot;+str(params[0])+&quot;\n&quot;)
 print(&quot;A1 = &quot;+str(params[1])+&quot;\n&quot;)
 print(&quot;A2 = &quot;+str(params[2])+&quot;\n&quot;)
@@ -608,6 +552,7 @@ figheight = 20
 lineWidth = 5
 markerSize = 20
 </code></pre>
+<p>The web interface is not currently set up to show the following graph, but it is absolutely worth checking what the fit looks like in $R_p$ space.</p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(111)
 plot_styling.axis_style_rp(ax)
@@ -615,98 +560,46 @@ ax.plot(product_res[:,1],product_res[:,2],'o', markevery=5, markersize=markerSiz
 ax.plot(product_res[:,1],params[0]+product_res[:,1]*params[1]/(1+product_res[:,1]*params[2]),'-',linewidth=lineWidth,label='Fitted $R_p$')
 plt.legend(fontsize=40, loc='best')
 </code></pre>
-<pre><code>&lt;matplotlib.legend.Legend at 0x2305ecba990&gt;
+<pre><code>&lt;matplotlib.legend.Legend at 0x251a82129c0&gt;
 </code></pre>
-<p><img alt="img" src="../_data/e8ac6f0c1c314fb29b4b5689ca8a8e0a.png" /></p>
+<p><img alt="img" src="../_data/56f448fa816c4ce98d8e33d24b50fde4.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax1 = fig.add_subplot(1,1,1)
 ax2 = ax1.twinx()
-plt.axes(ax1)
-plt.minorticks_on()
-plt.axes(ax2)
-plt.minorticks_on()
-plt.setp(ax1.get_xticklabels(),fontsize=gcafontSize,fontweight='bold',)
-plt.setp(ax1.get_yticklabels(),fontsize=gcafontSize,color='b',fontweight='bold',)
-plt.setp(ax2.get_yticklabels(),fontsize=gcafontSize,color=[0,0.7,0.3],fontweight='bold',)
-ax1.tick_params(axis='x',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
-ax1.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,color='b')
-ax2.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,color=[0,0.7,0.3])
-ax1.tick_params(axis='x',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,bottom=1,top=0)
-ax1.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,color='b')
-ax2.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,color=[0,0.7,0.3])
-ax1.plot(output_saved[:,0],output_saved[:,4],'-o',color='b',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Chamber Pressure&quot;)
-ax1.set_xlabel(&quot;Time [hr]&quot;,fontsize=gcafontSize,fontweight='bold',)
-ax1.set_ylabel(&quot;Chamber Pressure [mTorr]&quot;,fontsize=gcafontSize,color='b',fontweight='bold',)
-ax2.plot(output_saved[:,0],output_saved[:,5],'-',color=[0,0.7,0.3],linewidth=lineWidth, label = &quot;Sublimation Flux&quot;)
-ax2.set_ylabel(&quot;Sublimation Flux [kg/hr/m$^2$]&quot;,fontsize=gcafontSize,color=[0,0.7,0.3],fontweight='bold',)
-ax1.xaxis.labelpad = labelPad
-ax1.yaxis.labelpad = labelPad
-ax2.yaxis.labelpad = labelPad
-plt.tight_layout()
-# figure_name = 'Pressure,SublimationFlux_'+current_time+'.pdf'
-# plt.savefig(figure_name)
-# plt.close()
-</code></pre>
-<pre><code class="language-python">---------------------------------------------------------------------------
-NameError                                 Traceback (most recent call last)
-Cell In[6], line 8
-      6 plt.axes(ax2)
-      7 plt.minorticks_on()
-----&gt; 8 plt.setp(ax1.get_xticklabels(),fontsize=gcafontSize,fontweight='bold',)
-      9 plt.setp(ax1.get_yticklabels(),fontsize=gcafontSize,color='b',fontweight='bold',)
-     10 plt.setp(ax2.get_yticklabels(),fontsize=gcafontSize,color=[0,0.7,0.3],fontweight='bold',)
+ax1.plot(output_table[:,0],output_table[:,4],'-o',color='b',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Chamber Pressure&quot;)
+ax2.plot(output_table[:,0],output_table[:,5],'-',color=[0,0.7,0.3],linewidth=lineWidth, label = &quot;Sublimation Flux&quot;)
 
-NameError: name 'gcafontSize' is not defined
+plot_styling.axis_style_pressure(ax1)
+plot_styling.axis_style_subflux(ax2)
+
+plt.tight_layout()
 </code></pre>
-<p><img alt="img" src="../_data/75d512b3be0c4c70b10ad1de42a23d8f.png" /></p>
+<p><img alt="img" src="../_data/3f9d48f66c564f6197dc4c23810ac41c.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
-plt.axes(ax)
-plt.minorticks_on()
-plt.setp(ax.get_xticklabels(),fontsize=gcafontSize,fontweight='bold')
-plt.setp(ax.get_yticklabels(),fontsize=gcafontSize,fontweight='bold')
-ax.tick_params(axis='x',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
-ax.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,left=1,right=0)
-ax.tick_params(axis='x',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,bottom=1,top=0)
-ax.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,left=1,right=0)
-ax.plot(output_saved[:,0],output_saved[:,-1],'-k',linewidth=lineWidth, label = &quot;Percent Dried&quot;)
-ax.set_xlabel(&quot;Time [hr]&quot;,fontsize=gcafontSize,fontweight='bold')
-ax.set_ylabel(&quot;Percent Dried&quot;,fontsize=gcafontSize,fontweight='bold')
-ax.xaxis.labelpad = labelPad
-ax.yaxis.labelpad = labelPad
+plot_styling.axis_style_percdried(ax)
+ax.plot(output_table[:,0],output_table[:,-1],'-k',linewidth=lineWidth, label = &quot;Percent Dried&quot;)
 plt.tight_layout()
-# figure_name = 'PercentDried_'+current_time+'.pdf'
+# figure_name = 'lyopronto_percentdried_'+current_time+'.pdf'
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/90b683bf58374ebf91a15ae502b195f9.png" /></p>
+<p><img alt="img" src="../_data/b29c407782994344844feedc83a7e2ab.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
-plt.axes(ax)
-plt.minorticks_on()
-plt.setp(ax.get_xticklabels(),fontsize=gcafontSize,fontweight='bold')
-plt.setp(ax.get_yticklabels(),fontsize=gcafontSize,fontweight='bold')
-ax.tick_params(axis='x',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
-ax.tick_params(axis='y',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,left=1,right=0)
-ax.tick_params(axis='x',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,bottom=1,top=0)
-ax.tick_params(axis='y',which='minor',direction='in',width=minorTickWidth,length=minorTickLength,left=1,right=0)
-ax.plot(output_saved[:,0],output_saved[:,1],'-b',linewidth=lineWidth, label = &quot;Sublimation Front Temperature&quot;)
-ax.plot(output_saved[:,0],output_saved[:,2],'-r',linewidth=lineWidth, label = &quot;Maximum Product Temperature&quot;)
-ax.plot(output_saved[:,0],output_saved[:,3],'-o',color='k',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Shelf Temperature&quot;)
-ax.set_xlabel(&quot;Time [hr]&quot;,fontsize=gcafontSize,fontweight='bold')
-ax.set_ylabel(&quot;Temperature [C]&quot;,fontsize=gcafontSize,fontweight='bold')
-ax.xaxis.labelpad = labelPad
-ax.yaxis.labelpad = labelPad
-handles, labels = ax.get_legend_handles_labels()
-plt.legend(handles, labels, prop={'size':40},loc='best')
+plot_styling.axis_style_temperature(ax)
+ax.plot(output_table[:,0],output_table[:,1],'-b',linewidth=lineWidth, label = &quot;Sublimation Front Temperature&quot;)
+ax.plot(output_table[:,0],output_table[:,2],'-r',linewidth=lineWidth, label = &quot;Maximum Product Temperature&quot;)
+ax.plot(output_table[:,0],output_table[:,3],'-o',color='k',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Shelf Temperature&quot;)
+plt.legend(fontsize=40,loc='best')
 ll,ul = ax.get_ylim()
 ax.set_ylim([ll,ul+5.0])
 plt.tight_layout()
-# figure_name = 'Temperatures_'+current_time+'.pdf'
+# figure_name = 'lyopronto_temperatures_'+current_time+'.pdf'
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/f7e197ed73a44c88832d5205d792d932.png" /></p>
+<p><img alt="img" src="../_data/59c8509297884c91a122fabd2ecaa456.png" /></p>
 
 
 
