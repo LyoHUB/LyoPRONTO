@@ -401,158 +401,158 @@
 
 
 <h1 id="fitting-unknown-rp-to-process-data">Fitting Unknown Rp to Process Data</h1>
-<pre><code class="language-python"># Since this is running in a Jupyter notebook, need to help it find LyoPRONTO
-# For the documentation, the path is nearby.
-# If you have already installed LyoPRONTO as a Python package,
-# this should be unnecessary.
-import sys
-sys.path.append('../../')
-</code></pre>
-<pre><code class="language-python">from scipy.optimize import curve_fit
-import numpy as np
-import csv
-import matplotlib.pyplot as plt
-from matplotlib import rc as matplotlibrc
-import time
+<div class="highlight"><pre><span></span><code><span class="c1"># Since this is running in a Jupyter notebook, need to help it find LyoPRONTO</span>
+<span class="c1"># For the documentation, the path is nearby.</span>
+<span class="c1"># If you have already installed LyoPRONTO as a Python package,</span>
+<span class="c1"># this should be unnecessary.</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">curve_fit</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">csv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">rc</span> <span class="k">as</span> <span class="n">matplotlibrc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-# from lyopronto.calc_unknownRp import dry
+<span class="c1"># from lyopronto.calc_unknownRp import dry</span>
 
-from lyopronto import *
-</code></pre>
-<pre><code class="language-python">################################################################
+<span class="kn">from</span><span class="w"> </span><span class="nn">lyopronto</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">################################################################</span>
 
-######################## Inputs ########################
+<span class="c1">######################## Inputs ########################</span>
 
-sim = dict([('tool','Primary Drying Calculator'),('Kv_known','Y'),('Rp_known','N'),('Variable_Pch','N'),('Variable_Tsh','N')])
+<span class="n">sim</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;tool&#39;</span><span class="p">,</span><span class="s1">&#39;Primary Drying Calculator&#39;</span><span class="p">),(</span><span class="s1">&#39;Kv_known&#39;</span><span class="p">,</span><span class="s1">&#39;Y&#39;</span><span class="p">),(</span><span class="s1">&#39;Rp_known&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">),(</span><span class="s1">&#39;Variable_Pch&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">),(</span><span class="s1">&#39;Variable_Tsh&#39;</span><span class="p">,</span><span class="s1">&#39;N&#39;</span><span class="p">)])</span>
 
-# Vial and fill properties
-# Av = Vial area in cm^2
-# Ap = Product Area in cm^2
-# Vfill = Fill volume in mL
-vial = dict([('Av',3.80),('Ap',3.14),('Vfill',2.0)])
+<span class="c1"># Vial and fill properties</span>
+<span class="c1"># Av = Vial area in cm^2</span>
+<span class="c1"># Ap = Product Area in cm^2</span>
+<span class="c1"># Vfill = Fill volume in mL</span>
+<span class="n">vial</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;Av&#39;</span><span class="p">,</span><span class="mf">3.80</span><span class="p">),(</span><span class="s1">&#39;Ap&#39;</span><span class="p">,</span><span class="mf">3.14</span><span class="p">),(</span><span class="s1">&#39;Vfill&#39;</span><span class="p">,</span><span class="mf">2.0</span><span class="p">)])</span>
 
-#Product properties
-# cSolid = Fractional concentration of solute in the frozen solution
-# Tpr0 = Initial product temperature for freezing in degC
-# Tf = Freezing temperature in degC
-# Tn = Nucleation temperature in degC
-# Product Resistance Parameters
-# R0 in cm^2-hr-Torr/g, A1 in cm-hr-Torr/g, A2 in 1/cm
-product = dict([('cSolid',0.05)])
-# Critical product temperature
-# At least 2 to 3 deg C below collapse or glass transition temperature
-product['T_pr_crit'] = -5        # in degC
+<span class="c1">#Product properties</span>
+<span class="c1"># cSolid = Fractional concentration of solute in the frozen solution</span>
+<span class="c1"># Tpr0 = Initial product temperature for freezing in degC</span>
+<span class="c1"># Tf = Freezing temperature in degC</span>
+<span class="c1"># Tn = Nucleation temperature in degC</span>
+<span class="c1"># Product Resistance Parameters</span>
+<span class="c1"># R0 in cm^2-hr-Torr/g, A1 in cm-hr-Torr/g, A2 in 1/cm</span>
+<span class="n">product</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;cSolid&#39;</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)])</span>
+<span class="c1"># Critical product temperature</span>
+<span class="c1"># At least 2 to 3 deg C below collapse or glass transition temperature</span>
+<span class="n">product</span><span class="p">[</span><span class="s1">&#39;T_pr_crit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>        <span class="c1"># in degC</span>
 
-# Vial Heat Transfer Parameters
-# Kv = KC + KP*Pch/(1+KD*Pch) 
-# KC in cal/s/K/cm^2, KP in cal/s/K/cm^2/Torr, KD in 1/Torr
-ht = dict([('KC',2.75e-4),('KP',8.93e-4),('KD',0.46)])
+<span class="c1"># Vial Heat Transfer Parameters</span>
+<span class="c1"># Kv = KC + KP*Pch/(1+KD*Pch) </span>
+<span class="c1"># KC in cal/s/K/cm^2, KP in cal/s/K/cm^2/Torr, KD in 1/Torr</span>
+<span class="n">ht</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;KC&#39;</span><span class="p">,</span><span class="mf">2.75e-4</span><span class="p">),(</span><span class="s1">&#39;KP&#39;</span><span class="p">,</span><span class="mf">8.93e-4</span><span class="p">),(</span><span class="s1">&#39;KD&#39;</span><span class="p">,</span><span class="mf">0.46</span><span class="p">)])</span>
 
-# Chamber Pressure
-Pchamber = dict([('setpt',[0.15]),('dt_setpt',[1800.0]),('ramp_rate',0.5)])
+<span class="c1"># Chamber Pressure</span>
+<span class="n">Pchamber</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;setpt&#39;</span><span class="p">,[</span><span class="mf">0.15</span><span class="p">]),(</span><span class="s1">&#39;dt_setpt&#39;</span><span class="p">,[</span><span class="mf">1800.0</span><span class="p">]),(</span><span class="s1">&#39;ramp_rate&#39;</span><span class="p">,</span><span class="mf">0.5</span><span class="p">)])</span>
 
-# Shelf Temperature
-# init = Intial shelf temperature in C
-# setpt = Shelf temperature set points in C
-# dt_setpt = Time for which shelf temperature set points are held in min
-# ramp_rate = Shelf temperature ramping rate in C/min
-Tshelf = dict([('init',-35.0),('setpt',[20.0]),('dt_setpt',[1800.0]),('ramp_rate',1.0)])
+<span class="c1"># Shelf Temperature</span>
+<span class="c1"># init = Intial shelf temperature in C</span>
+<span class="c1"># setpt = Shelf temperature set points in C</span>
+<span class="c1"># dt_setpt = Time for which shelf temperature set points are held in min</span>
+<span class="c1"># ramp_rate = Shelf temperature ramping rate in C/min</span>
+<span class="n">Tshelf</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;init&#39;</span><span class="p">,</span><span class="o">-</span><span class="mf">35.0</span><span class="p">),(</span><span class="s1">&#39;setpt&#39;</span><span class="p">,[</span><span class="mf">20.0</span><span class="p">]),(</span><span class="s1">&#39;dt_setpt&#39;</span><span class="p">,[</span><span class="mf">1800.0</span><span class="p">]),(</span><span class="s1">&#39;ramp_rate&#39;</span><span class="p">,</span><span class="mf">1.0</span><span class="p">)])</span>
 
-# Time step
-dt = 0.01    # hr
+<span class="c1"># Time step</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>    <span class="c1"># hr</span>
 
-# Lyophilizer equipment capability
-# Form: dm/dt [kg/hr] = a + b * Pch [Torr]
-# a in kg/hr, b in kg/hr/Torr 
-eq_cap = dict([('a',-0.182),('b',0.0117e3)])
+<span class="c1"># Lyophilizer equipment capability</span>
+<span class="c1"># Form: dm/dt [kg/hr] = a + b * Pch [Torr]</span>
+<span class="c1"># a in kg/hr, b in kg/hr/Torr </span>
+<span class="n">eq_cap</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="o">-</span><span class="mf">0.182</span><span class="p">),(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="mf">0.0117e3</span><span class="p">)])</span>
 
-# Equipment load
-nVial = 398    # Number of vials
-</code></pre>
+<span class="c1"># Equipment load</span>
+<span class="n">nVial</span> <span class="o">=</span> <span class="mi">398</span>    <span class="c1"># Number of vials</span>
+</code></pre></div>
 <p>To estimate $R_p$, we need to provide experimentally measured temperatures. The format preferred by the web interface is a CSV with no headers, time in hours in the first column, and temperature in degrees Celsius in the second column.</p>
 <p>If you are loading these yourself in a script, you should provide it with those units, but you can load it from whatever file makes sense and simply provide it to the call to <code>calc_unknownRp.dry</code> below.</p>
-<pre><code class="language-python">product_temp_filename = './temperature.txt'
-dat = np.loadtxt(product_temp_filename)
-time = dat[:,0]
-Tbot_exp = dat[:,1]
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">product_temp_filename</span> <span class="o">=</span> <span class="s1">&#39;./temperature.txt&#39;</span>
+<span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">product_temp_filename</span><span class="p">)</span>
+<span class="n">time</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">Tbot_exp</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+</code></pre></div>
 <p>The call to <code>calc_unkonwRp.dry</code> provides an array of simulation output, as well as an array with time, dry layer height, and $R_p$ in the three columns. </p>
-<pre><code class="language-python">output_table, product_res = calc_unknownRp.dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp)
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="n">output_table</span><span class="p">,</span> <span class="n">product_res</span> <span class="o">=</span> <span class="n">calc_unknownRp</span><span class="o">.</span><span class="n">dry</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">ht</span><span class="p">,</span><span class="n">Pchamber</span><span class="p">,</span><span class="n">Tshelf</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">Tbot_exp</span><span class="p">)</span>
+</code></pre></div>
 <p>The web interface simply feeds the computed resistance vs dry layer height to SciPy's <code>scipy.optimize.curve_fit</code> in order to estimate the simple nonlinear form:
 $$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
-<pre><code class="language-python">params,params_covariance = curve_fit(lambda h,r,a1,a2: r+h*a1/(1+h*a2),product_res[:,1],product_res[:,2],p0=[1.0,0.0,0.0])
-print(&quot;R0 = &quot;+str(params[0])+&quot;\n&quot;)
-print(&quot;A1 = &quot;+str(params[1])+&quot;\n&quot;)
-print(&quot;A2 = &quot;+str(params[2])+&quot;\n&quot;)
-#################
+<div class="highlight"><pre><span></span><code><span class="n">params</span><span class="p">,</span><span class="n">params_covariance</span> <span class="o">=</span> <span class="n">curve_fit</span><span class="p">(</span><span class="k">lambda</span> <span class="n">h</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">a1</span><span class="p">,</span><span class="n">a2</span><span class="p">:</span> <span class="n">r</span><span class="o">+</span><span class="n">h</span><span class="o">*</span><span class="n">a1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">h</span><span class="o">*</span><span class="n">a2</span><span class="p">),</span><span class="n">product_res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">product_res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="n">p0</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;R0 = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A1 = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;A2 = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1">#################</span>
 
-##########################
-</code></pre>
-<pre><code>R0 = 0.02089279322037721
+<span class="c1">##########################</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>R0 = 0.02089279322037721
 
 A1 = 7.843317942227547
 
 A2 = 0.5081399451752311
-</code></pre>
-<pre><code class="language-python"># LaTeX setup
-matplotlibrc('text.latex', preamble=r'\usepackage{color}')
-matplotlibrc('text',usetex=False)
-matplotlibrc('font',family='Arial')
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># LaTeX setup</span>
+<span class="n">matplotlibrc</span><span class="p">(</span><span class="s1">&#39;text.latex&#39;</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\usepackage</span><span class="si">{color}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">matplotlibrc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span><span class="n">usetex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">matplotlibrc</span><span class="p">(</span><span class="s1">&#39;font&#39;</span><span class="p">,</span><span class="n">family</span><span class="o">=</span><span class="s1">&#39;Arial&#39;</span><span class="p">)</span>
 
-figwidth = 30
-figheight = 20
-lineWidth = 5
-markerSize = 20
-</code></pre>
+<span class="n">figwidth</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">figheight</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">markerSize</span> <span class="o">=</span> <span class="mi">20</span>
+</code></pre></div>
 <p>The web interface is not currently set up to show the following graph, but it is absolutely worth checking what the fit looks like in $R_p$ space.</p>
-<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
-ax = fig.add_subplot(111)
-plot_styling.axis_style_rp(ax)
-ax.plot(product_res[:,1],product_res[:,2],'o', markevery=5, markersize=markerSize,label='$R_p$ from Temperature Data')
-ax.plot(product_res[:,1],params[0]+product_res[:,1]*params[1]/(1+product_res[:,1]*params[2]),'-',linewidth=lineWidth,label='Fitted $R_p$')
-plt.legend(fontsize=40, loc='best')
-</code></pre>
-<pre><code>&lt;matplotlib.legend.Legend at 0x251a82129c0&gt;
-</code></pre>
-<p><img alt="img" src="../_data/c0fbac0515d2457994c8fe5bb436aae5.png" /></p>
-<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
-ax1 = fig.add_subplot(1,1,1)
-ax2 = ax1.twinx()
-ax1.plot(output_table[:,0],output_table[:,4],'-o',color='b',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Chamber Pressure&quot;)
-ax2.plot(output_table[:,0],output_table[:,5],'-',color=[0,0.7,0.3],linewidth=lineWidth, label = &quot;Sublimation Flux&quot;)
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_rp</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">product_res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">product_res</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">markevery</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="n">markerSize</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$R_p$ from Temperature Data&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">product_res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">product_res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">product_res</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">params</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Fitted $R_p$&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>&lt;matplotlib.legend.Legend at 0x251a82129c0&gt;
+</code></pre></div>
+<p><img alt="img" src="../_data/b6275c73a4e44a48b51feb1d6bc1af8a.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">4</span><span class="p">],</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">markevery</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="n">markerSize</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">5</span><span class="p">],</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.3</span><span class="p">],</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Sublimation Flux&quot;</span><span class="p">)</span>
 
-plot_styling.axis_style_pressure(ax1)
-plot_styling.axis_style_subflux(ax2)
+<span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_pressure</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_subflux</span><span class="p">(</span><span class="n">ax2</span><span class="p">)</span>
 
-plt.tight_layout()
-</code></pre>
-<p><img alt="img" src="../_data/258b17b6ebf8456688248be59b9728b0.png" /></p>
-<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
-ax = fig.add_subplot(1,1,1)
-plot_styling.axis_style_percdried(ax)
-ax.plot(output_table[:,0],output_table[:,-1],'-k',linewidth=lineWidth, label = &quot;Percent Dried&quot;)
-plt.tight_layout()
-# figure_name = 'lyopronto_percentdried_'+current_time+'.pdf'
-# plt.savefig(figure_name)
-# plt.close()
-</code></pre>
-<p><img alt="img" src="../_data/fe709edaaa57448db0973610ef0c587c.png" /></p>
-<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
-ax = fig.add_subplot(1,1,1)
-plot_styling.axis_style_temperature(ax)
-ax.plot(output_table[:,0],output_table[:,1],'-b',linewidth=lineWidth, label = &quot;Sublimation Front Temperature&quot;)
-ax.plot(output_table[:,0],output_table[:,2],'-r',linewidth=lineWidth, label = &quot;Maximum Product Temperature&quot;)
-ax.plot(output_table[:,0],output_table[:,3],'-o',color='k',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Shelf Temperature&quot;)
-plt.legend(fontsize=40,loc='best')
-ll,ul = ax.get_ylim()
-ax.set_ylim([ll,ul+5.0])
-plt.tight_layout()
-# figure_name = 'lyopronto_temperatures_'+current_time+'.pdf'
-# plt.savefig(figure_name)
-# plt.close()
-</code></pre>
-<p><img alt="img" src="../_data/ca97fad61acc4abda59df933a0072c0f.png" /></p>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="img" src="../_data/22cb74e75b89447fb5877d1847d2f062.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_percdried</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;-k&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Percent Dried&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1"># figure_name = &#39;lyopronto_percentdried_&#39;+current_time+&#39;.pdf&#39;</span>
+<span class="c1"># plt.savefig(figure_name)</span>
+<span class="c1"># plt.close()</span>
+</code></pre></div>
+<p><img alt="img" src="../_data/ffeb647067d44bf4ae401622c192a24d.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_temperature</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Sublimation Front Temperature&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Maximum Product Temperature&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">markevery</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="n">markerSize</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Shelf Temperature&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">ll</span><span class="p">,</span><span class="n">ul</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">ll</span><span class="p">,</span><span class="n">ul</span><span class="o">+</span><span class="mf">5.0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1"># figure_name = &#39;lyopronto_temperatures_&#39;+current_time+&#39;.pdf&#39;</span>
+<span class="c1"># plt.savefig(figure_name)</span>
+<span class="c1"># plt.close()</span>
+</code></pre></div>
+<p><img alt="img" src="../_data/26006747fa9047c995115fbc371f45b0.png" /></p>
 
 
 

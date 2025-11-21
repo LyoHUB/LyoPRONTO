@@ -275,6 +275,19 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -286,6 +299,34 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lyopronto.calc_knownRp.dry" class="md-nav__link">
+    <span class="md-ellipsis">
+      dry
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -386,6 +427,23 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#lyopronto.calc_knownRp.dry" class="md-nav__link">
+    <span class="md-ellipsis">
+      dry
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -403,177 +461,470 @@
 <h1 id="simulate-primary-drying-with-known-kv-and-rp">Simulate primary drying with known Kv and Rp</h1>
 <p>Since this documentation example is a Jupyter notebook, inside the LyoPRONTO file structure, it needs to be directed to the LyoPRONTO code, which means adding <code>../../</code> to <code>sys.path</code>.
 However, this step will in general not be necessary.</p>
-<pre><code class="language-python">import sys
-sys.path.append('../../')
-</code></pre>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+</code></pre></div>
 <p>We need a few imports:</p>
-<pre><code class="language-python">import matplotlib.pyplot as plt
-from matplotlib import rc as matplotlibrc
-from ruamel.yaml import YAML
-yaml = YAML()
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">rc</span> <span class="k">as</span> <span class="n">matplotlibrc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ruamel.yaml</span><span class="w"> </span><span class="kn">import</span> <span class="n">YAML</span>
+<span class="n">yaml</span> <span class="o">=</span> <span class="n">YAML</span><span class="p">()</span>
 
-import lyopronto as lp
-</code></pre>
+<span class="kn">import</span><span class="w"> </span><span class="nn">lyopronto</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">lp</span>
+</code></pre></div>
 <p>Then, we provide all the necessary simulation parameters.</p>
-<pre><code class="language-python"># Set up the simulation settings
-# This needs to be a dict with string keys, which can be expressed in YAML as well
-sim = yaml.load(&quot;&quot;&quot;
-tool: Primary Drying Calculator
-Kv_known: Y
-Rp_known: Y
-Variable_Pch: N
-Variable_Tsh: N
-&quot;&quot;&quot;)
-# Or, equivalently:
-sim = {
-    'tool':'Primary Drying Calculator',
-    'Kv_known':'Y',
-    'Rp_known':'Y',
-    'Variable_Pch':'N',
-    'Variable_Tsh':'N'}
+<div class="highlight"><pre><span></span><code><span class="c1"># Set up the simulation settings</span>
+<span class="c1"># This needs to be a dict with string keys, which can be expressed in YAML as well</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">tool: Primary Drying Calculator</span>
+<span class="s2">Kv_known: Y</span>
+<span class="s2">Rp_known: Y</span>
+<span class="s2">Variable_Pch: N</span>
+<span class="s2">Variable_Tsh: N</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">)</span>
+<span class="c1"># Or, equivalently:</span>
+<span class="n">sim</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;tool&#39;</span><span class="p">:</span><span class="s1">&#39;Primary Drying Calculator&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Kv_known&#39;</span><span class="p">:</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Rp_known&#39;</span><span class="p">:</span><span class="s1">&#39;Y&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Variable_Pch&#39;</span><span class="p">:</span><span class="s1">&#39;N&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Variable_Tsh&#39;</span><span class="p">:</span><span class="s1">&#39;N&#39;</span><span class="p">}</span>
 
 
-# Vial and fill properties
-vial = {
-    # Av = Vial area in cm^2
-    'Av': 3.80,
-    # Ap = Product Area in cm^2
-    'Ap': 3.14,
-    # Vfill = Fill volume in mL
-    'Vfill': 2.0
-}
-</code></pre>
-<pre><code class="language-python"># Product properties
-product = {
-    # cSolid = Fractional concentration of solute in the frozen solution
-    'cSolid': 0.05,
-    # Product Resistance Parameters
-    'R0': 1.4, # cm^2-hr-Torr/g
-    'A1': 16.0, # cm-hr-Torr/g
-    'A2': 0.0, # 1/cm
-    # Critical product temperature
-    # At least 2 to 3 deg C below collapse or glass transition temperature
-    'T_pr_crit': - 5 # in deg C
-}
-</code></pre>
-<pre><code class="language-python"># Vial Heat Transfer Parameters
-ht = {
-    'KC': 2.75e-4, # cal/s-cm^2-K
-    'KP': 8.93e-4, # cal/s-cm^2-K-Torr
-    'KD': 0.46     # 1/Torr
-}
+<span class="c1"># Vial and fill properties</span>
+<span class="n">vial</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># Av = Vial area in cm^2</span>
+    <span class="s1">&#39;Av&#39;</span><span class="p">:</span> <span class="mf">3.80</span><span class="p">,</span>
+    <span class="c1"># Ap = Product Area in cm^2</span>
+    <span class="s1">&#39;Ap&#39;</span><span class="p">:</span> <span class="mf">3.14</span><span class="p">,</span>
+    <span class="c1"># Vfill = Fill volume in mL</span>
+    <span class="s1">&#39;Vfill&#39;</span><span class="p">:</span> <span class="mf">2.0</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Product properties</span>
+<span class="n">product</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># cSolid = Fractional concentration of solute in the frozen solution</span>
+    <span class="s1">&#39;cSolid&#39;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="c1"># Product Resistance Parameters</span>
+    <span class="s1">&#39;R0&#39;</span><span class="p">:</span> <span class="mf">1.4</span><span class="p">,</span> <span class="c1"># cm^2-hr-Torr/g</span>
+    <span class="s1">&#39;A1&#39;</span><span class="p">:</span> <span class="mf">16.0</span><span class="p">,</span> <span class="c1"># cm-hr-Torr/g</span>
+    <span class="s1">&#39;A2&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="c1"># 1/cm</span>
+    <span class="c1"># Critical product temperature</span>
+    <span class="c1"># At least 2 to 3 deg C below collapse or glass transition temperature</span>
+    <span class="s1">&#39;T_pr_crit&#39;</span><span class="p">:</span> <span class="o">-</span> <span class="mi">5</span> <span class="c1"># in deg C</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># Vial Heat Transfer Parameters</span>
+<span class="n">ht</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;KC&#39;</span><span class="p">:</span> <span class="mf">2.75e-4</span><span class="p">,</span> <span class="c1"># cal/s-cm^2-K</span>
+    <span class="s1">&#39;KP&#39;</span><span class="p">:</span> <span class="mf">8.93e-4</span><span class="p">,</span> <span class="c1"># cal/s-cm^2-K-Torr</span>
+    <span class="s1">&#39;KD&#39;</span><span class="p">:</span> <span class="mf">0.46</span>     <span class="c1"># 1/Torr</span>
+<span class="p">}</span>
 
-# Chamber Pressure
-Pchamber = {
-    # setpt = Chamber pressure set points in Torr
-    'setpt': [0.15],
-    # dt_setpt = Time for which chamber pressure set points are held in min
-    'dt_setpt': [1800.0],
-    # ramp_rate = Chamber pressure ramping rate in Torr/min
-    'ramp_rate': 0.5
-}
+<span class="c1"># Chamber Pressure</span>
+<span class="n">Pchamber</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># setpt = Chamber pressure set points in Torr</span>
+    <span class="s1">&#39;setpt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">],</span>
+    <span class="c1"># dt_setpt = Time for which chamber pressure set points are held in min</span>
+    <span class="s1">&#39;dt_setpt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1800.0</span><span class="p">],</span>
+    <span class="c1"># ramp_rate = Chamber pressure ramping rate in Torr/min</span>
+    <span class="s1">&#39;ramp_rate&#39;</span><span class="p">:</span> <span class="mf">0.5</span>
+<span class="p">}</span>
 
-Tshelf = {
-    # init = Intial shelf temperature in C
-    'init': -35.0,
-    # setpt = Shelf temperature set points in C
-    'setpt': [20.0],
-    # dt_setpt = Time for which shelf temperature set points are held in min
-    'dt_setpt': [1800.0],
-    # ramp_rate = Shelf temperature ramping rate in C/min
-    'ramp_rate': 1.0
-}
+<span class="n">Tshelf</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="c1"># init = Intial shelf temperature in C</span>
+    <span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">35.0</span><span class="p">,</span>
+    <span class="c1"># setpt = Shelf temperature set points in C</span>
+    <span class="s1">&#39;setpt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">],</span>
+    <span class="c1"># dt_setpt = Time for which shelf temperature set points are held in min</span>
+    <span class="s1">&#39;dt_setpt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1800.0</span><span class="p">],</span>
+    <span class="c1"># ramp_rate = Shelf temperature ramping rate in C/min</span>
+    <span class="s1">&#39;ramp_rate&#39;</span><span class="p">:</span> <span class="mf">1.0</span>
+<span class="p">}</span>
 
-# Time step
-dt = 0.01    # hr
-</code></pre>
+<span class="c1"># Time step</span>
+<span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>    <span class="c1"># hr</span>
+</code></pre></div>
 <p>Now, we are ready to actually run the simulation, which is <code>lyopronto.calc_knownRp.dry</code>.</p>
-<p>??? info
-    ::: lyopronto.calc_knownRp.dry</p>
-<pre><code class="language-python">output_table = lp.calc_knownRp.dry(vial,product,ht,Pchamber,Tshelf,dt)
-</code></pre>
+<details class="info">
+<summary>Info</summary>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<a id="lyopronto.calc_knownRp.dry"></a>
+    <div class="doc doc-contents first">
+
+        <p>Simulate the primary drying process for known condiditions and parameters.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>vial</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>see master simulation inputs</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>product</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>see master simulation inputs</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>ht</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>see master simulation inputs</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>Pchamber</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>see master simulation inputs</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>Tshelf</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>see master simulation inputs</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>dt</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Fixed time step for output [hours]</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>output_table</code></td>            <td>
+                  <code><span title="ndarray">ndarray</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Simulation output table with columns for:
+0. Time [hr],
+1. Sublimation front temperature [°C],
+2. Vial bottom temperature [°C],
+3. Shelf temperature [°C],
+4. Chamber pressure [mTorr],
+5. Sublimation flux [kg/hr/m²],
+6. Drying fraction [-]</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>lyopronto\calc_knownRp.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">dry</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">ht</span><span class="p">,</span><span class="n">Pchamber</span><span class="p">,</span><span class="n">Tshelf</span><span class="p">,</span><span class="n">dt</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Simulate the primary drying process for known condiditions and parameters.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        vial (dict): see master simulation inputs</span>
+<span class="sd">        product (dict): see master simulation inputs</span>
+<span class="sd">        ht (dict): see master simulation inputs</span>
+<span class="sd">        Pchamber (dict): see master simulation inputs</span>
+<span class="sd">        Tshelf (dict): see master simulation inputs</span>
+<span class="sd">        dt (float): Fixed time step for output [hours]</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        output_table (ndarray): Simulation output table with columns for:</span>
+<span class="sd">            0. Time [hr],</span>
+<span class="sd">            1. Sublimation front temperature [°C],</span>
+<span class="sd">            2. Vial bottom temperature [°C],</span>
+<span class="sd">            3. Shelf temperature [°C],</span>
+<span class="sd">            4. Chamber pressure [mTorr],</span>
+<span class="sd">            5. Sublimation flux [kg/hr/m²],</span>
+<span class="sd">            6. Drying fraction [-]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">##################  Initialization ################</span>
+
+    <span class="c1"># Initial fill height</span>
+    <span class="n">Lpr0</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">Lpr0_FUN</span><span class="p">(</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Vfill&#39;</span><span class="p">],</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;cSolid&#39;</span><span class="p">])</span>   <span class="c1"># cm</span>
+
+    <span class="n">Pch_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">Pchamber</span><span class="p">[</span><span class="s1">&#39;setpt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># TODO: allow ramps</span>
+    <span class="n">Tsh_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">Tshelf</span><span class="p">[</span><span class="s1">&#39;setpt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="n">Tshelf</span><span class="p">[</span><span class="s1">&#39;ramp_rate&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">Tshelf</span><span class="p">[</span><span class="s1">&#39;init&#39;</span><span class="p">])</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">ht</span><span class="p">,</span> <span class="n">Pch_t</span><span class="p">,</span> <span class="n">Tsh_t</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">Lpr0</span><span class="p">)</span>
+
+    <span class="n">Lck0</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">]</span>
+    <span class="n">T0</span> <span class="o">=</span> <span class="n">Tsh_t</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1">################ Set up dynamic equation ######################</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">calc_dLdt</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="n">Lck</span> <span class="o">=</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">Tsh</span> <span class="o">=</span> <span class="n">Tsh_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">Pch</span> <span class="o">=</span> <span class="n">Pch_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">Kv</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">Kv_FUN</span><span class="p">(</span><span class="n">ht</span><span class="p">[</span><span class="s1">&#39;KC&#39;</span><span class="p">],</span><span class="n">ht</span><span class="p">[</span><span class="s1">&#39;KP&#39;</span><span class="p">],</span><span class="n">ht</span><span class="p">[</span><span class="s1">&#39;KD&#39;</span><span class="p">],</span><span class="n">Pch</span><span class="p">)</span>  <span class="c1"># Vial heat transfer coefficient in cal/s/K/cm^2</span>
+        <span class="n">Rp</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">Rp_FUN</span><span class="p">(</span><span class="n">Lck</span><span class="p">,</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;R0&#39;</span><span class="p">],</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;A1&#39;</span><span class="p">],</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;A2&#39;</span><span class="p">])</span>  <span class="c1"># Product resistance in cm^2-hr-Torr/g</span>
+        <span class="n">Tsub</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">functions</span><span class="o">.</span><span class="n">T_sub_solver_FUN</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">Pch</span><span class="p">,</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Av&#39;</span><span class="p">],</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span><span class="n">Kv</span><span class="p">,</span><span class="n">Lpr0</span><span class="p">,</span><span class="n">Lck</span><span class="p">,</span><span class="n">Rp</span><span class="p">,</span><span class="n">Tsh</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Sublimation front temperature array in degC</span>
+        <span class="n">dmdt</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">sub_rate</span><span class="p">(</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">],</span><span class="n">Rp</span><span class="p">,</span><span class="n">Tsub</span><span class="p">,</span><span class="n">Pch</span><span class="p">)</span>   <span class="c1"># Total sublimation rate array in kg/hr</span>
+        <span class="k">if</span> <span class="n">dmdt</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># print(&quot;Shelf temperature is too low for sublimation.&quot;)</span>
+            <span class="n">dmdt</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">dLdt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">dLdt</span><span class="p">]</span>
+        <span class="c1"># Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC</span>
+
+        <span class="n">dLdt</span> <span class="o">=</span> <span class="p">(</span><span class="n">dmdt</span><span class="o">*</span><span class="n">constant</span><span class="o">.</span><span class="n">kg_To_g</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;cSolid&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solution</span><span class="o">/</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solute</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">vial</span><span class="p">[</span><span class="s1">&#39;Ap&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_ice</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">product</span><span class="p">[</span><span class="s1">&#39;cSolid&#39;</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solution</span><span class="o">-</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_ice</span><span class="p">)</span><span class="o">/</span><span class="n">constant</span><span class="o">.</span><span class="n">rho_solute</span><span class="p">)</span> <span class="c1"># cm</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">dLdt</span><span class="p">]</span>
+
+    <span class="c1">### ------ Condition for ending simulation: completed drying</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finish</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Lpr0</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">finish</span><span class="o">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+    <span class="c1"># ------- Solve the equations</span>
+    <span class="n">sol</span> <span class="o">=</span> <span class="n">solve_ivp</span><span class="p">(</span><span class="n">calc_dLdt</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="o">*</span><span class="mi">3600</span><span class="o">*</span><span class="mi">14</span><span class="p">),</span> <span class="n">Lck0</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">finish</span><span class="p">,</span> 
+                    <span class="n">vectorized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dense_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;BDF&quot;</span><span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">functions</span><span class="o">.</span><span class="n">fill_output</span><span class="p">(</span><span class="n">sol</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output</span>    
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div></details>
+<div class="highlight"><pre><span></span><code><span class="n">output_table</span> <span class="o">=</span> <span class="n">lp</span><span class="o">.</span><span class="n">calc_knownRp</span><span class="o">.</span><span class="n">dry</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">ht</span><span class="p">,</span><span class="n">Pchamber</span><span class="p">,</span><span class="n">Tshelf</span><span class="p">,</span><span class="n">dt</span><span class="p">)</span>
+</code></pre></div>
 <p>It's a good idea, particularly when you are exploring interactively, to write the simulation input and output to disk together so that as you do later analysis, you have a record of what you did. Uncommenting the following code will do so.</p>
 <p>Previously the inputs were recorded as a two-column CSV, which records info but isn't very readable (and frankly not very useful to a machine either). YAML provides a somewhat more sensible format, and fortunately a Python dictionary can be readily represented in YAML.</p>
-<pre><code class="language-python">sim_setup = {
-    'sim': sim,
-    'vial': vial,
-    'product': product,
-    'ht': ht,
-    'Pchamber': Pchamber,
-    'Tshelf': Tshelf,
-    'dt': dt,
-}
+<div class="highlight"><pre><span></span><code><span class="n">sim_setup</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sim&#39;</span><span class="p">:</span> <span class="n">sim</span><span class="p">,</span>
+    <span class="s1">&#39;vial&#39;</span><span class="p">:</span> <span class="n">vial</span><span class="p">,</span>
+    <span class="s1">&#39;product&#39;</span><span class="p">:</span> <span class="n">product</span><span class="p">,</span>
+    <span class="s1">&#39;ht&#39;</span><span class="p">:</span> <span class="n">ht</span><span class="p">,</span>
+    <span class="s1">&#39;Pchamber&#39;</span><span class="p">:</span> <span class="n">Pchamber</span><span class="p">,</span>
+    <span class="s1">&#39;Tshelf&#39;</span><span class="p">:</span> <span class="n">Tshelf</span><span class="p">,</span>
+    <span class="s1">&#39;dt&#39;</span><span class="p">:</span> <span class="n">dt</span><span class="p">,</span>
+<span class="p">}</span>
 
-# # Write input data to disk as YAML
-# import time
-# current_time = time.strftime(&quot;%Y%m%d_%H%M%S&quot;)
-# try:
-#     yamlfile = open('lyopronto_input_'+current_time+'.yaml', 'w')
-#     yaml.dump(sim_setup, yamlfile)
-# finally:
-#     yamlfile.close()
+<span class="c1"># # Write input data to disk as YAML</span>
+<span class="c1"># import time</span>
+<span class="c1"># current_time = time.strftime(&quot;%Y%m%d_%H%M%S&quot;)</span>
+<span class="c1"># try:</span>
+<span class="c1">#     yamlfile = open(&#39;lyopronto_input_&#39;+current_time+&#39;.yaml&#39;, &#39;w&#39;)</span>
+<span class="c1">#     yaml.dump(sim_setup, yamlfile)</span>
+<span class="c1"># finally:</span>
+<span class="c1">#     yamlfile.close()</span>
 
-# # Write simulation data to disk as CSV
-# try:
-#     csvfile = open('lyopronto_output_'+current_time+'.csv', 'w')
-#     writer = csv.writer(csvfile)
-#     writer.writerow(['Time [hr]','Sublimation Temperature [C]','Vial Bottom Temperature [C]', 'Shelf Temperature [C]','Chamber Pressure [mTorr]','Sublimation Flux [kg/hr/m^2]','Percent Dried'])
-#     for i in range(0,len(output_table)):
-#         writer.writerow(output_table[i])
-# finally:
-#     csvfile.close()
-</code></pre>
+<span class="c1"># # Write simulation data to disk as CSV</span>
+<span class="c1"># try:</span>
+<span class="c1">#     csvfile = open(&#39;lyopronto_output_&#39;+current_time+&#39;.csv&#39;, &#39;w&#39;)</span>
+<span class="c1">#     writer = csv.writer(csvfile)</span>
+<span class="c1">#     writer.writerow([&#39;Time [hr]&#39;,&#39;Sublimation Temperature [C]&#39;,&#39;Vial Bottom Temperature [C]&#39;, &#39;Shelf Temperature [C]&#39;,&#39;Chamber Pressure [mTorr]&#39;,&#39;Sublimation Flux [kg/hr/m^2]&#39;,&#39;Percent Dried&#39;])</span>
+<span class="c1">#     for i in range(0,len(output_table)):</span>
+<span class="c1">#         writer.writerow(output_table[i])</span>
+<span class="c1"># finally:</span>
+<span class="c1">#     csvfile.close()</span>
+</code></pre></div>
 <p>Finally, it's a good idea to plot everything. Here, again, you could save plots to disk by uncommenting the lines below.</p>
 <p>Some default styling of the axes is carried out with <code>lyopronto.plot_styling.axis_style_*</code>, like turning on minor ticks and setting tick labels to be bold. However, this is entirely up to aesthetic taste and leaving it out does not affect the basic logic of the plots.</p>
-<pre><code class="language-python">matplotlibrc('text.latex', preamble=r'\usepackage{color}')
-matplotlibrc('text',usetex=False)
-plt.rcParams['font.family'] = 'Arial'
+<div class="highlight"><pre><span></span><code><span class="n">matplotlibrc</span><span class="p">(</span><span class="s1">&#39;text.latex&#39;</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;\usepackage</span><span class="si">{color}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="n">matplotlibrc</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span><span class="n">usetex</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.family&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Arial&#39;</span>
 
-figwidth = 30
-figheight = 20
-lineWidth = 5
-markerSize = 20
-</code></pre>
-<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
-ax1 = fig.add_subplot(1,1,1)
-ax2 = ax1.twinx()
-ax1.plot(output_table[:,0],output_table[:,4],'-o',color='b',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Chamber Pressure&quot;)
-ax2.plot(output_table[:,0],output_table[:,5],'-',color=[0,0.7,0.3],linewidth=lineWidth, label = &quot;Sublimation Flux&quot;)
+<span class="n">figwidth</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">figheight</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">markerSize</span> <span class="o">=</span> <span class="mi">20</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
+<span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
+<span class="n">ax1</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">4</span><span class="p">],</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">markevery</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="n">markerSize</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Chamber Pressure&quot;</span><span class="p">)</span>
+<span class="n">ax2</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">5</span><span class="p">],</span><span class="s1">&#39;-&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.7</span><span class="p">,</span><span class="mf">0.3</span><span class="p">],</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Sublimation Flux&quot;</span><span class="p">)</span>
 
-lp.plot_styling.axis_style_pressure(ax1)
-lp.plot_styling.axis_style_subflux(ax2)
+<span class="n">lp</span><span class="o">.</span><span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_pressure</span><span class="p">(</span><span class="n">ax1</span><span class="p">)</span>
+<span class="n">lp</span><span class="o">.</span><span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_subflux</span><span class="p">(</span><span class="n">ax2</span><span class="p">)</span>
 
-plt.tight_layout()
-# figure_name = 'lyopronto_pressure_subflux_'+current_time+'.pdf'
-# plt.savefig(figure_name)
-# plt.close()
-</code></pre>
-<p><img alt="img" src="../_data/ebebb738b913454cadd47b46ebb80ed9.png" /></p>
-<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
-ax = fig.add_subplot(1,1,1)
-lp.plot_styling.axis_style_percdried(ax)
-ax.plot(output_table[:,0],output_table[:,-1],'-k',linewidth=lineWidth, label = &quot;Percent Dried&quot;)
-plt.tight_layout()
-# figure_name = 'lyopronto_percentdried_'+current_time+'.pdf'
-# plt.savefig(figure_name)
-# plt.close()
-</code></pre>
-<p><img alt="img" src="../_data/f00a27a3fa9b4b0f9bf70eb666a3fec0.png" /></p>
-<pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
-ax = fig.add_subplot(1,1,1)
-lp.plot_styling.axis_style_temperature(ax)
-ax.plot(output_table[:,0],output_table[:,1],'-b',linewidth=lineWidth, label = &quot;Sublimation Front Temperature&quot;)
-ax.plot(output_table[:,0],output_table[:,2],'-r',linewidth=lineWidth, label = &quot;Maximum Product Temperature&quot;)
-ax.plot(output_table[:,0],output_table[:,3],'-o',color='k',markevery=5,linewidth=lineWidth, markersize=markerSize, label = &quot;Shelf Temperature&quot;)
-plt.legend(fontsize=40,loc='best')
-ll,ul = ax.get_ylim()
-ax.set_ylim([ll,ul+5.0])
-plt.tight_layout()
-# figure_name = 'lyopronto_temperatures_'+current_time+'.pdf'
-# plt.savefig(figure_name)
-# plt.close()
-</code></pre>
-<p><img alt="img" src="../_data/478efde0fe724319acf081fcf8bab738.png" /></p>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1"># figure_name = &#39;lyopronto_pressure_subflux_&#39;+current_time+&#39;.pdf&#39;</span>
+<span class="c1"># plt.savefig(figure_name)</span>
+<span class="c1"># plt.close()</span>
+</code></pre></div>
+<p><img alt="img" src="../_data/0ffe1a6801234c19bdddd3e5c7765484.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">lp</span><span class="o">.</span><span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_percdried</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;-k&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Percent Dried&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1"># figure_name = &#39;lyopronto_percentdried_&#39;+current_time+&#39;.pdf&#39;</span>
+<span class="c1"># plt.savefig(figure_name)</span>
+<span class="c1"># plt.close()</span>
+</code></pre></div>
+<p><img alt="img" src="../_data/aff7cc3e54e145c8919f3871980af8c5.png" /></p>
+<div class="highlight"><pre><span></span><code><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">lp</span><span class="o">.</span><span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_temperature</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;-b&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Sublimation Front Temperature&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span><span class="s1">&#39;-r&#39;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Maximum Product Temperature&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">output_table</span><span class="p">[:,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span><span class="n">markevery</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="n">lineWidth</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="n">markerSize</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Shelf Temperature&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">)</span>
+<span class="n">ll</span><span class="p">,</span><span class="n">ul</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_ylim</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">ll</span><span class="p">,</span><span class="n">ul</span><span class="o">+</span><span class="mf">5.0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1"># figure_name = &#39;lyopronto_temperatures_&#39;+current_time+&#39;.pdf&#39;</span>
+<span class="c1"># plt.savefig(figure_name)</span>
+<span class="c1"># plt.close()</span>
+</code></pre></div>
+<p><img alt="img" src="../_data/a926c048294348b4be5195b826d20488.png" /></p>
 
 
 
