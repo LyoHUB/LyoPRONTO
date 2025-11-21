@@ -24,6 +24,19 @@ from . import functions
 ################# Primary drying at fixed set points ###############
 
 def dry(vial,product,ht,Pchamber,Tshelf,dt):
+    """Some placeholder docs.
+
+    Args:
+        vial (_type_): _description_
+        product (_type_): _description_
+        ht (_type_): _description_
+        Pchamber (_type_): _description_
+        Tshelf (_type_): _description_
+        dt (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
 
     ##################  Initialization ################
 
