@@ -681,7 +681,8 @@ dt = 0.01    # hr
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>ndarray</code></td>            <td>
+<td><code>output_table</code></td>            <td>
+                  <code><span title="ndarray">ndarray</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -780,7 +781,7 @@ dt = 0.01    # hr
 <span class="sd">        dt (float): Fixed time step for output [hours]</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        ndarray: Simulation output table with columns for:</span>
+<span class="sd">        output_table (ndarray): Simulation output table with columns for:</span>
 <span class="sd">            - Time [hr]</span>
 <span class="sd">            - Sublimation front temperature [°C]</span>
 <span class="sd">            - Vial bottom temperature [°C]</span>
@@ -897,7 +898,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/90a067a0c1b04669ba81a478bd3fde15.png" /></p>
+<p><img alt="img" src="../_data/05972542e7224bc2b66974322efd1ace.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 lp.plot_styling.axis_style_percdried(ax)
@@ -907,7 +908,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/e54b3f8298cd4fdabff74ada4d0d666c.png" /></p>
+<p><img alt="img" src="../_data/c91a5bd99fb041f28dd2fd3705f555a2.png" /></p>
 <pre><code class="language-python">fig = plt.figure(0,figsize=(figwidth,figheight))
 ax = fig.add_subplot(1,1,1)
 lp.plot_styling.axis_style_temperature(ax)
@@ -922,7 +923,7 @@ plt.tight_layout()
 # plt.savefig(figure_name)
 # plt.close()
 </code></pre>
-<p><img alt="img" src="../_data/372cec070a894bda8eec9379515b11b8.png" /></p>
+<p><img alt="img" src="../_data/eeb54826faee489a81259f27599be60a.png" /></p>
 
 
 
