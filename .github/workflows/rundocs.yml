@@ -26,5 +26,6 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
       - run: pip install ruamel.yaml scipy numpy matplotlib papermill ipykernel
+      - run: cd docs/examples
       - name: Run notebooks
-        run: papermill docs/examples/${{ matrix.notebook }} docs/examples/${{ matrix.notebook }} -k python
+        run: papermill ${{ matrix.notebook }} ${{ matrix.notebook }} -k python
