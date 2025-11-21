@@ -1176,13 +1176,13 @@
             <td>
               <div class="doc-md-description">
                 <p>Simulation output table with columns for:
-- Time [hr]
-- Sublimation front temperature [°C]
-- Vial bottom temperature [°C]
-- Shelf temperature [°C]
-- Chamber pressure [mTorr]
-- Sublimation flux [kg/hr/m²]
-- Drying fraction [-]</p>
+0. Time [hr],
+1. Sublimation front temperature [°C],
+2. Vial bottom temperature [°C],
+3. Shelf temperature [°C],
+4. Chamber pressure [mTorr],
+5. Sublimation flux [kg/hr/m²],
+6. Drying fraction [-]</p>
               </div>
             </td>
           </tr>
@@ -1271,13 +1271,13 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        output_table (ndarray): Simulation output table with columns for:</span>
-<span class="sd">            - Time [hr]</span>
-<span class="sd">            - Sublimation front temperature [°C]</span>
-<span class="sd">            - Vial bottom temperature [°C]</span>
-<span class="sd">            - Shelf temperature [°C]</span>
-<span class="sd">            - Chamber pressure [mTorr]</span>
-<span class="sd">            - Sublimation flux [kg/hr/m²]</span>
-<span class="sd">            - Drying fraction [-]</span>
+<span class="sd">            0. Time [hr],</span>
+<span class="sd">            1. Sublimation front temperature [°C],</span>
+<span class="sd">            2. Vial bottom temperature [°C],</span>
+<span class="sd">            3. Shelf temperature [°C],</span>
+<span class="sd">            4. Chamber pressure [mTorr],</span>
+<span class="sd">            5. Sublimation flux [kg/hr/m²],</span>
+<span class="sd">            6. Drying fraction [-]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">##################  Initialization ################</span>
@@ -2458,13 +2458,13 @@ temperature in degC</p>
             <td>
               <div class="doc-md-description">
                 <p>The full set of system states at the given time step:
-- Time [hr]
-- Sublimation front temperature [°C]
-- Vial bottom temperature [°C]
-- Shelf temperature [°C]
-- Chamber pressure [mTorr]
-- Sublimation flux [kg/hr/m²]
-- Drying fraction [-]</p>
+0. Time [hr],
+1. Sublimation front temperature [°C],
+2. Vial bottom temperature [°C],
+3. Shelf temperature [°C],
+4. Chamber pressure [mTorr],
+5. Sublimation flux [kg/hr/m²],
+6. Drying fraction [-]</p>
               </div>
             </td>
           </tr>
@@ -2516,13 +2516,13 @@ temperature in degC</p>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        (np.ndarray): The full set of system states at the given time step:</span>
-<span class="sd">            - Time [hr]</span>
-<span class="sd">            - Sublimation front temperature [°C]</span>
-<span class="sd">            - Vial bottom temperature [°C]</span>
-<span class="sd">            - Shelf temperature [°C]</span>
-<span class="sd">            - Chamber pressure [mTorr]</span>
-<span class="sd">            - Sublimation flux [kg/hr/m²]</span>
-<span class="sd">            - Drying fraction [-]</span>
+<span class="sd">            0. Time [hr],</span>
+<span class="sd">            1. Sublimation front temperature [°C],</span>
+<span class="sd">            2. Vial bottom temperature [°C],</span>
+<span class="sd">            3. Shelf temperature [°C],</span>
+<span class="sd">            4. Chamber pressure [mTorr],</span>
+<span class="sd">            5. Sublimation flux [kg/hr/m²],</span>
+<span class="sd">            6. Drying fraction [-]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">ht</span><span class="p">,</span> <span class="n">Pch_t</span><span class="p">,</span> <span class="n">Tsh_t</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">Lpr0</span> <span class="o">=</span> <span class="n">config</span>
     <span class="n">Tsh</span> <span class="o">=</span> <span class="n">Tsh_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
