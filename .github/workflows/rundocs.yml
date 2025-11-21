@@ -16,6 +16,8 @@ jobs:
     #   GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
     name: Notebook
     runs-on: ubuntu-latest
+    defaults:
+      working-directory: ./docs/examples
     strategy:
       matrix:
         notebook: 
@@ -27,6 +29,4 @@ jobs:
         uses: actions/setup-python@v4
       - run: pip install ruamel.yaml scipy numpy matplotlib papermill ipykernel
       - name: Run notebooks
-        run: \
-          cd docs/examples && \
-          papermill ${{ matrix.notebook }} ${{ matrix.notebook }} -k python
+        run: papermill ${{ matrix.notebook }} ${{ matrix.notebook }} -k python
