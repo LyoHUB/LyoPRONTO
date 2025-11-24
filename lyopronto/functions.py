@@ -280,7 +280,14 @@ def calc_step(t, Lck, config):
         config (tuple): A tuple containing the configuration parameters.
 
     Returns:
-        (np.ndarray): The full set of system states at the given time step.
+        (np.ndarray): The full set of system states at the given time step:
+            0. Time [hr],
+            1. Sublimation front temperature [°C],
+            2. Vial bottom temperature [°C],
+            3. Shelf temperature [°C],
+            4. Chamber pressure [mTorr],
+            5. Sublimation flux [kg/hr/m²],
+            6. Drying fraction [-]
     """
     vial, product, ht, Pch_t, Tsh_t, dt, Lpr0 = config
     Tsh = Tsh_t(t)
