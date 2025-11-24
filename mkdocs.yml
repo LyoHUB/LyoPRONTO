@@ -2,6 +2,8 @@ site_name: LyoPRONTO Documentation
 
 theme:
     name: "material"
+    features:
+        - content.code.copy
 
 plugins:
     - mkdocstrings:
@@ -9,15 +11,30 @@ plugins:
     - mike:
         version_selector: true
         canonical_version: latest
+    - ipynb
 extra:
     version:
         provider: mike
+
+markdown_extensions:
+    - pymdownx.inlinehilite
+    - pymdownx.snippets
+    - admonition
+    - pymdownx.details
+    - pymdownx.superfences
+    - pymdownx.highlight:
+        anchor_linenums: true
+        line_spans: __span
+        pygments_lang_class: true
 
 nav:
     # List of web pages to show, in order
     - index.md
     - tutorials.md
     - how-to-guides.md
+    - Examples:
+        - examples/knownRp_PD.ipynb
+        - examples/unknownRp_PD.ipynb
     - explanation.md
     - reference.md
 

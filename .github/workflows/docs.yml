@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ steps.versions.outputs.result }}
-      - run: pip install mkdocstrings-python mkdocs-material mike
+      - run: pip install mkdocstrings-python mkdocs-material mike mkdocs-ipynb
       - run: echo ${{ github.event_name}} ${{ github.ref_name }}
       # Deploy docs according to type of event
       - name: Deploy docs as latest
@@ -47,4 +47,3 @@ jobs:
       - name: Get docs into GitHub Pages
         run: |
           git switch gh-pages
-          git push origin gh-pages
