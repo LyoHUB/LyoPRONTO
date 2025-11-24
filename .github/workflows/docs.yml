@@ -17,16 +17,21 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GIT_COMMITTER_NAME: ${{ github.actor }}
       GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
-
     name: Deploy docs
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout main
-        uses: actions/checkout@v5
-        # To be able to push gh-pages branch later, need to have that branch fetched
-        # Could fetch it later on but this seems simpler and less finicky
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
+      - name: Read CI version config
+        id: versions
+        uses: mikefarah/yq@v4.44.1
+        with:
+          cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ steps.versions.outputs.result }}
       - run: pip install mkdocstrings-python mkdocs-material mike mkdocs-ipynb
       - run: echo ${{ github.event_name}} ${{ github.ref_name }}
       # Deploy docs according to type of event
@@ -42,4 +47,3 @@ jobs:
       - name: Get docs into GitHub Pages
         run: |
           git switch gh-pages
-          git push origin gh-pages
