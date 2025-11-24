@@ -1,0 +1,1402 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Physics Reference for LyoPRONTO - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#physics-reference-for-lyopronto" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Physics Reference for LyoPRONTO
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      Table of Contents
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lyophilization-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Lyophilization Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lyophilization Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-lyophilization" class="md-nav__link">
+    <span class="md-ellipsis">
+      What is Lyophilization?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-sublimation-instead-of-melting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Sublimation Instead of Melting?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Process Variables
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#physical-picture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Physical Picture
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#heat-transfer-physics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Heat Transfer Physics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Heat Transfer Physics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#energy-balance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Energy Balance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vial-heat-transfer-coefficient" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vial Heat Transfer Coefficient
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      Temperature Profile
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mass-transfer-physics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mass Transfer Physics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mass Transfer Physics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#driving-force-for-sublimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Driving Force for Sublimation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#product-resistance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Product Resistance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sublimation-rate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sublimation Rate
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coupling-and-non-monotonic-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coupling and Non-Monotonic Behavior
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Coupling and Non-Monotonic Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-flux-is-non-monotonic" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Flux is Non-Monotonic
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature-coupling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Temperature Coupling
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#valid-parameter-ranges" class="md-nav__link">
+    <span class="md-ellipsis">
+      Valid Parameter Ranges
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Valid Parameter Ranges">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physical-bounds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Physical Bounds
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-constraints" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical Constraints
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge-cases-and-their-physics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Edge Cases and Their Physics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Edge Cases and Their Physics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#very-low-shelf-temperature-tsh-40c" class="md-nav__link">
+    <span class="md-ellipsis">
+      Very Low Shelf Temperature (Tsh &lt; -40°C)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#very-high-pressure-pch-03-torr" class="md-nav__link">
+    <span class="md-ellipsis">
+      Very High Pressure (Pch &gt; 0.3 Torr)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#very-low-resistance-r0-05" class="md-nav__link">
+    <span class="md-ellipsis">
+      Very Low Resistance (R0 &lt; 0.5)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#very-high-resistance-a1-50" class="md-nav__link">
+    <span class="md-ellipsis">
+      Very High Resistance (A1 &gt; 50)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end-of-drying-l-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      End of Drying (L → 0)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#numerical-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Numerical Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Numerical Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mass-balance-error-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mass Balance Error (~2%)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stiff-differential-equations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Stiff Differential Equations
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implicit-temperature-solver" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implicit Temperature Solver
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponential-vapor-pressure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Exponential Vapor Pressure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initialization-for-convergence" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialization for Convergence
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-misconceptions-for-ai-assistants" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Misconceptions (for AI assistants)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Misconceptions (for AI assistants)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#higher-pressure-always-means-faster-drying" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "Higher pressure always means faster drying"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flux-should-decrease-monotonically" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "Flux should decrease monotonically"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pch-in-output-is-in-torr" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "Pch in output is in Torr"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dried-column-is-percentage-0-100" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "dried column is percentage 0-100"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mass-balance-must-be-exact" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "Mass balance must be exact"
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tbot-is-always-tsub" class="md-nav__link">
+    <span class="md-ellipsis">
+      ❌ "Tbot is always &gt; Tsub"
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-reference-for-common-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Reference for Common Checks
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Reference for Common Checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#is-this-output-physically-reasonable" class="md-nav__link">
+    <span class="md-ellipsis">
+      Is this output physically reasonable?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references-for-deep-dives" class="md-nav__link">
+    <span class="md-ellipsis">
+      References for Deep Dives
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="References for Deep Dives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#foundational-papers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Foundational Papers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#textbooks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Textbooks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#online-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Online Resources
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Questions?
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="physics-reference-for-lyopronto">Physics Reference for LyoPRONTO</h1>
+<p>This document provides detailed physics context for AI assistants working with LyoPRONTO. It explains why the code behaves the way it does from a fundamental physics perspective.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#lyophilization-overview">Lyophilization Overview</a></li>
+<li><a href="#heat-transfer-physics">Heat Transfer Physics</a></li>
+<li><a href="#mass-transfer-physics">Mass Transfer Physics</a></li>
+<li><a href="#coupling-and-non-monotonic-behavior">Coupling and Non-Monotonic Behavior</a></li>
+<li><a href="#valid-parameter-ranges">Valid Parameter Ranges</a></li>
+<li><a href="#edge-cases-and-their-physics">Edge Cases and Their Physics</a></li>
+<li><a href="#numerical-considerations">Numerical Considerations</a></li>
+</ol>
+<hr />
+<h2 id="lyophilization-overview">Lyophilization Overview</h2>
+<h3 id="what-is-lyophilization">What is Lyophilization?</h3>
+<p><strong>Lyophilization</strong> (freeze-drying) is a process to preserve pharmaceuticals and biologics by removing water through sublimation. It consists of three phases:</p>
+<ol>
+<li><strong>Freezing</strong>: Cool liquid formulation below freezing point → solid ice forms</li>
+<li><strong>Primary Drying</strong>: Apply vacuum + heat → ice sublimates directly to vapor (↓ 90-95% of drying time)</li>
+<li><strong>Secondary Drying</strong>: Increase temperature → bound water desorbs (↓ 5-10% of time)</li>
+</ol>
+<p>LyoPRONTO focuses on <strong>primary drying</strong>, which is the longest and most critical phase.</p>
+<h3 id="why-sublimation-instead-of-melting">Why Sublimation Instead of Melting?</h3>
+<ul>
+<li><strong>Structural preservation</strong>: Ice scaffolding maintains product structure</li>
+<li><strong>Low temperature</strong>: Protects heat-sensitive biologics</li>
+<li><strong>Molecular stability</strong>: Prevents degradation reactions that occur in liquid phase</li>
+<li><strong>Long shelf life</strong>: Removes almost all water (&lt; 1% residual moisture)</li>
+</ul>
+<h3 id="process-variables">Process Variables</h3>
+<p><strong>Control Variables</strong> (what we can set):
+- <code>Pch</code>: Chamber pressure (Torr) - controlled by vacuum pump
+- <code>Tsh</code>: Shelf temperature (°C) - controlled by heating/cooling fluid</p>
+<p><strong>State Variables</strong> (what we observe/predict):
+- <code>Tsub</code>: Temperature at sublimation front (°C)
+- <code>Tbot</code>: Temperature at vial bottom (°C)
+- <code>dmdt</code>: Sublimation rate (kg/hr)
+- <code>Lck</code>: Dried cake thickness (cm)</p>
+<p><strong>Product Properties</strong> (inherent to formulation):
+- <code>Rp</code>: Product resistance to vapor flow (cm²-hr-Torr/g)
+- <code>Kv</code>: Vial heat transfer coefficient (cal/s/K/cm²)</p>
+<h3 id="physical-picture">Physical Picture</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>          Vacuum Chamber (Pch)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                 ↑
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                 │ vapor flow (dmdt)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        ┌────────┴────────┐
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        │  Dried Cake     │  Lck (increasing)
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        │  (porous solid) │
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        ├─────────────────┤ ← Sublimation front (Tsub)
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        │  Frozen Product │  L (decreasing)
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        │  (solid ice)    │
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        └─────────────────┘
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        │   Vial Bottom   │  (Tbot)
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        └─────────────────┘
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>              ↑ Q_in
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>         Heated Shelf (Tsh)
+</span></code></pre></div>
+<p><strong>Key Insight</strong>: The sublimation front moves downward as drying proceeds. Behind it is porous dried cake; ahead of it is solid ice.</p>
+<hr />
+<h2 id="heat-transfer-physics">Heat Transfer Physics</h2>
+<h3 id="energy-balance">Energy Balance</h3>
+<p>At steady state (quasi-static assumption):
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Heat IN = Heat OUT
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Q_shelf = Q_sublimation
+</span></code></pre></div></p>
+<p><strong>Heat IN</strong> (from shelf):
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">Q_shelf</span> <span class="o">=</span> <span class="n">Kv</span> <span class="o">*</span> <span class="n">Av</span> <span class="o">*</span> <span class="p">(</span><span class="n">Tsh</span> <span class="o">-</span> <span class="n">Tbot</span><span class="p">)</span>  <span class="c1"># cal/s</span>
+</span></code></pre></div>
+- Conducted/radiated from heated shelf through vial bottom
+- Proportional to temperature difference
+- Limited by vial heat transfer coefficient Kv</p>
+<p><strong>Heat OUT</strong> (for sublimation):
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">Q_sublimation</span> <span class="o">=</span> <span class="n">dmdt</span> <span class="o">*</span> <span class="n">dHs</span>  <span class="c1"># cal/s</span>
+</span></code></pre></div>
+- Consumed to convert ice → vapor
+- Proportional to sublimation rate
+- <code>dHs = 678 cal/g</code> is latent heat of sublimation for ice</p>
+<h3 id="vial-heat-transfer-coefficient">Vial Heat Transfer Coefficient</h3>
+<p>Empirical correlation:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">Kv</span> <span class="o">=</span> <span class="n">KC</span> <span class="o">+</span> <span class="n">KP</span> <span class="o">*</span> <span class="n">Pch</span> <span class="o">+</span> <span class="n">KD</span> <span class="o">*</span> <span class="n">Lck</span>
+</span></code></pre></div></p>
+<p><strong>Physical interpretation</strong>:
+- <code>KC</code>: Base conduction (glass-metal contact, radiation)
+- <code>KP * Pch</code>: Gas conduction through gap (increases with pressure)
+- <code>KD * Lck</code>: Dried cake thermal resistance (increases with thickness)</p>
+<p><strong>Typical values</strong>:
+- <code>KC ≈ 2.5e-4</code> cal/s/K/cm²
+- <code>KP ≈ 1e-6</code> cal/s/K/cm²/Torr
+- <code>KD ≈ -5e-5</code> cal/s/K/cm²/cm (negative: cake adds resistance)</p>
+<p><strong>Why does Kv matter?</strong>
+- High Kv → more heat → faster drying but higher Tsub
+- Low Kv → less heat → slower drying but lower Tsub
+- Optimization trades off speed vs. temperature control</p>
+<h3 id="temperature-profile">Temperature Profile</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Tsh (shelf)  &gt;  Tbot (vial bottom)  &gt;  Tsub (sublimation front)
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a> +10°C           -5°C                    -20°C
+</span></code></pre></div>
+<p><strong>Why Tbot &gt; Tsub?</strong>
+- Heat must flow from hot (shelf) to cold (sublimation)
+- Temperature gradient drives heat flux
+- Larger gradient → faster heat transfer → faster drying</p>
+<p><strong>Why is Tsub coldest?</strong>
+- Sublimation absorbs heat (endothermic: ΔH = +678 cal/g)
+- Cools the sublimation front
+- Like evaporative cooling (but from solid)</p>
+<hr />
+<h2 id="mass-transfer-physics">Mass Transfer Physics</h2>
+<h3 id="driving-force-for-sublimation">Driving Force for Sublimation</h3>
+<p>Mass transfer is driven by <strong>vapor pressure difference</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">dmdt</span> <span class="err">∝</span> <span class="p">(</span><span class="n">Psub</span> <span class="o">-</span> <span class="n">Pch</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p><strong>Psub</strong> (vapor pressure at sublimation front):
+- Depends on Tsub via Antoine equation
+- Higher Tsub → higher Psub → faster sublimation
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">Psub</span> <span class="o">=</span> <span class="mf">2.698e10</span> <span class="o">*</span> <span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">6144.96</span> <span class="o">/</span> <span class="p">(</span><span class="n">Tsub</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">))</span>  <span class="c1"># Torr</span>
+</span></code></pre></div></p>
+<p><strong>Pch</strong> (chamber pressure):
+- Controlled by vacuum system
+- Lower Pch → larger driving force → faster sublimation</p>
+<p><strong>Physical analogy</strong>: Water flows downhill due to pressure difference. Vapor "flows" from high pressure (Psub) to low pressure (Pch).</p>
+<h3 id="product-resistance">Product Resistance</h3>
+<p>The dried cake acts as a <strong>porous barrier</strong> to vapor flow:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">dmdt</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ap</span> <span class="o">/</span> <span class="n">Rp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Psub</span> <span class="o">-</span> <span class="n">Pch</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p><strong>Resistance model</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">Rp</span> <span class="o">=</span> <span class="n">R0</span> <span class="o">+</span> <span class="n">A1</span> <span class="o">*</span> <span class="n">Lck</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">A2</span> <span class="o">*</span> <span class="n">Lck</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p><strong>Physical interpretation</strong>:
+- <code>R0</code>: Base resistance (initial nucleation layer)
+- <code>A1 * Lck</code>: Linear term (cake thickness effect)
+- <code>A2 * Lck</code>: Saturation term (resistance doesn't grow indefinitely)</p>
+<p><strong>Why does resistance increase?</strong>
+- As Lck grows, vapor has longer path through porous cake
+- Pores may collapse or tortuosity increases
+- Like blowing through a straw: longer straw = harder to blow</p>
+<p><strong>Typical values</strong>:
+- <code>R0 ≈ 1-5</code> cm²-hr-Torr/g
+- <code>A1 ≈ 10-50</code> cm²-hr-Torr/g/cm
+- <code>A2 ≈ 0.1-1</code> cm⁻¹</p>
+<p><strong>Why does A2 matter?</strong>
+- Without A2: Rp grows without bound (unphysical)
+- With A2: Rp asymptotes to <code>R0 + A1/A2</code> (physically realistic)
+- Represents structural stabilization of dried cake</p>
+<h3 id="sublimation-rate">Sublimation Rate</h3>
+<p>Combining heat and mass transfer:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># From mass transfer</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">dmdt</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ap</span> <span class="o">/</span> <span class="n">Rp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Psub</span> <span class="o">-</span> <span class="n">Pch</span><span class="p">)</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1"># From energy balance</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">dmdt</span> <span class="o">=</span> <span class="n">Kv</span> <span class="o">*</span> <span class="n">Av</span> <span class="o">*</span> <span class="p">(</span><span class="n">Tsh</span> <span class="o">-</span> <span class="n">Tbot</span><span class="p">)</span> <span class="o">/</span> <span class="n">dHs</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="c1"># These must be equal (implicit in Tsub)</span>
+</span></code></pre></div></p>
+<p><strong>Key insight</strong>: Sublimation rate is <strong>doubly constrained</strong>:
+1. Mass transfer: Limited by product resistance
+2. Heat transfer: Limited by heat input</p>
+<p><strong>Analogy</strong>: Like a funnel - flow limited by narrower opening (bottleneck).</p>
+<hr />
+<h2 id="coupling-and-non-monotonic-behavior">Coupling and Non-Monotonic Behavior</h2>
+<h3 id="why-flux-is-non-monotonic">Why Flux is Non-Monotonic</h3>
+<p><strong>Observation</strong>: Sublimation flux does NOT decrease monotonically. It often <strong>increases early</strong> then decreases.</p>
+<p><strong>Physical explanation</strong>:</p>
+<p><strong>Early Stage</strong> (t &lt; 20% of drying):
+- Shelf temperature ramping up (Tsh increasing)
+- Heat input increasing (Q_shelf ∝ Tsh - Tbot)
+- Tsub rising → Psub rising → dmdt increasing
+- <strong>Heat transfer is bottleneck</strong></p>
+<p><strong>Mid Stage</strong> (20% &lt; t &lt; 80%):
+- Tsh reaches setpoint (constant)
+- Resistance starting to increase (Lck growing)
+- But heat input still strong
+- <strong>Transition region</strong></p>
+<p><strong>Late Stage</strong> (t &gt; 80%):
+- Resistance very high (Lck large)
+- Vapor pressure difference (Psub - Pch) decreasing
+- dmdt decreasing
+- <strong>Mass transfer is bottleneck</strong></p>
+<p><strong>Mathematical view</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">dmdt</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ap</span> <span class="o">/</span> <span class="n">Rp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Psub</span> <span class="o">-</span> <span class="n">Pch</span><span class="p">)</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>      <span class="o">=</span> <span class="p">(</span><span class="n">Ap</span> <span class="o">/</span> <span class="n">Rp</span><span class="p">(</span><span class="n">Lck</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">Psub</span><span class="p">(</span><span class="n">Tsub</span><span class="p">)</span> <span class="o">-</span> <span class="n">Pch</span><span class="p">)</span>
+</span></code></pre></div>
+- Rp(Lck) increases with time (bad for dmdt)
+- Psub(Tsub) can increase if Tsh is ramping (good for dmdt)
+- Net effect: <strong>non-monotonic</strong>, depends on ramp rate</p>
+<p><strong>Implications for AI assistants</strong>:
+- ❌ Don't write <code>assert flux[i+1] &lt; flux[i]</code> (will fail!)
+- ✅ Do write <code>assert flux eventually decreases</code> (check late stage)
+- ✅ Do expect peak flux at 10-30% dried</p>
+<h3 id="temperature-coupling">Temperature Coupling</h3>
+<p>Tsub is <strong>implicitly defined</strong> by energy balance:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">Kv</span> <span class="o">*</span> <span class="n">Av</span> <span class="o">*</span> <span class="p">(</span><span class="n">Tsh</span> <span class="o">-</span> <span class="n">Tbot</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ap</span> <span class="o">/</span> <span class="n">Rp</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Psub</span><span class="p">(</span><span class="n">Tsub</span><span class="p">)</span> <span class="o">-</span> <span class="n">Pch</span><span class="p">)</span> <span class="o">*</span> <span class="n">dHs</span>
+</span></code></pre></div></p>
+<p>This is a <strong>nonlinear equation</strong> in Tsub:
+- Psub(Tsub) is exponential (Antoine equation)
+- Must solve numerically (fsolve)</p>
+<p><strong>Physical picture</strong>:
+- If Tsub too high → Psub high → dmdt high → needs more heat (inconsistent)
+- If Tsub too low → Psub low → dmdt low → needs less heat (inconsistent)
+- Unique Tsub where heat supply = heat demand (equilibrium)</p>
+<p><strong>Why this matters for Pyomo</strong>:
+- Cannot use explicit formula for Tsub
+- Must formulate as constraint: <code>f(Tsub, Tsh, Pch, ...) = 0</code>
+- Requires reformulation (log transform, auxiliary variables)</p>
+<hr />
+<h2 id="valid-parameter-ranges">Valid Parameter Ranges</h2>
+<h3 id="physical-bounds">Physical Bounds</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Min</th>
+<th>Max</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pch</td>
+<td>0.05 Torr</td>
+<td>0.5 Torr</td>
+<td>Below: choked flow; Above: condensation risk</td>
+</tr>
+<tr>
+<td>Tsh</td>
+<td>-50°C</td>
+<td>+50°C</td>
+<td>Equipment limits</td>
+</tr>
+<tr>
+<td>Tsub</td>
+<td>-60°C</td>
+<td>0°C</td>
+<td>Below: no data; Above: melting</td>
+</tr>
+<tr>
+<td>Tbot</td>
+<td>-60°C</td>
+<td>+50°C</td>
+<td>Between Tsh and Tsub</td>
+</tr>
+<tr>
+<td>dmdt</td>
+<td>0</td>
+<td>∞</td>
+<td>Physically non-negative</td>
+</tr>
+</tbody>
+</table>
+<h3 id="practical-constraints">Practical Constraints</h3>
+<p><strong>Temperature limits</strong>:
+- <strong>Collapse temperature</strong> (Tc): Product structure collapses if Tsub &gt; Tc
+  - Typical Tc: -10°C to -40°C (formulation-dependent)
+  - Must ensure <code>Tsub ≤ Tc - margin</code> (e.g., Tc - 5°C)</p>
+<p><strong>Pressure limits</strong>:
+- <strong>Choked flow</strong>: Below ~0.03 Torr, vapor velocity reaches sonic limit
+  - Further pressure reduction doesn't increase flow
+  - Minimum practical Pch ≈ 0.05 Torr</p>
+<ul>
+<li><strong>Condensation</strong>: Above ~0.5 Torr, vapor may condense on shelf</li>
+<li>Re-condensed ice interferes with heat transfer</li>
+<li>Maximum practical Pch ≈ 0.3-0.5 Torr</li>
+</ul>
+<p><strong>Resistance limits</strong>:
+- <code>R0</code> &gt; 0 (must have some base resistance)
+- <code>A1</code> ≥ 0 (resistance increases or stays constant with thickness)
+- <code>A2</code> ≥ 0 (saturation parameter, non-negative)</p>
+<p><strong>Heat transfer limits</strong>:
+- <code>Kv</code> &gt; 0 (heat must flow from hot to cold)
+- Typical range: <code>1e-5</code> to <code>1e-2</code> cal/s/K/cm²</p>
+<hr />
+<h2 id="edge-cases-and-their-physics">Edge Cases and Their Physics</h2>
+<h3 id="very-low-shelf-temperature-tsh-40c">Very Low Shelf Temperature (Tsh &lt; -40°C)</h3>
+<p><strong>Observation</strong>: Sometimes Tbot &lt; Tsub (temperature inversion)</p>
+<p><strong>Physical explanation</strong>:
+- Very slow sublimation (low heat input)
+- Numerical artifact: solver struggles with small fluxes
+- Energy balance approximately satisfied, but T_bot prediction unstable</p>
+<p><strong>How to handle</strong>:
+- Accept artifact if dmdt is negligible (&lt; 1e-6 kg/hr)
+- Or verify energy balance holds: <code>abs(Q_in - Q_out) / Q_out &lt; 0.01</code>
+- Physically: process is so slow that temperatures are ill-defined</p>
+<h3 id="very-high-pressure-pch-03-torr">Very High Pressure (Pch &gt; 0.3 Torr)</h3>
+<p><strong>Observation</strong>: Drying time decreases less than expected</p>
+<p><strong>Physical explanation</strong>:
+- Higher Pch reduces driving force (Psub - Pch)
+- Partially offset by higher Kv (gas conduction)
+- Diminishing returns: at high Pch, benefit of more heat &lt; cost of less ΔP</p>
+<h3 id="very-low-resistance-r0-05">Very Low Resistance (R0 &lt; 0.5)</h3>
+<p><strong>Observation</strong>: Drying very fast but hard to control temperature</p>
+<p><strong>Physical explanation</strong>:
+- Mass transfer not limiting → heat transfer is bottleneck
+- Small changes in Tsh → large changes in Tsub
+- Sensitive process, needs careful control</p>
+<h3 id="very-high-resistance-a1-50">Very High Resistance (A1 &gt; 50)</h3>
+<p><strong>Observation</strong>: Drying very slow, Tsub approaches Tbot</p>
+<p><strong>Physical explanation</strong>:
+- Mass transfer severely limiting
+- Heat input cannot be utilized (vapor can't escape fast enough)
+- Sublimation rate limited by resistance, not heat
+- Temperature gradient small (little heat flux needed)</p>
+<h3 id="end-of-drying-l-0">End of Drying (L → 0)</h3>
+<p><strong>Observation</strong>: Flux drops rapidly, Tsub → Tbot</p>
+<p><strong>Physical explanation</strong>:
+- Sublimation ceases (no more ice)
+- No latent heat consumption
+- Vial bottom heats up toward shelf temperature
+- Termination criterion: <code>L ≤ 0</code> or <code>frac_dried ≥ 0.99</code></p>
+<hr />
+<h2 id="numerical-considerations">Numerical Considerations</h2>
+<h3 id="mass-balance-error-2">Mass Balance Error (~2%)</h3>
+<p><strong>Observation</strong>: Integrated mass ≠ initial mass by ~1-2%</p>
+<p><strong>Physical reality</strong>: Mass balance IS conserved (law of thermodynamics)</p>
+<p><strong>Numerical explanation</strong>:
+- <code>solve_ivp</code> uses adaptive time stepping
+- Trapezoidal integration of non-uniform flux
+- Typical with <code>Tstep=100</code> time points
+- Would be &lt; 0.1% with <code>Tstep=1000</code>, but slower</p>
+<p><strong>How to handle</strong>:
+- Accept 2% error as numerical tolerance
+- Use <code>rtol=0.02</code> in mass balance tests
+- Increase Tstep if higher precision needed (at cost of speed)</p>
+<h3 id="stiff-differential-equations">Stiff Differential Equations</h3>
+<p><strong>Why use BDF method?</strong>
+- Temperature dynamics are <strong>stiff</strong> (multiple time scales)
+- Fast: Energy balance equilibrates in seconds
+- Slow: Ice layer shrinks over hours
+- Ratio: ~10⁴ to 10⁵</p>
+<p><strong>BDF (Backward Differentiation Formula)</strong>:
+- Implicit method, handles stiffness well
+- Allows larger time steps than explicit methods
+- Standard for lyophilization simulation</p>
+<h3 id="implicit-temperature-solver">Implicit Temperature Solver</h3>
+<p><strong>Why use fsolve?</strong>
+- Energy balance is implicit in Tsub
+- Could iterate manually, but fsolve is robust
+- Convergence typically 3-5 iterations</p>
+<p><strong>How to reformulate for Pyomo?</strong>
+- Cannot call fsolve in constraint
+- Must express as algebraic constraint:
+  <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">Q_shelf</span> <span class="o">-</span> <span class="n">Q_sublimation</span> <span class="o">=</span> <span class="mi">0</span>
+</span></code></pre></div>
+- Pyomo solver handles implicitness</p>
+<h3 id="exponential-vapor-pressure">Exponential Vapor Pressure</h3>
+<p><strong>Why log transform?</strong>
+- <code>exp(-6144.96 / (Tsub + 273.15))</code> is exponential
+- In Pyomo, can cause overflow/underflow
+- Numerically unstable for optimization</p>
+<p><strong>Solution</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Instead of: Psub = A * exp(B / Tsub)</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="c1"># Use: log(Psub) = log(A) + B / Tsub</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">log_Psub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">()</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">model</span><span class="o">.</span><span class="n">con</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="n">log_Psub</span> <span class="o">==</span> <span class="n">log</span><span class="p">(</span><span class="mf">2.698e10</span><span class="p">)</span> <span class="o">-</span> <span class="mf">6144.96</span><span class="o">/</span><span class="p">(</span><span class="n">Tsub</span><span class="o">+</span><span class="mf">273.15</span><span class="p">))</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># Then: Psub = exp(log_Psub) where needed</span>
+</span></code></pre></div></p>
+<p><strong>Benefits</strong>:
+- No overflow (log maps exp to linear)
+- Better conditioned Jacobian
+- Standard technique in chemical engineering optimization</p>
+<h3 id="initialization-for-convergence">Initialization for Convergence</h3>
+<p><strong>Why warmstart?</strong>
+- NLP solvers need good initial guess
+- Far from optimum → may not converge
+- Close to optimum → converges in 10-50 iterations</p>
+<p><strong>Strategy</strong>:
+1. Solve with scipy (fast, robust)
+2. Use scipy solution to initialize Pyomo variables
+3. Pyomo refines solution (exploits problem structure)</p>
+<p><strong>Example</strong>:
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Get scipy solution</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">scipy_sol</span> <span class="o">=</span> <span class="n">opt_Pch_Tsh</span><span class="o">.</span><span class="n">optimize_scipy</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="c1"># Initialize Pyomo model</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">scipy_sol</span><span class="p">[</span><span class="s1">&#39;Pch&#39;</span><span class="p">])</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsh</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">scipy_sol</span><span class="p">[</span><span class="s1">&#39;Tsh&#39;</span><span class="p">])</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsub</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">scipy_sol</span><span class="p">[</span><span class="s1">&#39;Tsub&#39;</span><span class="p">])</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="c1"># Solve (will converge much faster)</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="n">opt</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="common-misconceptions-for-ai-assistants">Common Misconceptions (for AI assistants)</h2>
+<h3 id="higher-pressure-always-means-faster-drying">❌ "Higher pressure always means faster drying"</h3>
+<p><strong>Reality</strong>: Higher Pch has competing effects:
+- ✅ Increases Kv (more heat transfer)
+- ❌ Decreases driving force (Psub - Pch)
+- Net effect: optimal Pch exists (typically 0.1-0.2 Torr)</p>
+<h3 id="flux-should-decrease-monotonically">❌ "Flux should decrease monotonically"</h3>
+<p><strong>Reality</strong>: Flux is non-monotonic due to shelf temperature ramp
+- Early: Tsh rising → flux increasing
+- Late: Rp rising → flux decreasing
+- Expect peak at 10-30% dried</p>
+<h3 id="pch-in-output-is-in-torr">❌ "Pch in output is in Torr"</h3>
+<p><strong>Reality</strong>: <code>output[:, 4]</code> is in <strong>mTorr</strong> (multiplied by 1000)
+- Internal calculations use Torr
+- Output converted for historical reasons
+- Always check units!</p>
+<h3 id="dried-column-is-percentage-0-100">❌ "dried column is percentage 0-100"</h3>
+<p><strong>Reality</strong>: <code>output[:, 6]</code> is <strong>fraction 0-1</strong>
+- 0.5 means 50% dried
+- 0.99 means 99% dried
+- NOT 99 (which would be 9900%!)</p>
+<h3 id="mass-balance-must-be-exact">❌ "Mass balance must be exact"</h3>
+<p><strong>Reality</strong>: 1-2% error is normal for numerical integration
+- Not a code bug
+- Reduce with more time points (slower)
+- Or accept tolerance in tests</p>
+<h3 id="tbot-is-always-tsub">❌ "Tbot is always &gt; Tsub"</h3>
+<p><strong>Reality</strong>: Can have Tbot &lt; Tsub at extreme conditions
+- Artifact of very slow sublimation
+- Not physically meaningful
+- Check if dmdt is negligible (&lt; 1e-6)</p>
+<hr />
+<h2 id="quick-reference-for-common-checks">Quick Reference for Common Checks</h2>
+<h3 id="is-this-output-physically-reasonable">Is this output physically reasonable?</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">check_physics</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Quick physical sanity checks.&quot;&quot;&quot;</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">time</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">Tsub</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">Tbot</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">Tsh</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    <span class="n">Pch</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">4</span><span class="p">]</span>  <span class="c1"># mTorr!</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    <span class="n">flux</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">5</span><span class="p">]</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    <span class="n">dried</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    <span class="c1"># Time should be positive and increasing</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">time</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>    <span class="c1"># Temperatures should be in reasonable range</span>
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">Tsub</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">60</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">Tsub</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">Tbot</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="mi">60</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">Tbot</span> <span class="o">&lt;=</span> <span class="mi">50</span><span class="p">)</span>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>    <span class="c1"># Pressure should be in mTorr range</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">Pch</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">Pch</span> <span class="o">&lt;=</span> <span class="mi">1000</span><span class="p">)</span>  <span class="c1"># 0-1 Torr in mTorr</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>    <span class="c1"># Flux should be non-negative</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">flux</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>    <span class="c1"># Dried fraction should be 0-1 and increasing</span>
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dried</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dried</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">dried</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># monotonic increase</span>
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>
+</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a>    <span class="c1"># Final dried should be close to 1</span>
+</span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a>    <span class="k">assert</span> <span class="n">dried</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.99</span>
+</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a>
+</span><span id="__span-16-32"><a id="__codelineno-16-32" name="__codelineno-16-32" href="#__codelineno-16-32"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Output is physically reasonable&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="references-for-deep-dives">References for Deep Dives</h2>
+<h3 id="foundational-papers">Foundational Papers</h3>
+<ul>
+<li>Pikal, M.J. (1985) "Use of laboratory data in freeze drying process design"</li>
+<li>Tang, X. &amp; Pikal, M.J. (2004) "Design of freeze-drying processes for pharmaceuticals"</li>
+</ul>
+<h3 id="textbooks">Textbooks</h3>
+<ul>
+<li>Franks, F. (1998) "Freeze-Drying of Pharmaceuticals and Biopharmaceuticals"</li>
+<li>Oetjen, G.W. &amp; Haseley, P. (2004) "Freeze-Drying"</li>
+</ul>
+<h3 id="online-resources">Online Resources</h3>
+<ul>
+<li>FDA Guidance for Industry: PAT for Freeze-Drying</li>
+<li>Lyophilization Technology Roadmap (PQRI)</li>
+</ul>
+<hr />
+<h2 id="questions">Questions?</h2>
+<p>When debugging physics:
+1. <strong>Check units first</strong> - Torr vs mTorr, fraction vs percentage
+2. <strong>Verify energy balance</strong> - Q_in ≈ Q_out (within 1%)
+3. <strong>Check mass balance</strong> - Integrated flux ≈ initial mass (within 2%)
+4. <strong>Plot temperature profile</strong> - Should have Tsh &gt; Tbot ≥ Tsub (usually)
+5. <strong>Expect non-monotonic flux</strong> - Peak in early-mid stage is normal
+6. <strong>Check edge cases</strong> - Very slow processes may have artifacts</p>
+<p>When writing tests:
+- Use physical intuition (what should happen?)
+- Allow numerical tolerance (2% for integration)
+- Test edge cases separately (very low T, very high Rp)
+- Document physical reasoning in test docstrings</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,698 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Slow Test Strategy - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#slow-test-strategy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Slow Test Strategy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Problem
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-three-tier-testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solution: Three-Tier Testing Strategy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution: Three-Tier Testing Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-pr-tests-fast-feedback-githubworkflowspr-testsyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. PR Tests (Fast Feedback) - .github/workflows/pr-tests.yml
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-main-branch-tests-complete-validation-githubworkflowstestsyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Main Branch Tests (Complete Validation) - .github/workflows/tests.yml
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-manual-slow-tests-githubworkflowsslow-testsyml" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Manual Slow Tests - .github/workflows/slow-tests.yml
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-breakdown" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Breakdown
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test Breakdown">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fast-tests-174-tests-50-seconds-local-2-5-minutes-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fast Tests (174 tests) - ~50 seconds local, ~2-5 minutes CI
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#slow-tests-20-tests-3-minutes-local-30-minutes-ci" class="md-nav__link">
+    <span class="md-ellipsis">
+      Slow Tests (20 tests) - ~3+ minutes local, ~30+ minutes CI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#marking-tests-as-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Marking Tests as Slow
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-developers-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      For Developers (Local)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-cicd" class="md-nav__link">
+    <span class="md-ellipsis">
+      For CI/CD
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="slow-test-strategy">Slow Test Strategy</h1>
+<h2 id="problem">Problem</h2>
+<ul>
+<li>Full test suite takes <strong>37 minutes</strong> on GitHub CI (2 cores)</li>
+<li>Locally takes only <strong>4 minutes</strong> (18 parallel workers)</li>
+<li>Slow optimization tests dominate runtime (~20 tests taking 20-200+ seconds each)</li>
+</ul>
+<h2 id="solution-three-tier-testing-strategy">Solution: Three-Tier Testing Strategy</h2>
+<h3 id="1-pr-tests-fast-feedback-githubworkflowspr-testsyml">1. <strong>PR Tests (Fast Feedback)</strong> - <code>.github/workflows/pr-tests.yml</code></h3>
+<p><strong>Skips slow tests</strong> for rapid iteration during PR development.</p>
+<ul>
+<li><strong>Draft PR</strong>: Fast tests only (no coverage)</li>
+<li><strong>Ready for Review</strong>: Fast tests with coverage</li>
+<li><strong>Runtime</strong>: ~2-5 minutes on CI</li>
+<li><strong>Command</strong>: <code>pytest tests/ -m "not slow"</code></li>
+<li><strong>Tests excluded</strong>: 20 slow optimization tests marked with <code>@pytest.mark.slow</code></li>
+</ul>
+<h3 id="2-main-branch-tests-complete-validation-githubworkflowstestsyml">2. <strong>Main Branch Tests (Complete Validation)</strong> - <code>.github/workflows/tests.yml</code></h3>
+<p><strong>Runs ALL tests</strong> including slow ones after merge to main/dev-pyomo.</p>
+<ul>
+<li><strong>Trigger</strong>: Push to main or dev-pyomo branches (after PR merge)</li>
+<li><strong>Runtime</strong>: ~30-40 minutes on CI</li>
+<li><strong>Command</strong>: <code>pytest tests/</code> (no exclusions)</li>
+<li><strong>Purpose</strong>: Comprehensive validation of merged code</li>
+</ul>
+<h3 id="3-manual-slow-tests-githubworkflowsslow-testsyml">3. <strong>Manual Slow Tests</strong> - <code>.github/workflows/slow-tests.yml</code></h3>
+<p><strong>On-demand testing</strong> for slow tests before merge if needed.</p>
+<ul>
+<li><strong>Trigger</strong>: Manual workflow dispatch from GitHub Actions UI</li>
+<li><strong>Options</strong>:</li>
+<li>Run only slow tests: <code>pytest tests/ -m "slow"</code></li>
+<li>Run all tests: <code>pytest tests/</code></li>
+<li><strong>Use cases</strong>:</li>
+<li>Pre-merge validation of optimization changes</li>
+<li>Testing on feature branches without merging</li>
+<li>Debugging slow test failures</li>
+</ul>
+<h2 id="test-breakdown">Test Breakdown</h2>
+<h3 id="fast-tests-174-tests-50-seconds-local-2-5-minutes-ci">Fast Tests (174 tests) - ~50 seconds local, ~2-5 minutes CI</h3>
+<ul>
+<li>Core functionality tests</li>
+<li>Quick validation tests</li>
+<li>Edge case tests with simple scenarios</li>
+</ul>
+<h3 id="slow-tests-20-tests-3-minutes-local-30-minutes-ci">Slow Tests (20 tests) - ~3+ minutes local, ~30+ minutes CI</h3>
+<ul>
+<li><code>test_opt_Pch_Tsh_coverage.py</code>: 17 slow tests (joint optimization)</li>
+<li><code>test_narrow_optimization_ranges</code> - 207s</li>
+<li><code>test_high_product_resistance</code> - 121s</li>
+<li><code>test_tight_equipment_constraint</code> - 75s</li>
+<li>And 14 more optimization tests</li>
+<li><code>test_opt_Pch.py</code>: 3 slow tests (pressure-only optimization)</li>
+<li><code>test_high_resistance_product</code> - 47s</li>
+<li><code>test_low_critical_temperature</code> - 32s</li>
+<li><code>test_consistent_results</code> - 24s</li>
+</ul>
+<h2 id="marking-tests-as-slow">Marking Tests as Slow</h2>
+<p>Tests are marked with the <code>@pytest.mark.slow</code> decorator:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">TestOptPchTshEdgeCases</span><span class="p">:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="nd">@pytest</span><span class="o">.</span><span class="n">mark</span><span class="o">.</span><span class="n">slow</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">test_narrow_optimization_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conservative_setup</span><span class="p">):</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Test with narrow optimization ranges.&quot;&quot;&quot;</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="c1"># ... test code ...</span>
+</span></code></pre></div>
+<p>Criteria for marking tests as slow:
+- Takes &gt; 20 seconds on local machine (8-18 cores)
+- Involves complex scipy optimization
+- Tests edge cases with difficult convergence</p>
+<h2 id="usage">Usage</h2>
+<h3 id="for-developers-local">For Developers (Local)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Fast tests only (recommended for development)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;not slow&quot;</span><span class="w">  </span><span class="c1"># ~50s</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># All tests including slow</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>pytest<span class="w"> </span>tests/<span class="w">  </span><span class="c1"># ~4 minutes</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Only slow tests</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;slow&quot;</span><span class="w">  </span><span class="c1"># ~3+ minutes</span>
+</span></code></pre></div>
+<h3 id="for-cicd">For CI/CD</h3>
+<p><strong>Automatic (no action needed):</strong>
+- PR commits: Fast tests run automatically
+- Merge to main: All tests run automatically</p>
+<p><strong>Manual (when needed):</strong>
+1. Go to GitHub Actions tab
+2. Select "Slow Tests (Manual)" workflow
+3. Click "Run workflow"
+4. Choose to run all tests or only slow tests</p>
+<h2 id="benefits">Benefits</h2>
+<ol>
+<li><strong>Fast feedback</strong>: PRs get results in ~2-5 minutes instead of 37 minutes</li>
+<li><strong>Complete validation</strong>: Main branch still validates everything</li>
+<li><strong>Flexibility</strong>: Manual trigger for slow tests when needed</li>
+<li><strong>Clear separation</strong>: Developers know which tests are slow</li>
+<li><strong>Better CI utilization</strong>: Don't waste CI minutes on every commit</li>
+</ol>
+<h2 id="references">References</h2>
+<ul>
+<li>Slow test markers already defined in <code>pytest.ini</code></li>
+<li>Tests marked using script: <code>mark_slow_tests.py</code></li>
+<li>PR workflow: <code>.github/workflows/pr-tests.yml</code></li>
+<li>Main workflow: <code>.github/workflows/tests.yml</code></li>
+<li>Manual workflow: <code>.github/workflows/slow-tests.yml</code></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

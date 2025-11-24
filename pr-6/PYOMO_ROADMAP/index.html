@@ -1,0 +1,1562 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>LyoPRONTO Pyomo Integration Roadmap - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#lyopronto-pyomo-integration-roadmap" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              LyoPRONTO Pyomo Integration Roadmap
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#vision" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vision
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-pyomo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Pyomo?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why Pyomo?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#current-limitations-scipyoptimize" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current Limitations (scipy.optimize)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyomo-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyomo Benefits
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#current-state-assessment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Current State Assessment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Current State Assessment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-works-well-keep" class="md-nav__link">
+    <span class="md-ellipsis">
+      What Works Well (Keep)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-well-add-not-replace" class="md-nav__link">
+    <span class="md-ellipsis">
+      What We'll Add (Not Replace)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#whats-challenging" class="md-nav__link">
+    <span class="md-ellipsis">
+      What's Challenging
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-1-single-time-step-prototype-week-1-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Single Time-Step Prototype (Week 1-2)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 1: Single Time-Step Prototype (Week 1-2)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tasks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Criteria
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-2-multi-period-model-week-3-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Multi-Period Model (Week 3-4)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 2: Multi-Period Model (Week 3-4)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#goal_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#approach-collocation-on-finite-elements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Approach: Collocation on Finite Elements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tasks_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tasks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-criteria_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Criteria
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-3-optimization-modes-week-5-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Optimization Modes (Week 5-6)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 3: Optimization Modes (Week 5-6)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#goal_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Goal
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modes-to-implement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modes to Implement
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modes to Implement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#3a-variable-pch-fixed-tsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3A: Variable Pch (Fixed Tsh)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3b-variable-tsh-fixed-pch" class="md-nav__link">
+    <span class="md-ellipsis">
+      3B: Variable Tsh (Fixed Pch)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3c-variable-pch-and-tsh" class="md-nav__link">
+    <span class="md-ellipsis">
+      3C: Variable Pch and Tsh
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tasks_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tasks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-criteria_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Criteria
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-4-advanced-features-week-7-8" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 4: Advanced Features (Week 7-8)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 4: Advanced Features (Week 7-8)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#4a-parameter-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4A: Parameter Estimation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4b-design-space-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      4B: Design Space Generation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4c-multi-vial-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      4C: Multi-Vial Optimization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-criteria_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Criteria
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#phase-5-integration-and-documentation-week-9-10" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 5: Integration and Documentation (Week 9-10)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Phase 5: Integration and Documentation (Week 9-10)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tasks_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tasks
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#success-criteria_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Criteria
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-challenges-and-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technical Challenges and Solutions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Technical Challenges and Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#challenge-1-exponential-vapor-pressure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Challenge 1: Exponential Vapor Pressure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge-2-conditional-if-dmdt-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      Challenge 2: Conditional (if dmdt &lt; 0)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge-3-nested-equations-fsolve" class="md-nav__link">
+    <span class="md-ellipsis">
+      Challenge 3: Nested Equations (fsolve)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#challenge-4-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Challenge 4: Initialization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development Workflow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-by-step-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      Step-by-Step Process
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#required-dependencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      Required Dependencies
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Required Dependencies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#new-packages" class="md-nav__link">
+    <span class="md-ellipsis">
+      New Packages
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#expected-outcomes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Expected Outcomes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Expected Outcomes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#quantitative-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quantitative Goals
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qualitative-goals" class="md-nav__link">
+    <span class="md-ellipsis">
+      Qualitative Goals
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#risk-mitigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Risk Mitigation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Risk Mitigation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#risk-1-solver-convergence-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Risk 1: Solver Convergence Issues
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-2-performance-degradation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Risk 2: Performance Degradation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#risk-3-complexity-creep" class="md-nav__link">
+    <span class="md-ellipsis">
+      Risk 3: Complexity Creep
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#success-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Success Metrics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Success Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#technical" class="md-nav__link">
+    <span class="md-ellipsis">
+      Technical
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scientific" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scientific
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical" class="md-nav__link">
+    <span class="md-ellipsis">
+      Practical
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#timeline-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Timeline Summary
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-immediate-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Immediate Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="lyopronto-pyomo-integration-roadmap">LyoPRONTO Pyomo Integration Roadmap</h1>
+<h2 id="vision">Vision</h2>
+<p>Add Pyomo-based simultaneous optimization as an alternative to LyoPRONTO's existing scipy-based sequential optimization. Both approaches will coexist in the codebase, with Pyomo enabling better convergence, parameter estimation, and multi-vial optimization for advanced use cases, while scipy remains available for simpler, well-tested workflows.</p>
+<h2 id="why-pyomo">Why Pyomo?</h2>
+<h3 id="current-limitations-scipyoptimize">Current Limitations (scipy.optimize)</h3>
+<ol>
+<li><strong>Sequential optimization</strong>: Optimizes one time step at a time</li>
+<li><strong>No look-ahead</strong>: Cannot anticipate future process states</li>
+<li><strong>Limited solver options</strong>: Stuck with scipy's algorithms</li>
+<li><strong>No sensitivity analysis</strong>: Difficult to perform parameter studies</li>
+<li><strong>Scalability issues</strong>: Hard to extend to batch-level optimization</li>
+</ol>
+<h3 id="pyomo-benefits">Pyomo Benefits</h3>
+<ol>
+<li><strong>Simultaneous optimization</strong>: Optimize entire process trajectory at once</li>
+<li><strong>Modern NLP solvers</strong>: Access to IPOPT, SNOPT, KNITRO</li>
+<li><strong>Sensitivity analysis</strong>: Built-in tools for parameter estimation</li>
+<li><strong>Scalability</strong>: Easy to extend to multiple vials/batches</li>
+<li><strong>Flexibility</strong>: Can add complex constraints and objectives</li>
+</ol>
+<h2 id="current-state-assessment">Current State Assessment</h2>
+<h3 id="what-works-well-keep">What Works Well (Keep)</h3>
+<p>✅ Physics functions (all unit tests pass)
+✅ Heat and mass transfer models
+✅ Vapor pressure calculations
+✅ Product resistance formulations
+✅ Energy balance equations</p>
+<h3 id="what-well-add-not-replace">What We'll Add (Not Replace)</h3>
+<p>➕ Pyomo simultaneous optimization (new module: lyopronto/pyomo_models/)
+➕ Time-discretized formulations (alternative to solve_ivp)
+➕ Algebraic constraints (alternative to fsolve)</p>
+<p><strong>Important</strong>: Existing scipy-based modules (<code>calc_knownRp.py</code>, <code>opt_*.py</code>, etc.) will remain unchanged and fully functional. Pyomo models will be in a separate module tree.</p>
+<h3 id="whats-challenging">What's Challenging</h3>
+<p>⚠️ ODE integration (solve_ivp) → Need discretization strategy
+⚠️ Conditional logic (if dmdt &lt; 0) → Need smooth approximations
+⚠️ Implicit equations → Become equality constraints</p>
+<h2 id="phase-1-single-time-step-prototype-week-1-2">Phase 1: Single Time-Step Prototype (Week 1-2)</h2>
+<h3 id="goal">Goal</h3>
+<p>Replicate <code>opt_Pch_Tsh.py</code> functionality with a Pyomo model</p>
+<h3 id="tasks">Tasks</h3>
+<ol>
+<li>
+<p><strong>Create Pyomo model structure</strong>
+   <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># lyopronto/pyomo_models/single_step.py</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">create_single_step_model</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">ht</span><span class="p">,</span> <span class="n">Lpr0</span><span class="p">,</span> <span class="n">Lck</span><span class="p">,</span> <span class="n">target_Pch</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">target_Tsh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">model</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">ConcreteModel</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="c1"># Variables</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">model</span><span class="o">.</span><span class="n">Pch</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">model</span><span class="o">.</span><span class="n">Tsh</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">model</span><span class="o">.</span><span class="n">Tsub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">model</span><span class="o">.</span><span class="n">Tbot</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">,</span> <span class="n">bounds</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">60</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">model</span><span class="o">.</span><span class="n">Psub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">model</span><span class="o">.</span><span class="n">dmdt</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="c1"># Constraints</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="c1"># ... (heat balance, mass balance, etc.)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="c1"># Objective</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">model</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">Psub</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="p">,</span> <span class="n">sense</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">maximize</span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="k">return</span> <span class="n">model</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Implement constraint functions</strong></p>
+</li>
+<li>Vapor pressure (exponential)</li>
+<li>Heat transfer (linear)</li>
+<li>Mass transfer (nonlinear)</li>
+<li>
+<p>Energy balance (equality constraint)</p>
+</li>
+<li>
+<p><strong>Add comparison tests</strong>
+   <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_pyomo_single_step_matches_scipy</span><span class="p">():</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="c1"># Run scipy version</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">scipy_result</span> <span class="o">=</span> <span class="n">opt_Pch_Tsh</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="c1"># Run Pyomo version</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">pyomo_result</span> <span class="o">=</span> <span class="n">pyomo_single_step</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="c1"># Compare</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">scipy_result</span><span class="p">,</span> <span class="n">pyomo_result</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Benchmark performance</strong></p>
+</li>
+<li>Time comparison scipy vs. Pyomo</li>
+<li>Solution quality comparison</li>
+</ol>
+<h3 id="success-criteria">Success Criteria</h3>
+<ul>
+<li>✅ Pyomo model solves successfully</li>
+<li>✅ Results match scipy within 0.1%</li>
+<li>✅ All tests pass</li>
+<li>✅ Performance is acceptable (&lt; 10x slower)</li>
+</ul>
+<h2 id="phase-2-multi-period-model-week-3-4">Phase 2: Multi-Period Model (Week 3-4)</h2>
+<h3 id="goal_1">Goal</h3>
+<p>Create a time-discretized optimization over the entire drying process</p>
+<h3 id="approach-collocation-on-finite-elements">Approach: Collocation on Finite Elements</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">model</span><span class="o">.</span><span class="n">TIME</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">t_final</span><span class="p">,</span> <span class="n">n_points</span><span class="p">))</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Time-indexed variables</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">model</span><span class="o">.</span><span class="n">Lck</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">NonNegativeReals</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">model</span><span class="o">.</span><span class="n">Tbot</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">Reals</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># ...</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="c1"># ODE discretization</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">dLck_dt_rule</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="k">return</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="o">.</span><span class="n">Skip</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">dt</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="o">.</span><span class="n">ord</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="o">.</span><span class="n">ord</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">dLck_dt</span> <span class="o">=</span> <span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Lck</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">model</span><span class="o">.</span><span class="n">Lck</span><span class="p">[</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">dt</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="c1"># ... (sublimation rate calculation)</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="k">return</span> <span class="n">dLck_dt</span> <span class="o">==</span> <span class="n">sublimation_rate</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="n">model</span><span class="o">.</span><span class="n">ode_constraint</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">dLck_dt_rule</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="tasks_1">Tasks</h3>
+<ol>
+<li><strong>Choose discretization method</strong></li>
+<li>Option A: Backward Euler (simple, stable)</li>
+<li>Option B: Trapezoidal rule (more accurate)</li>
+<li>
+<p>Option C: Orthogonal collocation (most accurate, complex)</p>
+</li>
+<li>
+<p><strong>Implement time-discretized constraints</strong></p>
+</li>
+<li>ODE for cake length growth</li>
+<li>Heat/mass transfer at each time point</li>
+<li>
+<p>Ramp constraints for Tsh and Pch</p>
+</li>
+<li>
+<p><strong>Handle variable setpoints</strong></p>
+</li>
+<li>Piecewise-linear shelf temperature ramp</li>
+<li>
+<p>Piecewise-constant chamber pressure</p>
+</li>
+<li>
+<p><strong>Add process constraints</strong></p>
+</li>
+<li>Product temperature &lt; critical temperature</li>
+<li>Minimum/maximum sublimation rate</li>
+<li>Equipment capability limits</li>
+</ol>
+<h3 id="success-criteria_1">Success Criteria</h3>
+<ul>
+<li>✅ Multi-period model solves successfully</li>
+<li>✅ Drying trajectory is physically reasonable</li>
+<li>✅ Final cake length matches target</li>
+<li>✅ All constraints are satisfied</li>
+</ul>
+<h2 id="phase-3-optimization-modes-week-5-6">Phase 3: Optimization Modes (Week 5-6)</h2>
+<h3 id="goal_2">Goal</h3>
+<p>Replicate all three optimization modes with Pyomo</p>
+<h3 id="modes-to-implement">Modes to Implement</h3>
+<h4 id="3a-variable-pch-fixed-tsh">3A: Variable Pch (Fixed Tsh)</h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Fix shelf temperature, optimize chamber pressure</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsh</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tsh_setpoint</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="o">.</span><span class="n">unfix</span><span class="p">()</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Objective: Maximize sublimation rate</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">model</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">expr</span><span class="o">=</span><span class="nb">sum</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">dmdt</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">),</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">sense</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">maximize</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="3b-variable-tsh-fixed-pch">3B: Variable Tsh (Fixed Pch)</h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Fix chamber pressure, optimize shelf temperature</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Pch_setpoint</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsh</span><span class="o">.</span><span class="n">unfix</span><span class="p">()</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Objective: Minimize drying time subject to Tpr &lt; Tpr_crit</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">model</span><span class="o">.</span><span class="n">Tbot</span> <span class="o">&lt;=</span> <span class="n">Tpr_crit</span>  <span class="c1"># Add constraint</span>
+</span></code></pre></div>
+<h4 id="3c-variable-pch-and-tsh">3C: Variable Pch and Tsh</h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Optimize both</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="o">.</span><span class="n">unfix</span><span class="p">()</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsh</span><span class="o">.</span><span class="n">unfix</span><span class="p">()</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Multi-objective or weighted objective</span>
+</span></code></pre></div>
+<h3 id="tasks_2">Tasks</h3>
+<ol>
+<li>Implement all three modes</li>
+<li>Add mode-specific constraints</li>
+<li>Create tests for each mode</li>
+<li>Compare with scipy versions</li>
+</ol>
+<h3 id="success-criteria_2">Success Criteria</h3>
+<ul>
+<li>✅ All three modes solve successfully</li>
+<li>✅ Results match scipy versions</li>
+<li>✅ Optimal trajectories are smooth and physical</li>
+</ul>
+<h2 id="phase-4-advanced-features-week-7-8">Phase 4: Advanced Features (Week 7-8)</h2>
+<h3 id="4a-parameter-estimation">4A: Parameter Estimation</h3>
+<p>Enable estimation of unknown parameters (R0, A1, A2, Kv parameters)</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Add parameter variables</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">model</span><span class="o">.</span><span class="n">R0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">PositiveReals</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">model</span><span class="o">.</span><span class="n">A1</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">PositiveReals</span><span class="p">)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="c1"># Least squares objective</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">model</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">expr</span><span class="o">=</span><span class="nb">sum</span><span class="p">((</span><span class="n">model</span><span class="o">.</span><span class="n">Tbot</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">measured_Tbot</span><span class="p">[</span><span class="n">t</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="4b-design-space-generation">4B: Design Space Generation</h3>
+<p>Systematic exploration of Pch-Tsh parameter space</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">for</span> <span class="n">Pch</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.06</span><span class="p">,</span> <span class="mf">0.30</span><span class="p">,</span> <span class="mi">20</span><span class="p">):</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="k">for</span> <span class="n">Tsh</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">20</span><span class="p">):</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>        <span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Pch</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>        <span class="n">model</span><span class="o">.</span><span class="n">Tsh</span><span class="o">.</span><span class="n">fix</span><span class="p">(</span><span class="n">Tsh</span><span class="p">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="c1"># Check if Tbot &lt; Tpr_crit</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="k">if</span> <span class="n">feasible</span><span class="p">:</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="n">design_space</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">Pch</span><span class="p">,</span> <span class="n">Tsh</span><span class="p">))</span>
+</span></code></pre></div>
+<h3 id="4c-multi-vial-optimization">4C: Multi-Vial Optimization</h3>
+<p>Optimize for batch heterogeneity</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">model</span><span class="o">.</span><span class="n">VIALS</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Set</span><span class="p">(</span><span class="n">initialize</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="n">n_vials</span><span class="p">))</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="c1"># Variables indexed by vial and time</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">VIALS</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># Equipment constraint (total sublimation capacity)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">equipment_capacity_rule</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">total_sublimation</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">dmdt</span><span class="p">[</span><span class="n">v</span><span class="p">,</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">VIALS</span><span class="p">)</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="k">return</span> <span class="n">total_sublimation</span> <span class="o">&lt;=</span> <span class="n">equipment_capability</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">model</span><span class="o">.</span><span class="n">equipment_constraint</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">,</span> <span class="n">rule</span><span class="o">=</span><span class="n">equipment_capacity_rule</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="success-criteria_3">Success Criteria</h3>
+<ul>
+<li>✅ Parameter estimation works on synthetic data</li>
+<li>✅ Design space matches existing implementation</li>
+<li>✅ Multi-vial optimization converges</li>
+</ul>
+<h2 id="phase-5-integration-and-documentation-week-9-10">Phase 5: Integration and Documentation (Week 9-10)</h2>
+<h3 id="tasks_3">Tasks</h3>
+<ol>
+<li>
+<p><strong>API Design</strong>
+   <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># High-level API</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">lyopronto</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">vial</span><span class="o">=</span><span class="n">vial_config</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">product</span><span class="o">=</span><span class="n">product_config</span><span class="p">,</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">process</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Pch&#39;</span><span class="p">:</span> <span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;Tsh&#39;</span><span class="p">:</span> <span class="mf">20.0</span><span class="p">},</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;ipopt&#39;</span><span class="p">,</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;pyomo&#39;</span>  <span class="c1"># or &#39;scipy&#39; for legacy</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="p">)</span>
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Documentation</strong></p>
+</li>
+<li>User guide for Pyomo models</li>
+<li>Migration guide from scipy</li>
+<li>Examples and tutorials</li>
+<li>
+<p>API reference</p>
+</li>
+<li>
+<p><strong>Performance Tuning</strong></p>
+</li>
+<li>Solver options optimization</li>
+<li>Scaling and initialization strategies</li>
+<li>
+<p>Warmstart techniques</p>
+</li>
+<li>
+<p><strong>CI/CD Integration</strong></p>
+</li>
+<li>Add Pyomo tests to GitHub Actions</li>
+<li>Performance regression tests</li>
+<li>Automated benchmarking</li>
+</ol>
+<h3 id="success-criteria_4">Success Criteria</h3>
+<ul>
+<li>✅ Clean API that hides complexity</li>
+<li>✅ Complete documentation</li>
+<li>✅ All tests pass in CI</li>
+<li>✅ Performance is acceptable</li>
+</ul>
+<h2 id="technical-challenges-and-solutions">Technical Challenges and Solutions</h2>
+<h3 id="challenge-1-exponential-vapor-pressure">Challenge 1: Exponential Vapor Pressure</h3>
+<p><strong>Problem</strong>: <code>P = 2.698e10 * exp(-6144.96/(T+273.15))</code> has numerical issues</p>
+<p><strong>Solution</strong>: Use log-transform
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">model</span><span class="o">.</span><span class="n">log_Psub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">()</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">model</span><span class="o">.</span><span class="n">log_Psub_constraint</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">expr</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">log_Psub</span> <span class="o">==</span> <span class="n">log</span><span class="p">(</span><span class="mf">2.698e10</span><span class="p">)</span> <span class="o">-</span> <span class="mf">6144.96</span><span class="o">/</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Tsub</span> <span class="o">+</span> <span class="mf">273.15</span><span class="p">)</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="p">)</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">model</span><span class="o">.</span><span class="n">Psub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">log_Psub</span><span class="p">))</span>
+</span></code></pre></div></p>
+<h3 id="challenge-2-conditional-if-dmdt-0">Challenge 2: Conditional (if dmdt &lt; 0)</h3>
+<p><strong>Problem</strong>: Discrete logic breaks NLP solvers</p>
+<p><strong>Solution</strong>: Use complementarity or smooth approximation
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Option A: Smooth max</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">model</span><span class="o">.</span><span class="n">dmdt</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="n">expr</span><span class="o">=</span><span class="n">pyo</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dmdt_raw</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">epsilon</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">dmdt_raw</span> <span class="o">/</span> <span class="mi">2</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="p">)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># Option B: Complementarity constraint (with MPEC solver)</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">model</span><span class="o">.</span><span class="n">dmdt_geq_0</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">expr</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">dmdt</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">model</span><span class="o">.</span><span class="n">complementarity</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Complementarity</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span></code></pre></div></p>
+<h3 id="challenge-3-nested-equations-fsolve">Challenge 3: Nested Equations (fsolve)</h3>
+<p><strong>Problem</strong>: <code>Tsub = fsolve(energy_balance, guess)</code></p>
+<p><strong>Solution</strong>: Make it an equality constraint
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Instead of solving for Tsub, make it a variable with constraint</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">model</span><span class="o">.</span><span class="n">Tsub</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Var</span><span class="p">()</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">model</span><span class="o">.</span><span class="n">energy_balance</span> <span class="o">=</span> <span class="n">pyo</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">expr</span><span class="o">=</span><span class="n">heat_from_shelf</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Tsh</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">Tbot</span><span class="p">)</span> <span class="o">==</span> 
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>         <span class="n">heat_for_sublimation</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Tsub</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">Pch</span><span class="p">)</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="p">)</span>
+</span></code></pre></div></p>
+<h3 id="challenge-4-initialization">Challenge 4: Initialization</h3>
+<p><strong>Problem</strong>: Poor initial guess causes solver failure</p>
+<p><strong>Solution</strong>: Use scipy solution for warmstart
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Run scipy first for initial guess</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">scipy_solution</span> <span class="o">=</span> <span class="n">calc_knownRp</span><span class="o">.</span><span class="n">dry</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="c1"># Initialize Pyomo variables</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">for</span> <span class="n">t_idx</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">TIME</span><span class="p">):</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">model</span><span class="o">.</span><span class="n">Tsub</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">scipy_solution</span><span class="p">[</span><span class="n">t_idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="n">model</span><span class="o">.</span><span class="n">Tbot</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">scipy_solution</span><span class="p">[</span><span class="n">t_idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="c1"># ...</span>
+</span></code></pre></div></p>
+<h2 id="development-workflow">Development Workflow</h2>
+<h3 id="step-by-step-process">Step-by-Step Process</h3>
+<ol>
+<li><strong>Write test first</strong> (TDD approach)</li>
+<li><strong>Implement Pyomo model</strong></li>
+<li><strong>Compare with scipy</strong></li>
+<li><strong>Debug and iterate</strong></li>
+<li><strong>Document and commit</strong></li>
+</ol>
+<h3 id="example-workflow">Example Workflow</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># 1. Create feature branch</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/pyomo-single-step
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="c1"># 2. Write test</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="c1"># tests/test_pyomo_single_step.py</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="c1"># 3. Run test (should fail)</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>pytest<span class="w"> </span>tests/test_pyomo_single_step.py<span class="w"> </span>-v
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="c1"># 4. Implement feature</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="c1"># lyopronto/pyomo_models/single_step.py</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="c1"># 5. Run test (should pass)</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>pytest<span class="w"> </span>tests/test_pyomo_single_step.py<span class="w"> </span>-v
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="c1"># 6. Run all tests</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-v
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="c1"># 7. Commit and push</span>
+</span><span id="__span-14-20"><a id="__codelineno-14-20" name="__codelineno-14-20" href="#__codelineno-14-20"></a>git<span class="w"> </span>add<span class="w"> </span>.
+</span><span id="__span-14-21"><a id="__codelineno-14-21" name="__codelineno-14-21" href="#__codelineno-14-21"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add Pyomo single-step optimization&quot;</span>
+</span><span id="__span-14-22"><a id="__codelineno-14-22" name="__codelineno-14-22" href="#__codelineno-14-22"></a>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>feature/pyomo-single-step
+</span><span id="__span-14-23"><a id="__codelineno-14-23" name="__codelineno-14-23" href="#__codelineno-14-23"></a>
+</span><span id="__span-14-24"><a id="__codelineno-14-24" name="__codelineno-14-24" href="#__codelineno-14-24"></a><span class="c1"># 8. Create pull request</span>
+</span><span id="__span-14-25"><a id="__codelineno-14-25" name="__codelineno-14-25" href="#__codelineno-14-25"></a>gh<span class="w"> </span>pr<span class="w"> </span>create
+</span></code></pre></div>
+<h2 id="required-dependencies">Required Dependencies</h2>
+<h3 id="new-packages">New Packages</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a># requirements-pyomo.txt
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>pyomo&gt;=6.6.0
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>ipopt  # or install via conda
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>pandas&gt;=2.0.0  # for results analysis
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>matplotlib&gt;=3.5.0  # for visualization
+</span></code></pre></div>
+<h3 id="installation">Installation</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Install Pyomo</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>pip<span class="w"> </span>install<span class="w"> </span>pyomo
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="c1"># Install IPOPT solver (Linux)</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>ipopt
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># Or compile from source</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a><span class="c1"># https://coin-or.github.io/Ipopt/INSTALL.html</span>
+</span></code></pre></div>
+<h2 id="expected-outcomes">Expected Outcomes</h2>
+<h3 id="quantitative-goals">Quantitative Goals</h3>
+<ul>
+<li><strong>Performance</strong>: Within 2-3x of scipy for single-step</li>
+<li><strong>Accuracy</strong>: Match scipy results within 0.1%</li>
+<li><strong>Coverage</strong>: 100% test coverage for Pyomo modules</li>
+<li><strong>Documentation</strong>: Complete API docs and user guide</li>
+</ul>
+<h3 id="qualitative-goals">Qualitative Goals</h3>
+<ul>
+<li><strong>Usability</strong>: Easy to use, well-documented API</li>
+<li><strong>Maintainability</strong>: Clean, modular code</li>
+<li><strong>Extensibility</strong>: Easy to add new features</li>
+<li><strong>Reliability</strong>: Robust error handling and validation</li>
+</ul>
+<h2 id="risk-mitigation">Risk Mitigation</h2>
+<h3 id="risk-1-solver-convergence-issues">Risk 1: Solver Convergence Issues</h3>
+<p><strong>Mitigation</strong>: 
+- Implement multiple solver options (IPOPT, SNOPT)
+- Develop robust initialization strategies
+- Add scaling to improve conditioning</p>
+<h3 id="risk-2-performance-degradation">Risk 2: Performance Degradation</h3>
+<p><strong>Mitigation</strong>:
+- Benchmark early and often
+- Optimize discretization (fewer time points)
+- Use sparse Jacobian structures</p>
+<h3 id="risk-3-complexity-creep">Risk 3: Complexity Creep</h3>
+<p><strong>Mitigation</strong>:
+- Keep API simple
+- Maintain scipy backend as fallback
+- Incremental feature addition</p>
+<h2 id="success-metrics">Success Metrics</h2>
+<h3 id="technical">Technical</h3>
+<ul>
+<li>[ ] All Pyomo models converge successfully</li>
+<li>[ ] Results match scipy within tolerance</li>
+<li>[ ] Performance is acceptable</li>
+<li>[ ] All tests pass</li>
+</ul>
+<h3 id="scientific">Scientific</h3>
+<ul>
+<li>[ ] Can perform parameter estimation</li>
+<li>[ ] Can generate design spaces</li>
+<li>[ ] Can optimize multi-vial systems</li>
+<li>[ ] Provides sensitivity analysis</li>
+</ul>
+<h3 id="practical">Practical</h3>
+<ul>
+<li>[ ] Users can easily switch to Pyomo</li>
+<li>[ ] Documentation is complete</li>
+<li>[ ] Examples cover common use cases</li>
+<li>[ ] Community adoption (if open-source)</li>
+</ul>
+<h2 id="timeline-summary">Timeline Summary</h2>
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Duration</th>
+<th>Key Deliverables</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 1</td>
+<td>2 weeks</td>
+<td>Single time-step Pyomo model</td>
+</tr>
+<tr>
+<td>Phase 2</td>
+<td>2 weeks</td>
+<td>Multi-period optimization</td>
+</tr>
+<tr>
+<td>Phase 3</td>
+<td>2 weeks</td>
+<td>All optimization modes</td>
+</tr>
+<tr>
+<td>Phase 4</td>
+<td>2 weeks</td>
+<td>Advanced features</td>
+</tr>
+<tr>
+<td>Phase 5</td>
+<td>2 weeks</td>
+<td>Integration &amp; docs</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>10 weeks</strong></td>
+<td><strong>Production-ready Pyomo implementation</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="next-immediate-steps">Next Immediate Steps</h2>
+<ol>
+<li>✅ Testing infrastructure (DONE)</li>
+<li>⬜ Fix test assertion issues</li>
+<li>⬜ Start Phase 1: Create first Pyomo model</li>
+<li>⬜ Set up Pyomo development environment</li>
+<li>⬜ Write first comparison test</li>
+</ol>
+<h2 id="conclusion">Conclusion</h2>
+<p>This roadmap provides a structured path to <strong>add</strong> Pyomo-based simultaneous optimization to LyoPRONTO <strong>alongside</strong> the existing scipy-based sequential optimization. With the testing infrastructure now in place, we have the confidence to proceed with this integration, knowing that we can validate every step against the proven scipy implementation.</p>
+<p><strong>Key Principle</strong>: <strong>Coexistence, Not Replacement</strong>
+- ✅ Scipy modules (<code>calc_*.py</code>, <code>opt_*.py</code>) remain unchanged
+- ✅ Pyomo modules added in separate directory (<code>lyopronto/pyomo_models/</code>)
+- ✅ Users can choose the approach that fits their needs
+- ✅ Both are tested and maintained</p>
+<p>The phased approach allows for:
+- <strong>Incremental progress</strong> with clear milestones
+- <strong>Continuous validation</strong> against scipy baseline
+- <strong>Risk mitigation</strong> through parallel development
+- <strong>Flexibility</strong> to adjust based on lessons learned
+- <strong>User choice</strong> between scipy (simple, proven) and Pyomo (advanced, flexible)</p>
+<p><strong>Recommended Next Action</strong>: Begin Phase 1 by creating a simple single time-step Pyomo model and comparing it with the scipy version.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

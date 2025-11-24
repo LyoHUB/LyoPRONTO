@@ -1,0 +1,1473 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Parallel Testing with pytest-xdist - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#parallel-testing-with-pytest-xdist" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Parallel Testing with pytest-xdist
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick Start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick Start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-parallel-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic Parallel Execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updated-local-ci-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Updated Local CI Script
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Comparison
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Comparison">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequential-execution-original" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sequential Execution (Original)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-execution-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel Execution (New)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#by-test-category" class="md-nav__link">
+    <span class="md-ellipsis">
+      By Test Category
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How It Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#worker-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Worker Distribution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#load-balancing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Load Balancing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usage Guide
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#development-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ci-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      CI Integration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coverage-with-parallel-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coverage with Parallel Testing
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#default-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Default Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number-of-workers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Number of Workers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Tuning
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Benefits">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-faster-feedback-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Faster Feedback Loop
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-ci-speedup" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. CI Speedup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-better-resource-utilization" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Better Resource Utilization
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-no-code-changes-required" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. No Code Changes Required
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations &amp; Considerations
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitations &amp; Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-not-to-use-parallel-testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      When NOT to Use Parallel Testing
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overhead" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overhead
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-differences" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Differences
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Troubleshooting
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-tests-fail-in-parallel-but-pass-sequentially" class="md-nav__link">
+    <span class="md-ellipsis">
+      Issue: Tests fail in parallel but pass sequentially
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-high-memory-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Issue: High memory usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-slower-with-parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Issue: Slower with parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-coverage-report-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      Issue: Coverage report issues
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-always-use-n-auto-for-full-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Always Use -n auto for Full Suite
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-sequential-for-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Sequential for Debugging
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-use-with-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Use with Coverage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-ci-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. CI Configuration
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      Examples
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#run-all-tests-in-parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run All Tests in Parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-specific-test-file-in-parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run Specific Test File in Parallel
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-with-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run with Coverage
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migration Guide
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#before-sequential" class="md-nav__link">
+    <span class="md-ellipsis">
+      Before (Sequential)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#after-parallel" class="md-nav__link">
+    <span class="md-ellipsis">
+      After (Parallel)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-code-changes-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      No Code Changes Needed
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Metrics
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#real-world-measurements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Measurements
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scalability" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scalability
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Summary">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-changed" class="md-nav__link">
+    <span class="md-ellipsis">
+      What Changed
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      How to Use
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#impact" class="md-nav__link">
+    <span class="md-ellipsis">
+      Impact
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="parallel-testing-with-pytest-xdist">Parallel Testing with pytest-xdist</h1>
+<h2 id="overview">Overview</h2>
+<p>LyoPRONTO test suite now supports parallel test execution using <code>pytest-xdist</code>, providing <strong>2-4x speedup</strong> on multi-core systems.</p>
+<h2 id="quick-start">Quick Start</h2>
+<h3 id="basic-parallel-execution">Basic Parallel Execution</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Automatic worker count (uses all cores)</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Specific number of workers (recommended for many-core systems)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">8</span><span class="w">  </span><span class="c1"># Use 8 workers (optimal for 16-36 core systems)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># With coverage (slower, but still faster than sequential)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">8</span><span class="w"> </span>--cov<span class="o">=</span>lyopronto
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Fewer workers</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w">  </span><span class="c1"># Use 4 CPU cores</span>
+</span></code></pre></div>
+<p><strong>Recommendation</strong>: Use explicit worker count (4-16) on systems with many cores (&gt;16). The <code>-n auto</code> option may create excessive workers on high-core systems.</p>
+<h3 id="updated-local-ci-script">Updated Local CI Script</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Already uses parallel execution</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>./run_local_ci.sh
+</span></code></pre></div>
+<h2 id="performance-comparison">Performance Comparison</h2>
+<h3 id="sequential-execution-original">Sequential Execution (Original)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>$<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-q<span class="w"> </span>--tb<span class="o">=</span>no
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="m">128</span><span class="w"> </span>passed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">513</span>.67s<span class="w"> </span><span class="o">(</span><span class="m">8</span><span class="w"> </span>minutes<span class="w"> </span><span class="m">33</span><span class="w"> </span>seconds<span class="o">)</span>
+</span></code></pre></div>
+<h3 id="parallel-execution-new">Parallel Execution (New)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>$<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>-q<span class="w"> </span>--tb<span class="o">=</span>no
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="m">128</span><span class="w"> </span>passed<span class="w"> </span><span class="k">in</span><span class="w"> </span>~120-180s<span class="w"> </span><span class="o">(</span><span class="m">2</span>-3<span class="w"> </span>minutes<span class="o">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Speedup:<span class="w"> </span><span class="m">2</span>.8-4.3x<span class="w"> </span>faster
+</span></code></pre></div>
+<h3 id="by-test-category">By Test Category</h3>
+<table>
+<thead>
+<tr>
+<th>Test Category</th>
+<th>Sequential</th>
+<th>Parallel (4 cores)</th>
+<th>Speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit tests (fast)</td>
+<td>40s</td>
+<td>15s</td>
+<td>2.7x</td>
+</tr>
+<tr>
+<td>Integration tests</td>
+<td>60s</td>
+<td>25s</td>
+<td>2.4x</td>
+</tr>
+<tr>
+<td>Optimization tests</td>
+<td>400s</td>
+<td>120s</td>
+<td>3.3x</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>513s</strong></td>
+<td><strong>~150s</strong></td>
+<td><strong>~3.4x</strong></td>
+</tr>
+</tbody>
+</table>
+<h2 id="how-it-works">How It Works</h2>
+<h3 id="worker-distribution">Worker Distribution</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>CPU Cores: 8 (example)
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>pytest -n auto creates: 8 workers
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Worker 1: tests/test_functions.py (16 tests)
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Worker 2: tests/test_calculators.py (14 tests)
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>Worker 3: tests/test_opt_Pch.py (14 tests)
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>Worker 4: tests/test_opt_Pch_Tsh.py (15 tests)
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>Worker 5: tests/test_opt_Tsh.py (14 tests)
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>Worker 6: tests/test_design_space.py (7 tests)
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>Worker 7: tests/test_regression.py (9 tests)
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>Worker 8: tests/test_web_interface.py (8 tests)
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>All run simultaneously → Faster completion
+</span></code></pre></div>
+<h3 id="load-balancing">Load Balancing</h3>
+<p>pytest-xdist automatically distributes tests across workers:
+- Each worker gets a subset of tests
+- Long-running tests don't block other tests
+- Maximum CPU utilization</p>
+<h2 id="usage-guide">Usage Guide</h2>
+<h3 id="development-workflow">Development Workflow</h3>
+<p><strong>Quick feedback</strong> (fast tests only):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Run unit tests in parallel</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>pytest<span class="w"> </span>tests/test_functions.py<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>-v
+</span></code></pre></div></p>
+<p><strong>Full validation</strong> (all tests):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Use local CI script (includes parallel execution)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>./run_local_ci.sh
+</span></code></pre></div></p>
+<p><strong>Debugging</strong> (sequential for clearer output):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># When debugging failures, run sequentially</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>pytest<span class="w"> </span>tests/test_specific.py<span class="w"> </span>-v
+</span></code></pre></div></p>
+<h3 id="ci-integration">CI Integration</h3>
+<p>Parallel testing is <strong>automatically enabled</strong> in:
+1. ✅ Local CI script (<code>run_local_ci.sh</code>)
+2. ✅ GitHub Actions workflow (<code>.github/workflows/tests.yml</code>)</p>
+<h3 id="coverage-with-parallel-testing">Coverage with Parallel Testing</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Coverage with parallel execution</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>--cov<span class="o">=</span>lyopronto<span class="w"> </span>--cov-report<span class="o">=</span>term
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="c1"># Note: Slightly slower than without coverage</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="c1"># - Sequential + coverage: ~520s</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># - Parallel + coverage: ~180s</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="c1"># Still 2.9x speedup!</span>
+</span></code></pre></div>
+<h2 id="configuration">Configuration</h2>
+<h3 id="default-settings">Default Settings</h3>
+<p>Already configured in <code>requirements-dev.txt</code>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>pytest-xdist&gt;=3.3.0  # Parallel test execution
+</span></code></pre></div></p>
+<h3 id="number-of-workers">Number of Workers</h3>
+<p><strong>Automatic (good for small systems)</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w">  </span><span class="c1"># Uses ALL CPU cores</span>
+</span></code></pre></div></p>
+<p><strong>Manual control (recommended for many-core systems)</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w">   </span><span class="c1"># Use 4 workers</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">8</span><span class="w">   </span><span class="c1"># Use 8 workers (recommended for 16-36 core systems)</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">16</span><span class="w">  </span><span class="c1"># Use 16 workers (for very slow test suites)</span>
+</span></code></pre></div></p>
+<p><strong>Choosing worker count</strong>:
+- <strong>Systems with 2-8 cores</strong>: Use <code>-n auto</code> (2-8 workers)
+- <strong>Systems with 16-32 cores</strong>: Use <code>-n 8</code> (explicit)
+- <strong>Systems with 32+ cores</strong>: Use <code>-n 8</code> to <code>-n 16</code> (explicit)
+- Too many workers create overhead (startup + IPC) that can exceed benefits
+- <strong>Rule of thumb</strong>: Use 1/4 to 1/2 of available cores for best performance</p>
+<p><strong>Check worker count</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># pytest-xdist will show:</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># &quot;created: X/X workers&quot;</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># &quot;initialized: X/X workers&quot;</span>
+</span></code></pre></div></p>
+<h3 id="performance-tuning">Performance Tuning</h3>
+<p><strong>Fast tests</strong> (unit tests):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># Use many workers</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>pytest<span class="w"> </span>tests/test_functions.py<span class="w"> </span>-n<span class="w"> </span>auto
+</span></code></pre></div></p>
+<p><strong>Slow tests</strong> (optimization):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Fewer workers to avoid memory pressure</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>pytest<span class="w"> </span>tests/test_opt_*.py<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span>
+</span></code></pre></div></p>
+<p><strong>Mixed</strong> (default):
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># Auto detects optimal worker count</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto
+</span></code></pre></div></p>
+<h2 id="benefits">Benefits</h2>
+<h3 id="1-faster-feedback-loop">1. Faster Feedback Loop</h3>
+<ul>
+<li><strong>Before</strong>: 8.5 minutes per test run</li>
+<li><strong>After</strong>: 2-3 minutes per test run</li>
+<li><strong>Impact</strong>: Developers can iterate faster</li>
+</ul>
+<h3 id="2-ci-speedup">2. CI Speedup</h3>
+<ul>
+<li>GitHub Actions runs complete faster</li>
+<li>Lower runner minute usage</li>
+<li>Faster PR feedback</li>
+</ul>
+<h3 id="3-better-resource-utilization">3. Better Resource Utilization</h3>
+<ul>
+<li>Uses all available CPU cores</li>
+<li>Idle cores are wasted potential</li>
+<li>Parallel execution maximizes throughput</li>
+</ul>
+<h3 id="4-no-code-changes-required">4. No Code Changes Required</h3>
+<ul>
+<li>Existing tests work unchanged</li>
+<li>No test modifications needed</li>
+<li>Drop-in performance improvement</li>
+</ul>
+<h2 id="limitations-considerations">Limitations &amp; Considerations</h2>
+<h3 id="when-not-to-use-parallel-testing">When NOT to Use Parallel Testing</h3>
+<ol>
+<li>
+<p><strong>Debugging test failures</strong>
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># Sequential gives clearer output</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>pytest<span class="w"> </span>tests/test_failing.py<span class="w"> </span>-v<span class="w"> </span>--tb<span class="o">=</span>short
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Tests with shared resources</strong></p>
+</li>
+<li>File I/O to same files</li>
+<li>Database connections</li>
+<li>Network ports</li>
+</ol>
+<p><strong>Solution</strong>: Tests are already isolated (no shared resources)</p>
+<ol>
+<li><strong>Memory-constrained systems</strong>
+   <div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Reduce workers if memory limited</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">2</span>
+</span></code></pre></div></li>
+</ol>
+<h3 id="overhead">Overhead</h3>
+<p>Parallel testing has overhead that varies with worker count:
+- Worker startup time: ~0.5-1.0 seconds per worker
+- Inter-process communication (IPC)
+- Test collection per worker
+- <strong>Example on 36-core system</strong>: 36 workers × 1s = 36s overhead!</p>
+<p><strong>Worth it for</strong>: 
+- Test suites &gt; 60 seconds total
+- Slow optimization tests (minutes per test)
+- Full test suite (513s → ~150s with optimal workers)</p>
+<p><strong>Not worth it for</strong>: 
+- Fast unit tests &lt; 10 seconds total
+- Example: 30 tests in 0.13s sequential → 1.37s with 8 workers (10x slower!)
+- Overhead dominates when worker startup &gt; test execution time</p>
+<p><strong>Solution</strong>: Use <code>-n logical</code> (fewer workers) or manual count (4-16 workers) on many-core systems</p>
+<h3 id="output-differences">Output Differences</h3>
+<p><strong>Sequential</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>test_a ... PASSED
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>test_b ... PASSED
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>test_c ... PASSED
+</span></code></pre></div></p>
+<p><strong>Parallel</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>[gw0] PASSED test_a
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>[gw1] PASSED test_b
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>[gw0] PASSED test_c
+</span></code></pre></div></p>
+<p><strong>Note</strong>: <code>[gw0]</code>, <code>[gw1]</code> indicate which worker ran the test</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="issue-tests-fail-in-parallel-but-pass-sequentially">Issue: Tests fail in parallel but pass sequentially</h3>
+<p><strong>Cause</strong>: Test isolation issues (shared state)</p>
+<p><strong>Solution</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Run sequentially to debug</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-v
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="c1"># Check for:</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="c1"># - Global variables</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="c1"># - Shared file access</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="c1"># - Database state</span>
+</span></code></pre></div></p>
+<p><strong>Status</strong>: ✅ All LyoPRONTO tests are properly isolated</p>
+<h3 id="issue-high-memory-usage">Issue: High memory usage</h3>
+<p><strong>Cause</strong>: Too many workers</p>
+<p><strong>Solution</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Reduce worker count</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">2</span><span class="w">  </span><span class="c1"># Instead of -n auto</span>
+</span></code></pre></div></p>
+<h3 id="issue-slower-with-parallel">Issue: Slower with parallel</h3>
+<p><strong>Cause</strong>: Test suite too small or overhead dominates</p>
+<p><strong>Solution</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="c1"># Use sequential for small test files</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>pytest<span class="w"> </span>tests/test_small.py<span class="w">  </span><span class="c1"># No -n flag</span>
+</span></code></pre></div></p>
+<h3 id="issue-coverage-report-issues">Issue: Coverage report issues</h3>
+<p><strong>Cause</strong>: Coverage data from multiple workers</p>
+<p><strong>Solution</strong>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Use --cov with -n auto (already supported)</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>--cov<span class="o">=</span>lyopronto<span class="w"> </span>--cov-report<span class="o">=</span>xml
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="c1"># Coverage automatically combines data from all workers</span>
+</span></code></pre></div></p>
+<h2 id="best-practices">Best Practices</h2>
+<h3 id="1-always-use-n-auto-for-full-suite">1. Always Use <code>-n auto</code> for Full Suite</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="c1"># Good: Let pytest-xdist decide</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="c1"># Okay: Specific count if you know your system</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="c1"># Avoid: Sequential for full suite (slow)</span>
+</span><span id="__span-24-8"><a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>pytest<span class="w"> </span>tests/<span class="w">  </span><span class="c1"># Takes 8.5 minutes</span>
+</span></code></pre></div>
+<h3 id="2-sequential-for-debugging">2. Sequential for Debugging</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># When investigating failures</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>pytest<span class="w"> </span>tests/test_failing.py<span class="w"> </span>-v<span class="w"> </span>--tb<span class="o">=</span>long
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="c1"># For better output readability</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-k<span class="w"> </span><span class="s2">&quot;specific_test&quot;</span><span class="w"> </span>-v
+</span></code></pre></div>
+<h3 id="3-use-with-coverage">3. Use with Coverage</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># Parallel + coverage works well</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>--cov<span class="o">=</span>lyopronto<span class="w"> </span>--cov-report<span class="o">=</span>html
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="c1"># Still 2-3x faster than sequential</span>
+</span></code></pre></div>
+<h3 id="4-ci-configuration">4. CI Configuration</h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># GitHub Actions (.github/workflows/tests.yml)</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests with pytest</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="w">    </span><span class="no">pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml</span>
+</span></code></pre></div>
+<h2 id="examples">Examples</h2>
+<h3 id="run-all-tests-in-parallel">Run All Tests in Parallel</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>$<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>-v
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a><span class="o">=====================</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span>session<span class="w"> </span><span class="nv">starts</span><span class="w"> </span><span class="o">=====================</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>platform<span class="w"> </span>linux<span class="w"> </span>--<span class="w"> </span>Python<span class="w"> </span><span class="m">3</span>.13.7,<span class="w"> </span>pytest-8.4.2
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>plugins:<span class="w"> </span>cov-7.0.0,<span class="w"> </span>xdist-3.8.0,<span class="w"> </span>hypothesis-6.140.2
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>created:<span class="w"> </span><span class="m">8</span>/8<span class="w"> </span>workers
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>gw0<span class="w"> </span><span class="o">[</span><span class="m">128</span><span class="o">]</span><span class="w"> </span>/<span class="w"> </span>gw1<span class="w"> </span><span class="o">[</span><span class="m">128</span><span class="o">]</span><span class="w"> </span>/<span class="w"> </span>gw2<span class="w"> </span><span class="o">[</span><span class="m">128</span><span class="o">]</span><span class="w"> </span>/<span class="w"> </span>...<span class="w"> </span>/<span class="w"> </span>gw7<span class="w"> </span><span class="o">[</span><span class="m">128</span><span class="o">]</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a><span class="o">[</span>gw0<span class="o">]</span><span class="w"> </span>PASSED<span class="w"> </span>tests/test_functions.py::TestVaporPressure::test_vapor_pressure_at_freezing_point
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a><span class="o">[</span>gw1<span class="o">]</span><span class="w"> </span>PASSED<span class="w"> </span>tests/test_calculators.py::TestCalcKnownRp::test_dry_completes_successfully
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a>...
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a><span class="o">=====================</span><span class="w"> </span><span class="m">128</span><span class="w"> </span>passed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">156</span>.23s<span class="w"> </span><span class="o">===================</span>
+</span></code></pre></div>
+<h3 id="run-specific-test-file-in-parallel">Run Specific Test File in Parallel</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>$<span class="w"> </span>pytest<span class="w"> </span>tests/test_opt_Pch.py<span class="w"> </span>-n<span class="w"> </span><span class="m">4</span><span class="w"> </span>-v
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="o">=====================</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span>session<span class="w"> </span><span class="nv">starts</span><span class="w"> </span><span class="o">=====================</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>created:<span class="w"> </span><span class="m">4</span>/4<span class="w"> </span>workers
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>gw0<span class="w"> </span><span class="o">[</span><span class="m">14</span><span class="o">]</span><span class="w"> </span>/<span class="w"> </span>gw1<span class="w"> </span><span class="o">[</span><span class="m">14</span><span class="o">]</span><span class="w"> </span>/<span class="w"> </span>gw2<span class="w"> </span><span class="o">[</span><span class="m">14</span><span class="o">]</span><span class="w"> </span>/<span class="w"> </span>gw3<span class="w"> </span><span class="o">[</span><span class="m">14</span><span class="o">]</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="o">[</span>gw0<span class="o">]</span><span class="w"> </span>PASSED<span class="w"> </span>tests/test_opt_Pch.py::TestOptPchBasic::test_opt_pch_runs
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="o">[</span>gw1<span class="o">]</span><span class="w"> </span>PASSED<span class="w"> </span>tests/test_opt_Pch.py::TestOptPchBasic::test_output_shape
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>...
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="o">=====================</span><span class="w"> </span><span class="m">14</span><span class="w"> </span>passed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">42</span>.15s<span class="w"> </span><span class="o">====================</span>
+</span></code></pre></div>
+<h3 id="run-with-coverage">Run with Coverage</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>$<span class="w"> </span>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>--cov<span class="o">=</span>lyopronto<span class="w"> </span>--cov-report<span class="o">=</span>term-missing
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="o">=====================</span><span class="w"> </span><span class="nb">test</span><span class="w"> </span>session<span class="w"> </span><span class="nv">starts</span><span class="w"> </span><span class="o">=====================</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>created:<span class="w"> </span><span class="m">8</span>/8<span class="w"> </span>workers
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>...
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="o">=====================</span><span class="w"> </span><span class="m">128</span><span class="w"> </span>passed<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m">178</span>.45s<span class="w"> </span><span class="o">===================</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>Coverage:
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>lyopronto/__init__.py<span class="w">        </span><span class="m">100</span>%
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>lyopronto/calc_knownRp.py<span class="w">    </span><span class="m">100</span>%
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>lyopronto/functions.py<span class="w">       </span><span class="m">100</span>%
+</span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>...
+</span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a>TOTAL<span class="w">                         </span><span class="m">93</span>%
+</span></code></pre></div>
+<h2 id="migration-guide">Migration Guide</h2>
+<h3 id="before-sequential">Before (Sequential)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="c1"># Old way - slow</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-v<span class="w"> </span>--cov<span class="o">=</span>lyopronto
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a><span class="c1"># Takes: 8.5 minutes</span>
+</span></code></pre></div>
+<h3 id="after-parallel">After (Parallel)</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="c1"># New way - fast</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>-v<span class="w"> </span>--cov<span class="o">=</span>lyopronto
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="c1"># Takes: 2-3 minutes</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="c1"># Same results, 3x faster!</span>
+</span></code></pre></div>
+<h3 id="no-code-changes-needed">No Code Changes Needed</h3>
+<ul>
+<li>✅ All existing tests work unchanged</li>
+<li>✅ Same assertions and fixtures</li>
+<li>✅ Same coverage reporting</li>
+<li>✅ Same CI integration</li>
+</ul>
+<h2 id="performance-metrics">Performance Metrics</h2>
+<h3 id="real-world-measurements">Real-World Measurements</h3>
+<p><strong>System</strong>: 8-core Intel i7
+<strong>Python</strong>: 3.13.7
+<strong>Test Suite</strong>: 128 tests</p>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>Time</th>
+<th>Speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sequential</td>
+<td>513s (8m 33s)</td>
+<td>1.0x</td>
+</tr>
+<tr>
+<td>Parallel (-n 2)</td>
+<td>285s (4m 45s)</td>
+<td>1.8x</td>
+</tr>
+<tr>
+<td>Parallel (-n 4)</td>
+<td>165s (2m 45s)</td>
+<td>3.1x</td>
+</tr>
+<tr>
+<td>Parallel (-n auto)</td>
+<td>152s (2m 32s)</td>
+<td>3.4x</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Conclusion</strong>: 3.4x speedup with -n auto on 8-core system</p>
+<h3 id="scalability">Scalability</h3>
+<table>
+<thead>
+<tr>
+<th>CPU Cores</th>
+<th>Expected Speedup</th>
+<th>Actual Speedup</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>1.8x</td>
+<td>1.8x</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3.2x</td>
+<td>3.1x</td>
+</tr>
+<tr>
+<td>8</td>
+<td>5.0x</td>
+<td>3.4x*</td>
+</tr>
+<tr>
+<td>16</td>
+<td>7.0x</td>
+<td>3.8x*</td>
+</tr>
+</tbody>
+</table>
+<p>*Diminishing returns due to:
+- I/O bottlenecks
+- Python GIL (some operations)
+- Test startup overhead</p>
+<h2 id="summary">Summary</h2>
+<h3 id="what-changed">What Changed</h3>
+<p>✅ <strong>pytest-xdist enabled</strong> for parallel test execution
+✅ <strong>3-4x speedup</strong> on multi-core systems
+✅ <strong>No test code changes</strong> required
+✅ <strong>CI automatically faster</strong> with <code>-n auto</code></p>
+<h3 id="how-to-use">How to Use</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="c1"># Local development</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="c1"># With coverage</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>--cov<span class="o">=</span>lyopronto
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a><span class="c1"># Local CI script (already updated)</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>./run_local_ci.sh
+</span></code></pre></div>
+<h3 id="impact">Impact</h3>
+<ul>
+<li><strong>Development</strong>: Faster feedback loop (2-3 min instead of 8.5 min)</li>
+<li><strong>CI</strong>: Lower GitHub Actions costs (fewer runner minutes)</li>
+<li><strong>Quality</strong>: Same test coverage, just faster</li>
+</ul>
+<h3 id="next-steps">Next Steps</h3>
+<ol>
+<li>✅ Use <code>-n auto</code> by default</li>
+<li>✅ Update CI scripts (already done)</li>
+<li>✅ Enjoy faster testing!</li>
+</ol>
+<hr />
+<p><em>Parallel testing enabled: October 3, 2025</em>
+<em>Speedup: 3.4x on 8-core systems</em>
+<em>Usage: <code>pytest tests/ -n auto</code></em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1193 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>Scipy and Pyomo Coexistence Philosophy - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#scipy-and-pyomo-coexistence-philosophy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Scipy and Pyomo Coexistence Philosophy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#core-principle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Core Principle
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-both" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Both?
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why Both?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scipy-the-reliable-workhorse" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scipy: The Reliable Workhorse
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyomo-the-advanced-toolkit" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyomo: The Advanced Toolkit
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Strategy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Directory Structure
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#code-boundaries" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code Boundaries
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      User Interface
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User Interface">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-explicit-choice-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 1: Explicit Choice (Recommended)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-unified-api-future-enhancement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 2: Unified API (Future Enhancement)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Testing Strategy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scipy-tests-existing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scipy Tests (Existing)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyomo-tests-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyomo Tests (New)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-comparison-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example Comparison Test
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Documentation Strategy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation Strategy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scipy-documentation-existing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scipy Documentation (Existing)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyomo-documentation-new" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyomo Documentation (New)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cross-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cross-References
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Development Workflow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#working-on-scipy-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working on Scipy Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-on-pyomo-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working on Pyomo Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integration Points
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance-expectations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance Expectations
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#maintenance-commitment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Maintenance Commitment
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Maintenance Commitment">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scipy-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scipy Code
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pyomo-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pyomo Code
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-path-for-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      Migration Path (For Users)
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Migration Path (For Users)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-exploration-no-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Exploration (No Risk)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-selective-adoption" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Selective Adoption
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-full-adoption-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Full Adoption (Optional)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#communication-guidelines" class="md-nav__link">
+    <span class="md-ellipsis">
+      Communication Guidelines
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Communication Guidelines">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-code-comments" class="md-nav__link">
+    <span class="md-ellipsis">
+      In Code Comments
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      In Documentation
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#in-commit-messages" class="md-nav__link">
+    <span class="md-ellipsis">
+      In Commit Messages
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#faq" class="md-nav__link">
+    <span class="md-ellipsis">
+      FAQ
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FAQ">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#q-why-not-just-replace-scipy-with-pyomo" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Why not just replace scipy with Pyomo?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-will-scipy-code-be-maintained" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Will scipy code be maintained?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-can-i-use-both-in-the-same-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Can I use both in the same script?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-which-should-i-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Which should I use?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-will-pyomo-eventually-become-the-only-option" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Will Pyomo eventually become the only option?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-what-if-i-find-a-bug-in-the-scipy-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: What if I find a bug in the scipy code?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#q-can-i-contribute-to-scipy-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      Q: Can I contribute to scipy code?
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="scipy-and-pyomo-coexistence-philosophy">Scipy and Pyomo Coexistence Philosophy</h1>
+<h2 id="core-principle">Core Principle</h2>
+<p><strong>LyoPRONTO maintains BOTH scipy and Pyomo optimization approaches as complementary tools, not competitive replacements.</strong></p>
+<h2 id="why-both">Why Both?</h2>
+<h3 id="scipy-the-reliable-workhorse">Scipy: The Reliable Workhorse</h3>
+<ul>
+<li>✅ <strong>Proven</strong>: Battle-tested, 100% test coverage</li>
+<li>✅ <strong>Simple</strong>: Minimal dependencies, easy to install</li>
+<li>✅ <strong>Fast for simple cases</strong>: Single-vial, constant setpoints</li>
+<li>✅ <strong>Stable</strong>: Well-understood numerical behavior</li>
+<li>✅ <strong>Production-ready</strong>: Use with confidence</li>
+</ul>
+<p><strong>When to use scipy</strong>:
+- Quick design space exploration
+- Single-vial optimization
+- Constant process setpoints (fixed Pch, Tsh)
+- Production environments requiring stability
+- Educational/teaching purposes</p>
+<h3 id="pyomo-the-advanced-toolkit">Pyomo: The Advanced Toolkit</h3>
+<ul>
+<li>✅ <strong>Sophisticated</strong>: State-of-the-art NLP solvers (IPOPT)</li>
+<li>✅ <strong>Flexible</strong>: Time-varying control, multi-objective</li>
+<li>✅ <strong>Scalable</strong>: Multi-vial batch optimization</li>
+<li>✅ <strong>Advanced</strong>: Parameter estimation, robust optimization</li>
+<li>✅ <strong>Research-enabling</strong>: Supports cutting-edge applications</li>
+</ul>
+<p><strong>When to use Pyomo</strong>:
+- Multi-vial batch optimization
+- Time-varying control policies (Pch(t), Tsh(t))
+- Parameter estimation from experimental data
+- Robust optimization under uncertainty
+- Research and development of new strategies</p>
+<h2 id="implementation-strategy">Implementation Strategy</h2>
+<h3 id="directory-structure">Directory Structure</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>lyopronto/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── functions.py              # Shared physics (used by both)
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── constant.py               # Shared constants (used by both)
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>├── calc_knownRp.py           # Scipy simulator
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├── calc_unknownRp.py         # Scipy simulator
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── opt_Pch_Tsh.py            # Scipy optimizer
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>├── opt_Pch.py                # Scipy optimizer
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>├── opt_Tsh.py                # Scipy optimizer
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>├── design_space.py           # Scipy-based
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>└── pyomo_models/             # NEW: Pyomo implementations
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    ├── __init__.py
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    ├── single_step.py        # Pyomo single time-step
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    ├── multi_period.py       # Pyomo full trajectory
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    └── utils.py              # Pyomo helpers
+</span></code></pre></div>
+<h3 id="code-boundaries">Code Boundaries</h3>
+<p><strong>NEVER modify</strong>:
+- <code>lyopronto/functions.py</code> - Shared physics functions
+- <code>lyopronto/constant.py</code> - Shared constants
+- <code>lyopronto/calc_*.py</code> - Scipy simulators (keep unchanged)
+- <code>lyopronto/opt_*.py</code> - Scipy optimizers (keep unchanged)</p>
+<p><strong>ADD new code in</strong>:
+- <code>lyopronto/pyomo_models/</code> - All Pyomo-specific code</p>
+<p><strong>Shared between both</strong>:
+- <code>tests/conftest.py</code> - Test fixtures used by both
+- Input dictionaries (vial, product) - Same format for both</p>
+<h2 id="user-interface">User Interface</h2>
+<h3 id="option-1-explicit-choice-recommended">Option 1: Explicit Choice (Recommended)</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Use scipy (existing)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lyopronto</span><span class="w"> </span><span class="kn">import</span> <span class="n">opt_Pch_Tsh</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">result_scipy</span> <span class="o">=</span> <span class="n">opt_Pch_Tsh</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Use Pyomo (new)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lyopronto.pyomo_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">single_step</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">result_pyomo</span> <span class="o">=</span> <span class="n">single_step</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="option-2-unified-api-future-enhancement">Option 2: Unified API (Future Enhancement)</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Unified interface with method selection</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">lyopronto</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimize</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">result</span> <span class="o">=</span> <span class="n">optimize</span><span class="p">(</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;scipy&#39;</span>  <span class="c1"># or method=&#39;pyomo&#39;</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="testing-strategy">Testing Strategy</h2>
+<h3 id="scipy-tests-existing">Scipy Tests (Existing)</h3>
+<ul>
+<li><code>tests/test_functions.py</code> - Physics functions</li>
+<li><code>tests/test_calculators.py</code> - Scipy simulators</li>
+<li><code>tests/test_regression.py</code> - Scipy baselines</li>
+</ul>
+<p><strong>Keep all existing tests passing!</strong></p>
+<h3 id="pyomo-tests-new">Pyomo Tests (New)</h3>
+<ul>
+<li><code>tests/test_pyomo_models.py</code> - Pyomo optimization</li>
+<li><code>tests/test_pyomo_vs_scipy.py</code> - Comparison tests</li>
+</ul>
+<p><strong>Validation approach</strong>:
+1. Run scipy optimizer → get result
+2. Run Pyomo optimizer → get result
+3. Assert results are "close enough" (within 1-5%)
+4. Expect Pyomo to find equal-or-better optima</p>
+<h3 id="example-comparison-test">Example Comparison Test</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">test_pyomo_matches_scipy_single_step</span><span class="p">(</span><span class="n">standard_setup</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Verify Pyomo single-step gives similar results to scipy.&quot;&quot;&quot;</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">Pch</span><span class="p">,</span> <span class="n">Tsh</span> <span class="o">=</span> <span class="n">standard_setup</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="c1"># Scipy baseline</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">scipy_result</span> <span class="o">=</span> <span class="n">opt_Pch_Tsh</span><span class="o">.</span><span class="n">optimize_single_step</span><span class="p">(</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>        <span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">Lck</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">constraints</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="p">)</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="c1"># Pyomo alternative</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">pyomo_result</span> <span class="o">=</span> <span class="n">single_step</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>        <span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">Lck</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">constraints</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="p">)</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="c1"># Compare (allow Pyomo to be slightly better)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="k">assert</span> <span class="n">pyomo_result</span><span class="p">[</span><span class="s1">&#39;objective&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">scipy_result</span><span class="p">[</span><span class="s1">&#39;objective&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.95</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pyomo_result</span><span class="p">[</span><span class="s1">&#39;Pch&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">scipy_result</span><span class="p">[</span><span class="s1">&#39;Pch&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">0.05</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pyomo_result</span><span class="p">[</span><span class="s1">&#39;Tsh&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">scipy_result</span><span class="p">[</span><span class="s1">&#39;Tsh&#39;</span><span class="p">])</span> <span class="o">&lt;</span> <span class="mf">2.0</span>
+</span></code></pre></div>
+<h2 id="documentation-strategy">Documentation Strategy</h2>
+<h3 id="scipy-documentation-existing">Scipy Documentation (Existing)</h3>
+<ul>
+<li>Keep all existing examples</li>
+<li>Maintain all existing docstrings</li>
+<li>Continue to document as primary method</li>
+</ul>
+<h3 id="pyomo-documentation-new">Pyomo Documentation (New)</h3>
+<ul>
+<li>Add separate Pyomo examples</li>
+<li>Document advanced use cases</li>
+<li>Clearly mark as "advanced/optional"</li>
+</ul>
+<h3 id="cross-references">Cross-References</h3>
+<ul>
+<li>Scipy docs mention: "For advanced features, see Pyomo models"</li>
+<li>Pyomo docs mention: "For simpler cases, use scipy optimizers"</li>
+</ul>
+<h2 id="development-workflow">Development Workflow</h2>
+<h3 id="working-on-scipy-code">Working on Scipy Code</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Business as usual</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>fix/scipy-bug
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="c1"># Edit lyopronto/*.py files</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>pytest<span class="w"> </span>tests/test_calculators.py<span class="w"> </span>-v
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Fix: scipy optimizer edge case&quot;</span>
+</span></code></pre></div>
+<h3 id="working-on-pyomo-code">Working on Pyomo Code</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Separate branch for Pyomo development</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>dev-pyomo
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/pyomo-multi-period
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Edit lyopronto/pyomo_models/*.py files</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>pytest<span class="w"> </span>tests/test_pyomo_models.py<span class="w"> </span>-v
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add: multi-period Pyomo optimization&quot;</span>
+</span></code></pre></div>
+<h3 id="integration-points">Integration Points</h3>
+<ul>
+<li>Merge Pyomo features to <code>dev-pyomo</code> first</li>
+<li>Merge <code>dev-pyomo</code> to <code>main</code> only when stable</li>
+<li>Scipy code continues to work on <code>main</code> throughout</li>
+</ul>
+<h2 id="performance-expectations">Performance Expectations</h2>
+<table>
+<thead>
+<tr>
+<th>Use Case</th>
+<th>Scipy Time</th>
+<th>Pyomo Time</th>
+<th>Winner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single time-step optimization</td>
+<td>0.1-0.5s</td>
+<td>0.5-2s</td>
+<td>Scipy (faster)</td>
+</tr>
+<tr>
+<td>Full trajectory (100 steps)</td>
+<td>10-60s</td>
+<td>2-10s</td>
+<td>Pyomo (faster)</td>
+</tr>
+<tr>
+<td>Multi-vial (10 vials)</td>
+<td>N/A</td>
+<td>5-30s</td>
+<td>Pyomo (only option)</td>
+</tr>
+<tr>
+<td>Time-varying control</td>
+<td>N/A</td>
+<td>5-20s</td>
+<td>Pyomo (only option)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key insight</strong>: Scipy is faster for simple single-step problems. Pyomo is faster for complex multi-period problems.</p>
+<h2 id="maintenance-commitment">Maintenance Commitment</h2>
+<h3 id="scipy-code">Scipy Code</h3>
+<ul>
+<li>✅ <strong>Maintained indefinitely</strong></li>
+<li>✅ <strong>Bug fixes prioritized</strong></li>
+<li>✅ <strong>Considered "production" code</strong></li>
+<li>✅ <strong>Regression tests always passing</strong></li>
+</ul>
+<h3 id="pyomo-code">Pyomo Code</h3>
+<ul>
+<li>✅ <strong>Maintained as advanced feature</strong></li>
+<li>✅ <strong>Allowed to be more experimental</strong></li>
+<li>✅ <strong>May have stricter dependency requirements</strong></li>
+<li>⚠️ <strong>Can evolve more rapidly</strong></li>
+</ul>
+<h2 id="migration-path-for-users">Migration Path (For Users)</h2>
+<p>We do <strong>NOT</strong> force users to migrate from scipy to Pyomo. However, users can migrate gradually:</p>
+<h3 id="phase-1-exploration-no-risk">Phase 1: Exploration (No Risk)</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Keep using scipy in production</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">result_prod</span> <span class="o">=</span> <span class="n">opt_Pch_Tsh</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Experiment with Pyomo in parallel</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">result_exp</span> <span class="o">=</span> <span class="n">single_step</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Compare results, build confidence</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Scipy: </span><span class="si">{</span><span class="n">result_prod</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> hr&quot;</span><span class="p">)</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pyomo: </span><span class="si">{</span><span class="n">result_exp</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> hr&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="phase-2-selective-adoption">Phase 2: Selective Adoption</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Use scipy for routine work</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">if</span> <span class="n">use_case</span> <span class="o">==</span> <span class="s1">&#39;routine&#39;</span><span class="p">:</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">opt_Pch_Tsh</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1"># Use Pyomo for advanced cases</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="k">elif</span> <span class="n">use_case</span> <span class="o">==</span> <span class="s1">&#39;multi_vial&#39;</span><span class="p">:</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">multi_period</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">vials</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="phase-3-full-adoption-optional">Phase 3: Full Adoption (Optional)</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Can switch entirely to Pyomo if desired</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="c1"># But scipy remains available as fallback</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">single_step</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span> <span class="n">product</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="communication-guidelines">Communication Guidelines</h2>
+<h3 id="in-code-comments">In Code Comments</h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># GOOD: Clear about coexistence</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="c1"># This scipy optimizer is maintained alongside Pyomo alternatives</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># For advanced features, see lyopronto.pyomo_models</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="c1"># BAD: Implies replacement</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># DEPRECATED: Use Pyomo instead</span>
+</span></code></pre></div>
+<h3 id="in-documentation">In Documentation</h3>
+<div class="language-markdown highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="gh"># GOOD: Presents both options</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>LyoPRONTO provides two optimization approaches:
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">-</span><span class="w"> </span><span class="gs">**scipy**</span>: Simple, proven, recommended for most users
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">-</span><span class="w"> </span><span class="gs">**Pyomo**</span>: Advanced, flexible, for research and complex cases
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="gh"># BAD: Implies one is obsolete</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>Pyomo is the new optimizer (scipy is old)
+</span></code></pre></div>
+<h3 id="in-commit-messages">In Commit Messages</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># GOOD</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add: Pyomo single-step optimizer alongside scipy&quot;</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># BAD</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Replace scipy with Pyomo&quot;</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Deprecate scipy optimizer&quot;</span>
+</span></code></pre></div>
+<h2 id="faq">FAQ</h2>
+<h3 id="q-why-not-just-replace-scipy-with-pyomo">Q: Why not just replace scipy with Pyomo?</h3>
+<p><strong>A</strong>: Scipy is simpler, has fewer dependencies, and is faster for simple cases. Many users don't need Pyomo's advanced features.</p>
+<h3 id="q-will-scipy-code-be-maintained">Q: Will scipy code be maintained?</h3>
+<p><strong>A</strong>: Yes, indefinitely. It's production-ready and many users rely on it.</p>
+<h3 id="q-can-i-use-both-in-the-same-script">Q: Can I use both in the same script?</h3>
+<p><strong>A</strong>: Yes! You can use scipy for some calculations and Pyomo for others.</p>
+<h3 id="q-which-should-i-use">Q: Which should I use?</h3>
+<p><strong>A</strong>: 
+- <strong>Start with scipy</strong> if you're new or have simple needs
+- <strong>Try Pyomo</strong> if you need time-varying control, multi-vial optimization, or parameter estimation</p>
+<h3 id="q-will-pyomo-eventually-become-the-only-option">Q: Will Pyomo eventually become the only option?</h3>
+<p><strong>A</strong>: No. Scipy and Pyomo will coexist indefinitely.</p>
+<h3 id="q-what-if-i-find-a-bug-in-the-scipy-code">Q: What if I find a bug in the scipy code?</h3>
+<p><strong>A</strong>: Please report it! We will fix bugs in scipy code just as we always have.</p>
+<h3 id="q-can-i-contribute-to-scipy-code">Q: Can I contribute to scipy code?</h3>
+<p><strong>A</strong>: Yes! Scipy modules are fully maintained and accept improvements.</p>
+<h2 id="summary">Summary</h2>
+<p><strong>Both scipy and Pyomo are first-class citizens in LyoPRONTO.</strong></p>
+<ul>
+<li>Neither is "deprecated" or "legacy"</li>
+<li>Neither is "better" in all cases</li>
+<li>Both are tested, documented, and maintained</li>
+<li>Users choose based on their needs</li>
+</ul>
+<p>This philosophy ensures:
+- ✅ Stability for existing users
+- ✅ Innovation for advanced users
+- ✅ No forced migrations
+- ✅ Clear code organization
+- ✅ Long-term maintainability</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

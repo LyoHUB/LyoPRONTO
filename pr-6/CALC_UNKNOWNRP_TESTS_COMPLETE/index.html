@@ -1,0 +1,706 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>calc_unknownRp.py Testing Complete - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#calc_unknownrppy-testing-complete" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              calc_unknownRp.py Testing Complete
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Summary
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#coverage-improvement" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coverage Improvement
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-suite-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Suite Structure
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test Suite Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#testcalcunknownrpbasic-7-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      TestCalcUnknownRpBasic (7 tests)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testcalcunknownrpedgecases-3-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      TestCalcUnknownRpEdgeCases (3 tests)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testcalcunknownrpvalidation-1-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      TestCalcUnknownRpValidation (1 test)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-findings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Findings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key Findings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#output-format-important" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output Format (IMPORTANT!)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#product-resistance-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      Product Resistance Behavior
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uncovered-lines" class="md-nav__link">
+    <span class="md-ellipsis">
+      Uncovered Lines
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test Data
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Approach
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#module-purpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      Module Purpose
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      Next Steps
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="calc_unknownrppy-testing-complete">calc_unknownRp.py Testing Complete</h1>
+<h2 id="summary">Summary</h2>
+<p>Successfully created comprehensive test suite for <code>calc_unknownRp.py</code> validation module.</p>
+<h2 id="coverage-improvement">Coverage Improvement</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Before</th>
+<th>After</th>
+<th>Improvement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>calc_unknownRp.py</strong></td>
+<td>11%</td>
+<td>89%</td>
+<td>+78%</td>
+</tr>
+<tr>
+<td><strong>Total tests</strong></td>
+<td>88</td>
+<td>99</td>
+<td>+11 tests</td>
+</tr>
+<tr>
+<td><strong>Overall coverage</strong></td>
+<td>69%</td>
+<td>79%</td>
+<td>+10%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="test-suite-structure">Test Suite Structure</h2>
+<p>Created <code>tests/test_calc_unknownRp.py</code> with <strong>11 tests</strong> across 3 test classes:</p>
+<h3 id="testcalcunknownrpbasic-7-tests">TestCalcUnknownRpBasic (7 tests)</h3>
+<ol>
+<li><code>test_calc_unknownRp_runs</code> - Verifies execution returns valid output</li>
+<li><code>test_output_shape</code> - Validates output structure (7 columns, 3 product_res columns)</li>
+<li><code>test_output_columns</code> - Checks data validity (time, temps, pressure, flux, percent dried)</li>
+<li><code>test_product_resistance_output</code> - Validates resistance estimation data</li>
+<li><code>test_parameter_estimation</code> - Verifies R0, A1, A2 parameter fitting</li>
+<li><code>test_drying_completes</code> - Checks drying reaches &gt; 50% completion</li>
+<li><code>test_cake_length_reaches_initial_height</code> - Validates Lck progression</li>
+</ol>
+<h3 id="testcalcunknownrpedgecases-3-tests">TestCalcUnknownRpEdgeCases (3 tests)</h3>
+<ol>
+<li><code>test_short_time_series</code> - Minimal 3-point data</li>
+<li><code>test_different_pressure</code> - Lower pressure (0.10 Torr)</li>
+<li><code>test_different_product_concentration</code> - Higher cSolid (0.10)</li>
+</ol>
+<h3 id="testcalcunknownrpvalidation-1-test">TestCalcUnknownRpValidation (1 test)</h3>
+<ol>
+<li><code>test_matches_example_script</code> - Validates against <code>ex_unknownRp_PD.py</code> results</li>
+</ol>
+<h2 id="key-findings">Key Findings</h2>
+<h3 id="output-format-important">Output Format (IMPORTANT!)</h3>
+<p>Based on <code>ex_unknownRp_PD.py</code> and actual testing, <strong>column 6 is PERCENTAGE (0-100), not fraction (0-1)</strong>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">output</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">]</span>  <span class="c1"># percent_dried (0-100%), NOT fraction (0-1)</span>
+</span></code></pre></div>
+<p>This differs from <code>calc_knownRp.py</code> which uses fraction (0-1) in column 6.</p>
+<h3 id="product-resistance-behavior">Product Resistance Behavior</h3>
+<ul>
+<li><code>product_res[:, 2]</code> (Rp) can be <strong>negative early during optimization</strong></li>
+<li>This is expected behavior during scipy.curve_fit convergence</li>
+<li>Final resistance values stabilize to positive, physically reasonable values</li>
+</ul>
+<h3 id="uncovered-lines">Uncovered Lines</h3>
+<p>Missing coverage (7 lines) are <strong>error handling</strong> branches:
+- Lines 97, 100-101: "Total time exceeded. Drying incomplete" messages
+- Lines 108, 111-112: Chamber pressure time exceeded messages
+- Line 119: "Drying done successfully" message</p>
+<p>These are unlikely to be hit in normal operation and are intentionally left uncovered.</p>
+<h2 id="test-data">Test Data</h2>
+<p>Tests use <code>test_data/temperature.txt</code> (452 time points):
+- 2-column format: time (hr), Tbot (°C)
+- Loaded by all test cases
+- Same data used by <code>ex_unknownRp_PD.py</code> example</p>
+<h2 id="approach">Approach</h2>
+<p><strong>Success factor</strong>: Based tests on working example (<code>ex_unknownRp_PD.py</code>) rather than assumptions
+- Extracted actual input patterns
+- Validated against known-good results
+- Discovered output format differences (percentage vs fraction)
+- Understood optimization behavior (negative Rp early)</p>
+<h2 id="module-purpose">Module Purpose</h2>
+<p><code>calc_unknownRp.py</code> is a <strong>validation module</strong> for future Pyomo implementation:
+- Estimates product resistance parameters (R0, A1, A2) from experimental data
+- Uses scipy.optimize.curve_fit with model: <code>Rp = R0 + A1*Lck/(1 + A2*Lck)</code>
+- Will validate Pyomo parameter estimation against scipy baseline
+- Part of coexistence strategy (scipy + Pyomo)</p>
+<h2 id="next-steps">Next Steps</h2>
+<p>With <code>calc_unknownRp.py</code> at 89% coverage, remaining validation modules need similar treatment:</p>
+<ol>
+<li><strong>opt_Pch.py</strong> (14% coverage) - Pressure-only optimization</li>
+<li><strong>opt_Pch_Tsh.py</strong> (19% coverage) - Joint pressure-temperature optimization</li>
+</ol>
+<p>Both should follow same approach:
+- Find or create working examples
+- Base tests on proven functionality
+- Understand actual output format
+- Test edge cases and validation</p>
+<h2 id="references">References</h2>
+<ul>
+<li><strong>Working Example</strong>: <code>ex_unknownRp_PD.py</code> (lines 1-200)</li>
+<li><strong>Test Data</strong>: <code>test_data/temperature.txt</code></li>
+<li><strong>Test File</strong>: <code>tests/test_calc_unknownRp.py</code> (348 lines, 11 tests)</li>
+<li><strong>Coverage Report</strong>: Lines 97, 100-101, 108, 111-112, 119 uncovered (error messages)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>

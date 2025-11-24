@@ -1,0 +1,1170 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
+    
+    
+      
+        <title>CI Workflow Recommendation & Comparison - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.7e37652d.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ci-workflow-recommendation-comparison" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CI Workflow Recommendation &amp; Comparison
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    LyoPRONTO: Getting Started
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tutorials
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-guides/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    How-to Guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Simulate primary drying with known Kv and Rp
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Fitting Unknown Rp to Process Data
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Explanations
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Full listing of all docstrings by module
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#executive-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Executive Summary
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Problem
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Solution Comparison
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution Comparison">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-full-tests-every-time-industry-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 1: Full Tests Every Time (Industry Standard)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-parallel-fast-full-modern" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 2: Parallel Fast + Full (Modern)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-3-approval-based-coverage-your-original-idea" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 3: Approval-Based Coverage (Your Original Idea)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-4-draft-aware-ci-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      Option 4: Draft-Aware CI (RECOMMENDED ⭐)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      Detailed Comparison Table
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-world-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Real-World Scenarios
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Real-World Scenarios">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#scenario-a-developer-making-quick-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scenario A: Developer making quick fix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scenario-b-developer-iterating-on-feature-5-commits" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scenario B: Developer iterating on feature (5 commits)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-draft-aware-is-better-than-approval-based" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Draft-Aware is Better Than Approval-Based
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why Draft-Aware is Better Than Approval-Based">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-approval-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      The Approval Problem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      Key Insights
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-draft-aware-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation: Draft-Aware Workflow
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation: Draft-Aware Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#developer-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      Developer Workflow
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adoption-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adoption Path
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Adoption Path">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#phase-1-implement-draft-aware-recommended-now" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 1: Implement Draft-Aware (Recommended Now)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-2-monitor-optimize-month-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 2: Monitor &amp; Optimize (Month 2)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#phase-3-consider-parallel-if-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      Phase 3: Consider Parallel (If Needed)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommendations-by-project-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      Recommendations by Project Size
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Recommendations by Project Size">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#small-team-1-5-developers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Small Team (1-5 developers)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#medium-team-6-20-developers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Medium Team (6-20 developers)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#large-team-20-developers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Large Team (20+ developers)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cost-analysis-100-prsmonth" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cost Analysis (100 PRs/month)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      Conclusion
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Conclusion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#why-draft-aware-wins" class="md-nav__link">
+    <span class="md-ellipsis">
+      Why Draft-Aware Wins
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#implementation-verdict" class="md-nav__link">
+    <span class="md-ellipsis">
+      Implementation Verdict
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Further Reading
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="ci-workflow-recommendation-comparison">CI Workflow Recommendation &amp; Comparison</h1>
+<h2 id="executive-summary">Executive Summary</h2>
+<p><strong>Recommended Approach</strong>: <strong>Draft-Aware CI Workflow</strong> ✅</p>
+<p>This strikes the best balance between developer experience, cost efficiency, and quality assurance.</p>
+<h2 id="the-problem">The Problem</h2>
+<p>Original CI: <strong>11 minutes</strong> per run (too slow for 128 tests)</p>
+<h2 id="solution-comparison">Solution Comparison</h2>
+<h3 id="option-1-full-tests-every-time-industry-standard">Option 1: Full Tests Every Time (Industry Standard)</h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="l l-Scalar l-Scalar-Plain">Every commit → Full tests + coverage (5-7 min)</span>
+</span></code></pre></div>
+<p><strong>Scoring</strong>:
+- Developer Experience: ⭐⭐⭐⭐ (4/5)
+- Quality Assurance: ⭐⭐⭐⭐⭐ (5/5)
+- Cost Efficiency: ⭐⭐⭐ (3/5)
+- Complexity: ⭐⭐⭐⭐⭐ (5/5 - simplest)</p>
+<p><strong>Best for</strong>: Projects with strict quality requirements, unlimited CI budget</p>
+<p><strong>Example</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Commit 1: 7 min with coverage
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>Commit 2: 7 min with coverage
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>Commit 3: 7 min with coverage
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>Total: 21 minutes
+</span></code></pre></div></p>
+<hr />
+<h3 id="option-2-parallel-fast-full-modern">Option 2: Parallel Fast + Full (Modern)</h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="l l-Scalar l-Scalar-Plain">Every commit → Fast tests (3 min) AND Coverage tests (7 min) in parallel</span>
+</span></code></pre></div>
+<p><strong>Scoring</strong>:
+- Developer Experience: ⭐⭐⭐⭐⭐ (5/5)
+- Quality Assurance: ⭐⭐⭐⭐⭐ (5/5)
+- Cost Efficiency: ⭐⭐ (2/5 - highest cost)
+- Complexity: ⭐⭐⭐ (3/5)</p>
+<p><strong>Best for</strong>: Critical infrastructure projects, large teams</p>
+<p><strong>Example</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Commit 1: 7 min (both run in parallel)
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>Commit 2: 7 min (both run in parallel)
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Commit 3: 7 min (both run in parallel)
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Total: 21 minutes (but you see fast results in 3 min)
+</span></code></pre></div></p>
+<hr />
+<h3 id="option-3-approval-based-coverage-your-original-idea">Option 3: Approval-Based Coverage (Your Original Idea)</h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="l l-Scalar l-Scalar-Plain">PR commits → Fast tests only (3 min)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="l l-Scalar l-Scalar-Plain">Reviewer approval → Coverage tests (7 min)</span>
+</span></code></pre></div>
+<p><strong>Scoring</strong>:
+- Developer Experience: ⭐⭐⭐⭐ (4/5)
+- Quality Assurance: ⭐⭐⭐ (3/5 - late discovery)
+- Cost Efficiency: ⭐⭐⭐⭐⭐ (5/5 - lowest cost)
+- Complexity: ⭐⭐⭐ (3/5)</p>
+<p><strong>Best for</strong>: Budget-constrained projects, small teams</p>
+<p><strong>Issues</strong>:
+- ⚠️ Coverage gaps discovered AFTER reviewer approves
+- ⚠️ Rework required → new approval → rework loop
+- ⚠️ Reviewer frustration ("I already approved this!")
+- ⚠️ Violates "shift left" testing principle</p>
+<p><strong>Example</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Commit 1: 3 min fast
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Commit 2: 3 min fast
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Commit 3: 3 min fast
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Reviewer approves: 7 min coverage → FAILS!
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Fix &amp; recommit: 3 min fast
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>Re-approval needed: 7 min coverage
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>Total: 26 minutes + approval friction
+</span></code></pre></div></p>
+<hr />
+<h3 id="option-4-draft-aware-ci-recommended">Option 4: Draft-Aware CI (RECOMMENDED ⭐)</h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="l l-Scalar l-Scalar-Plain">Draft PR commits → Fast tests only (3 min)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="l l-Scalar l-Scalar-Plain">Mark &quot;Ready for Review&quot; → Full tests + coverage (7 min)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="l l-Scalar l-Scalar-Plain">All subsequent commits → Full tests + coverage (7 min)</span>
+</span></code></pre></div>
+<p><strong>Scoring</strong>:
+- Developer Experience: ⭐⭐⭐⭐⭐ (5/5)
+- Quality Assurance: ⭐⭐⭐⭐⭐ (5/5)
+- Cost Efficiency: ⭐⭐⭐⭐ (4/5)
+- Complexity: ⭐⭐⭐⭐ (4/5)</p>
+<p><strong>Best for</strong>: Most projects - excellent balance ✅</p>
+<p><strong>Advantages</strong>:
+- ✅ Fast iteration during development (draft)
+- ✅ Full coverage BEFORE review (ready)
+- ✅ No post-approval surprises
+- ✅ Natural developer workflow
+- ✅ Significant cost savings during development</p>
+<p><strong>Example</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>Draft Commit 1: 3 min fast
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>Draft Commit 2: 3 min fast
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Draft Commit 3: 3 min fast
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Mark &quot;Ready for Review&quot;: 7 min coverage
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>Review feedback commit: 7 min coverage
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>Total: 23 minutes + no approval friction ✅
+</span></code></pre></div></p>
+<hr />
+<h2 id="detailed-comparison-table">Detailed Comparison Table</h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Option 1<br>(Always Full)</th>
+<th>Option 2<br>(Parallel)</th>
+<th>Option 3<br>(Approval)</th>
+<th>Option 4<br>(Draft-Aware) ✅</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Development Speed</strong></td>
+<td>Slower (7 min)</td>
+<td>Fast (3 min visible)</td>
+<td>Fast (3 min)</td>
+<td>Fast (3 min draft)</td>
+</tr>
+<tr>
+<td><strong>Review Readiness</strong></td>
+<td>Excellent</td>
+<td>Excellent</td>
+<td>Unknown</td>
+<td>Excellent</td>
+</tr>
+<tr>
+<td><strong>Coverage Discovery</strong></td>
+<td>Immediate</td>
+<td>Immediate</td>
+<td>Late (post-approval)</td>
+<td>Early (pre-review)</td>
+</tr>
+<tr>
+<td><strong>CI Cost (3 commits)</strong></td>
+<td>21 min</td>
+<td>42 min</td>
+<td>16 min</td>
+<td>23 min</td>
+</tr>
+<tr>
+<td><strong>Rework Risk</strong></td>
+<td>Low</td>
+<td>Low</td>
+<td><strong>High</strong> ⚠️</td>
+<td>Low</td>
+</tr>
+<tr>
+<td><strong>Setup Complexity</strong></td>
+<td>Simple</td>
+<td>Moderate</td>
+<td>Moderate</td>
+<td>Moderate</td>
+</tr>
+<tr>
+<td><strong>Reviewer Experience</strong></td>
+<td>Good</td>
+<td>Good</td>
+<td><strong>Frustrating</strong> ⚠️</td>
+<td>Excellent</td>
+</tr>
+<tr>
+<td><strong>Industry Standard</strong></td>
+<td>✅ Yes</td>
+<td>Used by large projects</td>
+<td>❌ Uncommon</td>
+<td>Growing adoption</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="real-world-scenarios">Real-World Scenarios</h2>
+<h3 id="scenario-a-developer-making-quick-fix">Scenario A: Developer making quick fix</h3>
+<p><strong>Draft-Aware (Recommended)</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>1. Create draft PR → 3 min fast test ✅
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>2. Push fix → 3 min fast test ✅
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>3. Mark ready → 7 min with coverage ✅
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>Total: 13 minutes, ready for review
+</span></code></pre></div></p>
+<p><strong>Approval-Based</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>1. Create PR → 3 min fast test ✅
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>2. Push fix → 3 min fast test ✅
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>3. Reviewer approves → 7 min coverage → FAILS! ❌
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>4. Fix coverage → 3 min fast test
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>5. Get re-approval → 7 min coverage ✅
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>Total: 23 minutes + approval hassle
+</span></code></pre></div></p>
+<h3 id="scenario-b-developer-iterating-on-feature-5-commits">Scenario B: Developer iterating on feature (5 commits)</h3>
+<p><strong>Draft-Aware (Recommended)</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>Draft commits 1-4: 3 min each = 12 min
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>Mark ready: 7 min
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Review fix: 7 min
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>Total: 26 minutes
+</span></code></pre></div></p>
+<p><strong>Always Full</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>All 5 commits: 7 min each = 35 minutes
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Total: 35 minutes (34% slower)
+</span></code></pre></div></p>
+<p><strong>Approval-Based</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Commits 1-5: 3 min each = 15 min
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Approval → coverage fails: 7 min
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>Fix + re-approval: 10 min
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>Total: 32 minutes + frustration
+</span></code></pre></div></p>
+<hr />
+<h2 id="why-draft-aware-is-better-than-approval-based">Why Draft-Aware is Better Than Approval-Based</h2>
+<h3 id="the-approval-problem">The Approval Problem</h3>
+<p><strong>Approval-Based workflow</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Developer: &quot;I&#39;m done, please review&quot;
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>   ↓
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>Reviewer: &quot;Code looks good!&quot; → Clicks approve
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>   ↓
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>CI: &quot;Coverage dropped, tests fail&quot;
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>   ↓
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>Reviewer: &quot;Wait, I need to re-approve?&quot;
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>Developer: &quot;Sorry, let me fix...&quot;
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>   ↓
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>[Repeat cycle]
+</span></code></pre></div></p>
+<p><strong>Draft-Aware workflow</strong>:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>Developer: &quot;I&#39;m working on this&quot; → Draft
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>   [Fast iterations]
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>   ↓
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>Developer: &quot;Done! Ready for review&quot; → Mark ready
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>   ↓
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>CI: Runs full coverage immediately
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>   ↓
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>If pass: Reviewer sees &quot;all green&quot;
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>If fail: Developer fixes BEFORE review
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>   ↓
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>Reviewer: Gets clean, verified PR to review
+</span></code></pre></div></p>
+<h3 id="key-insights">Key Insights</h3>
+<ol>
+<li><strong>Approval is a social contract</strong> - "I think this is good to merge"</li>
+<li>Breaking this after approval damages trust</li>
+<li>
+<p>Requires awkward "sorry, need re-approval" conversations</p>
+</li>
+<li>
+<p><strong>"Ready for Review" is a technical signal</strong> - "This is complete"</p>
+</li>
+<li>Perfect trigger for full quality checks</li>
+<li>Natural part of developer workflow</li>
+<li>
+<p>No social friction if CI fails</p>
+</li>
+<li>
+<p><strong>Shift left principle</strong> - Find issues as early as possible</p>
+</li>
+<li>Draft-aware: Issues found before review ✅</li>
+<li>Approval-based: Issues found after approval ❌</li>
+</ol>
+<hr />
+<h2 id="implementation-draft-aware-workflow">Implementation: Draft-Aware Workflow</h2>
+<h3 id="how-it-works">How It Works</h3>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="c1"># .github/workflows/pr-tests.yml</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nt">on</span><span class="p">:</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">opened</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">synchronize</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">reopened</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">ready_for_review</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">converted_to_draft</span><span class="p p-Indicator">]</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="nt">jobs</span><span class="p">:</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">  </span><span class="nt">test</span><span class="p">:</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">    </span><span class="nt">steps</span><span class="p">:</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Determine mode</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="w">        </span><span class="no">if [ &quot;${{ github.event.pull_request.draft }}&quot; == &quot;true&quot; ]; then</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="w">          </span><span class="no">echo &quot;mode=fast&quot; </span>
+</span><span id="__span-15-14"><a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a><span class="w">        </span><span class="no">else</span>
+</span><span id="__span-15-15"><a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a><span class="w">          </span><span class="no">echo &quot;mode=full&quot;</span>
+</span><span id="__span-15-16"><a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a><span class="w">        </span><span class="no">fi</span>
+</span><span id="__span-15-17"><a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>
+</span><span id="__span-15-18"><a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests</span>
+</span><span id="__span-15-19"><a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a><span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+</span><span id="__span-15-20"><a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a><span class="w">        </span><span class="no">if [ &quot;$mode&quot; == &quot;fast&quot; ]; then</span>
+</span><span id="__span-15-21"><a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a><span class="w">          </span><span class="no">pytest tests/ -n auto -v  # 3-5 min</span>
+</span><span id="__span-15-22"><a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a><span class="w">        </span><span class="no">else</span>
+</span><span id="__span-15-23"><a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a><span class="w">          </span><span class="no">pytest tests/ -n auto -v --cov=lyopronto  # 5-7 min</span>
+</span><span id="__span-15-24"><a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a><span class="w">        </span><span class="no">fi</span>
+</span></code></pre></div>
+<h3 id="developer-workflow">Developer Workflow</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="c1"># 1. Start development</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>git<span class="w"> </span>checkout<span class="w"> </span>-b<span class="w"> </span>feature/my-feature
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>feature/my-feature
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="c1"># 2. Create DRAFT PR</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>gh<span class="w"> </span>pr<span class="w"> </span>create<span class="w"> </span>--draft<span class="w"> </span>--title<span class="w"> </span><span class="s2">&quot;WIP: My feature&quot;</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="c1"># → Fast tests run (3 min)</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="c1"># 3. Iterate quickly</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">&quot;Progress&quot;</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>git<span class="w"> </span>push
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="c1"># → Fast tests run (3 min each)</span>
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a><span class="c1"># 4. When done, mark ready</span>
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>gh<span class="w"> </span>pr<span class="w"> </span>ready
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a><span class="c1"># → Full coverage tests run automatically (7 min)</span>
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a><span class="c1"># 5. If coverage passes, request review</span>
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>gh<span class="w"> </span>pr<span class="w"> </span>ready<span class="w">  </span><span class="c1"># already done</span>
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a><span class="c1"># → Reviewer sees all-green PR ✅</span>
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a><span class="c1"># 6. If coverage fails, fix before review</span>
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>git<span class="w"> </span>commit<span class="w"> </span>-am<span class="w"> </span><span class="s2">&quot;Add tests&quot;</span>
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>git<span class="w"> </span>push
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a><span class="c1"># → Full coverage runs again (7 min)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="adoption-path">Adoption Path</h2>
+<h3 id="phase-1-implement-draft-aware-recommended-now">Phase 1: Implement Draft-Aware (Recommended Now)</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>Week 1: Deploy draft-aware workflow
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>Week 2-4: Team adapts to using draft PRs
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>Result: 30-40% CI time reduction
+</span></code></pre></div>
+<h3 id="phase-2-monitor-optimize-month-2">Phase 2: Monitor &amp; Optimize (Month 2)</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>Track:
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>- Average draft commits per PR
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>- Coverage failure rate
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>- Developer satisfaction
+</span></code></pre></div>
+<h3 id="phase-3-consider-parallel-if-needed">Phase 3: Consider Parallel (If Needed)</h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>If budget allows and team is large:
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>- Add parallel fast+full tests
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>- Keep draft awareness for cost control
+</span></code></pre></div>
+<hr />
+<h2 id="recommendations-by-project-size">Recommendations by Project Size</h2>
+<h3 id="small-team-1-5-developers">Small Team (1-5 developers)</h3>
+<p><strong>Use</strong>: Draft-Aware Workflow ✅
+- Best balance of speed and quality
+- Low complexity
+- Significant cost savings</p>
+<h3 id="medium-team-6-20-developers">Medium Team (6-20 developers)</h3>
+<p><strong>Use</strong>: Draft-Aware Workflow ✅
+- Consider parallel tests if CI budget allows
+- Strong quality gates needed</p>
+<h3 id="large-team-20-developers">Large Team (20+ developers)</h3>
+<p><strong>Use</strong>: Parallel Fast+Full
+- Budget for comprehensive CI
+- Many concurrent PRs
+- Critical quality requirements</p>
+<hr />
+<h2 id="cost-analysis-100-prsmonth">Cost Analysis (100 PRs/month)</h2>
+<p>Assumptions:
+- Average 4 commits per PR
+- 1 review cycle per PR</p>
+<table>
+<thead>
+<tr>
+<th>Workflow</th>
+<th>Minutes/PR</th>
+<th>Total/Month</th>
+<th>Relative Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Always Full (7 min)</td>
+<td>35 min</td>
+<td>3,500 min</td>
+<td>100% baseline</td>
+</tr>
+<tr>
+<td>Parallel (7 min × 2)</td>
+<td>70 min</td>
+<td>7,000 min</td>
+<td>200% (+$$$)</td>
+</tr>
+<tr>
+<td>Approval-Based (best case)</td>
+<td>19 min</td>
+<td>1,900 min</td>
+<td>54% (−$$)</td>
+</tr>
+<tr>
+<td>Approval-Based (with rework)</td>
+<td>29 min</td>
+<td>2,900 min</td>
+<td>83%</td>
+</tr>
+<tr>
+<td><strong>Draft-Aware</strong> ✅</td>
+<td><strong>26 min</strong></td>
+<td><strong>2,600 min</strong></td>
+<td><strong>74%</strong> (−$)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Draft-Aware saves 26% vs Always Full</strong> while maintaining quality ✅</p>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<h3 id="why-draft-aware-wins">Why Draft-Aware Wins</h3>
+<ol>
+<li>✅ <strong>Fast iteration</strong> during development (like approval-based)</li>
+<li>✅ <strong>Full coverage</strong> before review (like always-full)</li>
+<li>✅ <strong>No approval friction</strong> (unlike approval-based)</li>
+<li>✅ <strong>Cost efficient</strong> (better than always-full)</li>
+<li>✅ <strong>Natural workflow</strong> (developers already use drafts)</li>
+<li>✅ <strong>Early problem detection</strong> ("shift left")</li>
+<li>✅ <strong>Reviewer-friendly</strong> (always see verified PRs)</li>
+</ol>
+<h3 id="implementation-verdict">Implementation Verdict</h3>
+<p><strong>Switch from approval-based to draft-aware</strong> for:
+- Better developer experience
+- No reviewer friction
+- Earlier problem detection
+- Same cost efficiency
+- Industry-aligned workflow</p>
+<p>The approval-based approach is clever but creates social friction. Draft-aware achieves the same goals without the downsides.</p>
+<hr />
+<h2 id="further-reading">Further Reading</h2>
+<ul>
+<li><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests#draft-pull-requests">GitHub: Draft Pull Requests</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Shift-left_testing">Shift Left Testing</a></li>
+<li><a href="https://www.researchgate.net/publication/255965523_Evaluating_the_cost_of_software_quality">The Cost of Late Discovery</a></li>
+<li><a href="https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request">GitHub Actions: Pull Request Events</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.92b07e13.min.js"></script>
+      
+    
+  </body>
+</html>
