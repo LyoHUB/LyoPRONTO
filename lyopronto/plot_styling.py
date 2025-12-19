@@ -34,134 +34,52 @@ def axis_tick_styling(
     ax.xaxis.labelpad = labelPad
     ax.yaxis.labelpad = labelPad
 
-def axis_style_pressure(
-        ax,
-        gcafontSize = 60,
-        labelPad = 30,
-        color = 'b',
-        majorTickWidth = 5,
-        minorTickWidth = 3,
-        majorTickLength = 30,
-        minorTickLength = 20,
-    ):  
+def axis_style_pressure(ax, **kwargs):
     """ Function to set styling for axes, with time on x and pressure on y """
-
+    color = kwargs.get('color','b')
+    gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,fontweight='bold',fontname="Arial")
     ax.set_ylabel("Chamber Pressure [mTorr]",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
-
-    axis_tick_styling(
-        ax,
-        color = color,
-        gcafontSize = gcafontSize,
-        majorTickWidth = majorTickWidth,
-        minorTickWidth = minorTickWidth,
-        majorTickLength = majorTickLength,
-        minorTickLength = minorTickLength,
-        labelPad = labelPad,
-    )
+    axis_tick_styling(ax, **kwargs)
     
-def axis_style_subflux(
-        ax,
-        gcafontSize = 60,
-        labelPad = 30,
-        color = [0, 0.7, 0.3],
-        majorTickWidth = 5,
-        minorTickWidth = 3,
-        majorTickLength = 30,
-        minorTickLength = 20,
-    ):  
+def axis_style_subflux(ax, **kwargs):  
     """ Function to set styling for axes, with time on x and sublimation flux on y """
-
+    color = kwargs.get('color',[0, 0.7, 0.3])
+    gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,fontweight='bold',fontname="Arial")
     ax.set_ylabel("Sublimation Flux [kg/hr/m$^2$]",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
+    axis_tick_styling(ax, **kwargs)
 
-    axis_tick_styling(
-        ax,
-        color = color,
-        gcafontSize = gcafontSize,
-        majorTickWidth = majorTickWidth,
-        minorTickWidth = minorTickWidth,
-        majorTickLength = majorTickLength,
-        minorTickLength = minorTickLength,
-        labelPad = labelPad,
-    )
-
-def axis_style_percdried(
-        ax,
-        gcafontSize = 60,
-        labelPad = 30,
-        color = 'k',
-        majorTickWidth = 5,
-        minorTickWidth = 3,
-        majorTickLength = 30,
-        minorTickLength = 20,
-    ):  
+def axis_style_percdried( ax, **kwargs):  
     """ Function to set styling for axes, with time on x and percent dried on y """
-
+    color = kwargs.get('color','k')
+    gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,fontweight='bold',fontname="Arial")
     ax.set_ylabel("Percent Dried",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
+    axis_tick_styling(ax, **kwargs)
 
-    axis_tick_styling(
-        ax,
-        color = color,
-        gcafontSize = gcafontSize,
-        majorTickWidth = majorTickWidth,
-        minorTickWidth = minorTickWidth,
-        majorTickLength = majorTickLength,
-        minorTickLength = minorTickLength,
-        labelPad = labelPad,
-    )
-
-def axis_style_temperature(
-        ax,
-        gcafontSize = 60,
-        labelPad = 30,
-        color = 'k',
-        majorTickWidth = 5,
-        minorTickWidth = 3,
-        majorTickLength = 30,
-        minorTickLength = 20,
-    ):  
+def axis_style_temperature(ax, **kwargs):  
     """ Function to set styling for axes, with time on x and temperature on y """
-
+    color = kwargs.get('color','k')
+    gcafontSize = kwargs.get('gcafontSize',60)  
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,fontweight='bold',fontname="Arial")
     ax.set_ylabel("Product Temperature [°C]",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
+    axis_tick_styling(ax, **kwargs)
 
-    axis_tick_styling(
-        ax,
-        color = color,
-        gcafontSize = gcafontSize,
-        majorTickWidth = majorTickWidth,
-        minorTickWidth = minorTickWidth,
-        majorTickLength = majorTickLength,
-        minorTickLength = minorTickLength,
-        labelPad = labelPad,
-    )
+def axis_style_designspace(ax,**kwargs):  
+    """ Function to set styling for axes, with time on x and sublimation flux on y """
+    color = kwargs.get('color', [0, 0.7, 0.3])
+    gcafontSize = kwargs.get('gcafontSize',60)
+    ax.set_xlabel("Chamber Pressure [mTorr]",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
+    ax.set_ylabel("Sublimation Flux [kg/hr/m$^2$]",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
+    axis_tick_styling(ax, **kwargs)
     
-def axis_style_rp(
-        ax,
-        gcafontSize = 60,
-        labelPad = 30,
-        color = 'k',
-        majorTickWidth = 5,
-        minorTickWidth = 3,
-        majorTickLength = 30,
-        minorTickLength = 20,
-    ):  
+def axis_style_rp(ax, **kwargs):
     """ Function to set styling for axes, with dry layer height on x and product resistance on y """
-
+    color = kwargs.get('color','k')
+    gcafontSize = kwargs.get('gcafontSize',60)  
     ax.set_xlabel("Dry Layer Height [cm]",fontsize=gcafontSize,fontweight='bold',fontname="Arial")
     ax.set_ylabel('Product Resistance [cm$^2$ hr Torr/g]',fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
-
-    axis_tick_styling(
-        ax,
-        color = color,
-        gcafontSize = gcafontSize,
-        majorTickWidth = majorTickWidth,
-        minorTickWidth = minorTickWidth,
-        majorTickLength = majorTickLength,
-        minorTickLength = minorTickLength,
-        labelPad = labelPad,
-    )
+    axis_tick_styling(ax, **kwargs)
 
 
