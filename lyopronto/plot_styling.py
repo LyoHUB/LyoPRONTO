@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-default_font_spec = {"fontweight":"bold", "font_family":"Arial"}
+default_font_spec = {"fontweight":"bold", "fontname":"Arial"}
 
 # TODO: document these kwargs
 def axis_tick_styling(
