@@ -31,7 +31,7 @@ def axis_tick_styling(
     ax.minorticks_on()
     ax.tick_params(axis='both',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
     ax.tick_params(axis='both',which='minor',direction='in',width=minorTickWidth,length=minorTickLength)
-    ax.tick_params(axis='both',labelsize=gcafontSize,labelfontfamily=default_font_spec['font_family'])
+    ax.tick_params(axis='both',labelsize=gcafontSize,labelfontfamily=default_font_spec['fontname'])
     ax.tick_params(axis='y',which='both',color=color, labelcolor=color)
     for tick in [*ax.get_xticklabels(), *ax.get_yticklabels()]:
         tick.set_fontweight('bold')
