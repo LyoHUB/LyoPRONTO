@@ -1,0 +1,83 @@
+name: PR Tests
+
+# Smart CI workflow:
+# - Draft PRs: Fast tests only (no coverage) for rapid iteration
+# - Ready for Review: Full tests with coverage for quality assurance
+# - All subsequent commits: Continue with full coverage
+
+on:
+  pull_request:
+    branches: [ main, dev-pyomo ]
+    types: [ opened, synchronize, reopened, ready_for_review, converted_to_draft ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+
+    - name: Determine test mode
+      id: mode
+      run: |
+        if [ "${{ github.event.pull_request.draft }}" == "true" ]; then
+          echo "coverage=false" >> $GITHUB_OUTPUT
+          echo "mode=fast" >> $GITHUB_OUTPUT
+        else
+          echo "coverage=true" >> $GITHUB_OUTPUT
+          echo "mode=full" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.versions.outputs.result }}
+        cache: 'pip'
+        cache-dependency-path: |
+          requirements.txt
+          requirements-dev.txt
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install -r requirements.txt -r requirements-dev.txt
+        pip install -e . --no-build-isolation
+    
+    - name: Run tests (draft = fast, ready = coverage)
+      run: |
+        if [ "${{ steps.mode.outputs.coverage }}" == "true" ]; then
+          echo "🔍 Running full tests with coverage (PR is ready for review)"
+          echo "⚡ Skipping slow tests (marked with @pytest.mark.slow) - these run on merge"
+          pytest tests/ -n auto -v -m "not slow" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+        else
+          echo "⚡ Running fast tests without coverage (PR is draft)"
+          echo "⚡ Skipping slow tests (marked with @pytest.mark.slow)"
+          pytest tests/ -n auto -v -m "not slow"
+        fi
+    
+    - name: Upload coverage (if run)
+      if: steps.mode.outputs.coverage == 'true'
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: pr-tests
+        name: pr-coverage
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}
+    
+    - name: Test Summary
+      if: always()
+      run: |
+        if [ "${{ steps.mode.outputs.coverage }}" == "true" ]; then
+          echo "✅ Full tests with coverage completed"
+          echo "📊 PR is ready for review with coverage verified"
+        else
+          echo "⚡ Fast tests completed (PR is draft)"
+          echo "� Mark PR as 'Ready for Review' to run coverage tests"
+        fi
