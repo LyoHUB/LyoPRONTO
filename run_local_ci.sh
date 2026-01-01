@@ -33,9 +33,9 @@ echo "3. Installing dependencies..."
 echo "   Upgrading pip..."
 python -m pip install --upgrade pip -q
 echo "   Installing core dependencies..."
-pip install -r requirements.txt -q
+pip install . -q
 echo "   Installing dev dependencies..."
-pip install -r requirements-dev.txt -q
+pip install .[dev] -q
 echo "   ✅ Dependencies installed"
 echo ""
 
