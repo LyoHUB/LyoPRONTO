@@ -30,7 +30,7 @@ def Vapor_pressure(T_sub):
     temperature in degC
     """
 
-    p = 2.698e10*math.exp(-6144.96/(273.15+T_sub))   # Vapor pressure at the sublimation temperature in Torr
+    p = 2.698e10*np.exp(-6144.96/(273.15+T_sub))   # Vapor pressure at the sublimation temperature in Torr
 
     return p
 
@@ -232,7 +232,7 @@ def Eq_Constraints(Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv,Lpr0,Lck,Av,Ap,Rp):
     vial area in cm^2, product area in cm^2, and product resistance in cm^2-Torr-hr/g 
     """
 
-    C1 = Psub - 2.698e10*math.exp(-6144.96/(273.15+Tsub))   # Vapor pressure at the sublimation temperature in Torr
+    C1 = Psub - 2.698e10*np.exp(-6144.96/(273.15+Tsub))   # Vapor pressure at the sublimation temperature in Torr
     
     C2 = dmdt - Ap/Rp/constant.kg_To_g*(Psub-Pch)  # Sublimation rate in kg/hr
     
@@ -249,7 +249,7 @@ def lumped_cap_Tpr(t,Tpr0,rho,Cp,V,h,Av,Tsh,Tsh0, Tsh_ramp):
     Calculates the product temperature in C. Inputs are time in hr, initial product temperature in degC, product density in g/mL, constant pressure specific heat of the product in J/kg/K, product volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, current shelf temperature in degC, initial shelf temperature in degC, shelf temperature ramping rate in degC/min
     """
 
-    F = (Tpr0 + Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 - Tsh0)*math.exp(-h*Av*constant.cm_To_m**2*t*constant.hr_To_s/rho/Cp*constant.kg_To_g/V) - Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 + Tsh
+    F = (Tpr0 + Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 - Tsh0)*np.exp(-h*Av*constant.cm_To_m**2*t*constant.hr_To_s/rho/Cp*constant.kg_To_g/V) - Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 + Tsh
 
     return F
 

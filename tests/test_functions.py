@@ -16,7 +16,7 @@ class TestVaporPressure:
         """Test vapor pressure at 0°C (should be ~4.58 Torr)."""
         P = functions.Vapor_pressure(0.0)
         # Antoine equation at 0°C
-        expected = 2.698e10 * math.exp(-6144.96 / 273.15)
+        expected = 2.698e10 * np.exp(-6144.96 / 273.15)
         assert np.isclose(P, expected, rtol=1e-6)
         assert np.isclose(P, 4.58, rtol=0.01)  # Literature value
     
