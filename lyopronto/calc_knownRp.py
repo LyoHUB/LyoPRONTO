@@ -42,7 +42,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
             3. Shelf temperature [°C],
             4. Chamber pressure [mTorr],
             5. Sublimation flux [kg/hr/m²],
-            6. Drying fraction [-]
+            6. Drying percent [%]
     """
 
     ##################  Initialization ################

@@ -287,7 +287,7 @@ def calc_step(t, Lck, config):
             3. Shelf temperature [°C],
             4. Chamber pressure [mTorr],
             5. Sublimation flux [kg/hr/m²],
-            6. Drying fraction [-]
+            6. Drying percent [%]
     """
     vial, product, ht, Pch_t, Tsh_t, dt, Lpr0 = config
     Tsh = Tsh_t(t)
@@ -300,9 +300,9 @@ def calc_step(t, Lck, config):
         # print("Shelf temperature is too low for sublimation.")
         dmdt = 0.0
     Tbot = T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
-    dry_frac = Lck/Lpr0
+    dry_percent = (Lck/Lpr0)*100
 
-    col = np.array([t, Tsub, Tbot, Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), dry_frac])
+    col = np.array([t, Tsub, Tbot, Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), dry_percent])
     return col
 
 def fill_output(sol, config):
