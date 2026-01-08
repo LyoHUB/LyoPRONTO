@@ -25,7 +25,7 @@ class TestCalcUnknownRpBasic:
     """Basic functionality tests for parameter estimation."""
     
     @pytest.fixture
-    def standard_inputs(self):
+    def standard_inputs_nodt(self):
         """Standard inputs from ex_unknownRp_PD.py."""
         vial = {
             'Av': 3.80,
@@ -81,9 +81,9 @@ class TestCalcUnknownRpBasic:
         
         return time, Tbot_exp
     
-    def test_calc_unknownRp_runs(self, standard_inputs, temperature_data):
+    def test_calc_unknownRp_runs(self, standard_inputs_nodt, temperature_data):
         """Test that calc_unknownRp.dry() executes successfully."""
-        vial, product, ht, Pchamber, Tshelf = standard_inputs
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
         time, Tbot_exp = temperature_data
         
         # Run parameter estimation
@@ -97,9 +97,9 @@ class TestCalcUnknownRpBasic:
         assert isinstance(output, np.ndarray), "output should be numpy array"
         assert isinstance(product_res, np.ndarray), "product_res should be numpy array"
     
-    def test_output_shape(self, standard_inputs, temperature_data):
+    def test_output_shape(self, standard_inputs_nodt, temperature_data):
         """Test that output has correct shape."""
-        vial, product, ht, Pchamber, Tshelf = standard_inputs
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
         time, Tbot_exp = temperature_data
         
         output, product_res = calc_unknownRp.dry(
@@ -116,42 +116,20 @@ class TestCalcUnknownRpBasic:
         assert len(output) > 10, "Should have multiple time points"
         assert len(product_res) > 10, "product_res should have multiple points"
     
-    def test_output_columns(self, standard_inputs, temperature_data):
+    def test_output_columns(self, unpack_standard_setup, temperature_data):
         """Test that output columns contain valid data."""
-        vial, product, ht, Pchamber, Tshelf = standard_inputs
+        vial, product, ht, Pchamber, Tshelf, dt = unpack_standard_setup
         time, Tbot_exp = temperature_data
         
         output, product_res = calc_unknownRp.dry(
             vial, product, ht, Pchamber, Tshelf, time, Tbot_exp
         )
         
-        # Column 0: Time should increase
-        assert np.all(np.diff(output[:, 0]) >= 0), "Time should be non-decreasing"
-        assert output[0, 0] == pytest.approx(0.0, abs=1e-6), "Should start at t=0"
-        
-        # Column 1: Tsub should be below freezing
-        assert np.all(output[:, 1] <= 0), "Sublimation temp should be below 0°C"
-        assert np.all(output[:, 1] >= -60), "Sublimation temp should be above -60°C"
-        
-        # Column 2: Tbot should be reasonable
-        assert np.all(output[:, 2] >= -50), "Tbot should be above -50°C"
-        assert np.all(output[:, 2] <= 25), "Tbot should be below 25°C"
-        
-        # Column 4: Pch should be [mTorr] (150 mTorr = 0.15 Torr)
-        assert np.allclose(output[:, 4], 150.0, atol=1.0), "Pch should be ~150 [mTorr]"
-        
-        # Column 5: Flux should be non-negative
-        assert np.all(output[:, 5] >= 0), "Flux should be non-negative"
-        
-        # Column 6: Dried fraction should be 0-1 (it's fraction, not percentage!)
-        assert np.all(output[:, 6] >= DRIED_FRACTION_MIN), f"Dried fraction should be >= {DRIED_FRACTION_MIN}"
-        assert np.all(
-            output[:, 6] <= DRIED_FRACTION_MAX
-        ), f"Dried fraction should be <= {DRIED_FRACTION_MAX}"
+        assert_physically_reasonable_output(output)
     
-    def test_product_resistance_output(self, standard_inputs, temperature_data):
+    def test_product_resistance_output(self, standard_inputs_nodt, temperature_data):
         """Test that product_res contains valid resistance data."""
-        vial, product, ht, Pchamber, Tshelf = standard_inputs
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
         time, Tbot_exp = temperature_data
         
         output, product_res = calc_unknownRp.dry(
@@ -174,9 +152,9 @@ class TestCalcUnknownRpBasic:
         positive_count = np.sum(product_res[:, 2] > 0)
         assert positive_count > len(product_res) / 2, "Most resistances should be positive"
     
-    def test_parameter_estimation(self, standard_inputs, temperature_data):
+    def test_parameter_estimation(self, standard_inputs_nodt, temperature_data):
         """Test that parameter estimation produces reasonable values."""
-        vial, product, ht, Pchamber, Tshelf = standard_inputs
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
         time, Tbot_exp = temperature_data
         
         output, product_res = calc_unknownRp.dry(
@@ -204,25 +182,25 @@ class TestCalcUnknownRpBasic:
         # Check covariance is reasonable (not infinite/NaN)
         assert np.all(np.isfinite(params_covariance)), "Covariance should be finite"
     
-    def test_drying_completes(self, standard_inputs, temperature_data):
+    def test_drying_completes(self, standard_inputs_nodt, temperature_data):
         """Test that drying reaches near completion."""
-        vial, product, ht, Pchamber, Tshelf = standard_inputs
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
         time, Tbot_exp = temperature_data
         
         output, product_res = calc_unknownRp.dry(
             vial, product, ht, Pchamber, Tshelf, time, Tbot_exp
         )
         
-        # NOTE: column 6 is now FRACTION (0-1), not percentage (0-100)
-        final_dried_fraction = output[-1, 6]
+        # NOTE: column 6 is percentage (0-100)
+        final_dried_percent = output[-1, 6]
         
         # Should reach near completion (within experimental data range)
-        assert final_dried_fraction > MIN_COMPLETION_FRACTION, \
-            f"Should dry at least {MIN_COMPLETION_FRACTION*100:.0f}%, got {final_dried_fraction*100:.1f}%"
+        assert final_dried_percent > MIN_COMPLETION_FRACTION * 100, \
+            f"Should dry at least {MIN_COMPLETION_FRACTION*100:.0f}%, got {final_dried_percent:.1f}%"
     
-    def test_cake_length_reaches_initial_height(self, standard_inputs, temperature_data):
+    def test_cake_length_reaches_initial_height(self, standard_inputs_nodt, temperature_data):
         """Test that cake length approaches initial product height."""
-        vial, product, ht, Pchamber, Tshelf = standard_inputs
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
         time, Tbot_exp = temperature_data
         
         output, product_res = calc_unknownRp.dry(

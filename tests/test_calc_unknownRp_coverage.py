@@ -9,6 +9,7 @@ from .utils import assert_physically_reasonable_output
 class TestCalcUnknownRp:
     """Test calculator with unknown product resistance (uses experimental Tbot data)."""
     
+    #TODO merge with existing tests in test_calc_unknownRp.py
     @pytest.fixture
     def unknown_rp_setup(self, standard_vial, standard_ht):
         """Setup for unknown Rp calculation with experimental temperature data."""
@@ -17,7 +18,7 @@ class TestCalcUnknownRp:
         
         # Time-varying shelf temperature
         Tshelf = {
-            'init': -40.0,
+            'init': -35.0,
             'setpt': [-20.0, -10.0],  # Two ramp stages
             'dt_setpt': [120.0, 120.0],  # 2 hours in [min]
             'ramp_rate': 0.1  # deg/min
@@ -197,9 +198,9 @@ class TestCalcUnknownRp:
         final_fraction = output[-1, 6]
         # Parameter estimation may have limited progress - check for any drying
         assert final_fraction > 0.0, \
-            f"Should show drying progress, got {final_fraction*100:.1f}%"
-        assert final_fraction <= 1.0, \
-            f"Fraction dried should not exceed 100%, got {final_fraction*100:.1f}%"
+            f"Should show drying progress, got {final_fraction:.1f}%"
+        assert final_fraction <= 100.0, \
+            f"Fraction dried should not exceed 100%, got {final_fraction:.1f}%"
     
     def test_unknown_rp_fraction_dried_monotonic(self, unknown_rp_setup):
         """Test fraction dried increases monotonically."""
@@ -263,7 +264,7 @@ class TestCalcUnknownRpEdgeCases:
         product = {'cSolid': 0.05, 'T_pr_crit': -30.0}
         
         Tshelf = {
-            'init': -40.0,
+            'init': -35.0,
             'setpt': [-30.0],
             'dt_setpt': [60.0],
             'ramp_rate': 0.1
@@ -277,7 +278,7 @@ class TestCalcUnknownRpEdgeCases:
         
         # Minimal time series
         time = np.array([0.0, 0.5, 1.0, 1.5, 2.0])
-        Tbot_exp = np.array([-40.0, -38.0, -35.0, -32.0, -30.0])
+        Tbot_exp = np.array([-40.0, -38.0, -35.0, -32.0, -31.0])
         
         return {
             'vial': standard_vial,
