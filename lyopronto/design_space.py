@@ -110,6 +110,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1])    # Maximum product temperature in C
             drying_time[i_Tsh,i_Pch] = t    # Total drying time in hr
+            # TODO: consider whether to make this error rather than return NaN
             if output_saved.shape[0] == 1:
                 print(f"At Tsh={Tsh} and Pch={Pch}, drying completed in single timestep: check inputs.")
                 sub_flux_avg[i_Tsh,i_Pch] = np.nan
@@ -180,6 +181,13 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         ######################################################
 
         drying_time_pr[j] = t    # Total drying time in hr
+        # TODO: consider whether this should error rather than return NaN
+        if output_saved.shape[0] == 1:
+            print(f"At Pch={Pch} and critical temp {product['T_pr_crit']}, drying completed in single timestep: check inputs.")
+            sub_flux_avg_pr[j] = np.nan
+            sub_flux_min_pr[j] = np.nan
+            sub_flux_end_pr[j] = np.nan
+            continue
         del_t = output_saved[1:,0]-output_saved[:-1,0]
         del_t = np.append(del_t,del_t[-1])
         sub_flux_avg_pr[j] = np.sum(output_saved[:,1]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
