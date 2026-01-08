@@ -41,7 +41,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
     # Shelf temperature control time
     Tshelf['t_setpt'] = np.array([[0]])
     for dt_i in Tshelf['dt_setpt']:
-            Tshelf['t_setpt'] = np.append(Tshelf['t_setpt'],Tshelf['t_setpt'][-1]+dt_i/constant.hr_To_min)
+        Tshelf['t_setpt'] = np.append(Tshelf['t_setpt'],Tshelf['t_setpt'][-1]+dt_i/constant.hr_To_min)
 
     # Initial chamber pressure
     Pch = Pchamber['setpt'][0]        # Torr
@@ -50,11 +50,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
     # Chamber pressure control time
     Pchamber['t_setpt'] = np.array([[0]])
     for dt_j in Pchamber['dt_setpt']:
-            Pchamber['t_setpt'] = np.append(Pchamber['t_setpt'],Pchamber['t_setpt'][-1]+dt_j/constant.hr_To_min) 
+        Pchamber['t_setpt'] = np.append(Pchamber['t_setpt'],Pchamber['t_setpt'][-1]+dt_j/constant.hr_To_min) 
        
-    # Intial product temperature
-    T0=Tsh   # degC
-
     ######################################################
 
     ################ Primary drying ######################
