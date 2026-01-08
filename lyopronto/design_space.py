@@ -68,7 +68,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     
                 Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
 
-                Tsub = sp.fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh)) # Sublimation front temperature array in degC
+                Tsub = sp.fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
                 dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
                 if dmdt<0:
                     print("Shelf temperature is too low for sublimation.")
@@ -110,6 +110,12 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1])    # Maximum product temperature in C
             drying_time[i_Tsh,i_Pch] = t    # Total drying time in hr
+            if output_saved.shape[0] == 1:
+                print(f"At Tsh={Tsh} and Pch={Pch}, drying completed in single timestep: check inputs.")
+                sub_flux_avg[i_Tsh,i_Pch] = np.nan
+                sub_flux_max[i_Tsh,i_Pch] = np.nan
+                sub_flux_end[i_Tsh,i_Pch] = np.nan
+                continue
             del_t = output_saved[1:,0]-output_saved[:-1,0]
             del_t = np.append(del_t,del_t[-1])
             sub_flux_avg[i_Tsh,i_Pch] = np.sum(output_saved[:,2]*del_t)/np.sum(del_t)    # Average sublimation flux in kg/hr/m^2
@@ -147,7 +153,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     
             Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
     
-            Tsub = sp.fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp)) # Sublimation front temperature array in degC
+            Tsub = sp.fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp))[0] # Sublimation front temperature array in degC
             dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
                 
             # Sublimated ice length
