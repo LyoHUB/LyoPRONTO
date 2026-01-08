@@ -1,7 +1,5 @@
 """Pytest configuration and shared fixtures for LyoPRONTO tests."""
 import pytest
-import numpy as np
-
 
 @pytest.fixture
 def standard_vial():

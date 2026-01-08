@@ -196,7 +196,7 @@ class TestWebInterfaceExample:
         # Convert flux to total mass sublimed
         # flux is kg/hr/m², Ap is in cm² = Ap*1e-4 m²
         # Integrate gives kg, convert to g
-        total_sublimed = np.trapz(flux, time) * (vial['Ap'] * 1e-4) * 1000  # g
+        total_sublimed = np.trapezoid(flux, time) * (vial['Ap'] * 1e-4) * 1000  # g
         
         # Check mass balance (within 3% tolerance for numerical integration with 100 points)
         error = abs(total_sublimed - m_initial) / m_initial

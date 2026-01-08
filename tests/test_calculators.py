@@ -329,7 +329,7 @@ class TestMassBalance:
         mass_rates = fluxes * Ap_m2  # [kg/hr]
         
         # Numerical integration using trapezoidal rule
-        mass_removed = np.trapz(mass_rates, times)  # [kg]
+        mass_removed = np.trapezoid(mass_rates, times)  # [kg]
         
         # Should be approximately equal (within 2% due to numerical integration)
         # Note: Trapezoidal rule on 100 points gives ~2% error
