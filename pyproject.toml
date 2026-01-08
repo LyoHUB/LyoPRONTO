@@ -44,8 +44,7 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-xdist>=3.3.0",
     "hypothesis>=6.82.0",
-    "black>=23.7.0",
-    "flake8>=6.1.0",
+    "ruff>=0.12.0",
     "mypy>=1.4.0",
     "pandas>=2.0",
 ]
@@ -60,6 +59,7 @@ Documentation = "https://lyohub.github.io/LyoPRONTO/"
 include = ["lyopronto*"]
 
 [tool.pytest.ini_options]
+pythonpath = "."
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
@@ -68,6 +68,15 @@ addopts = [
     "-v",
     "--strict-markers",
     "--tb=short",
+    "--maxfail=5",
+]
+markers = [
+    "unit: Unit tests for individual functions",
+    "integration: Integration tests for calculators",
+    "regression: Regression tests against known results",
+    "slow: Tests that take a long time to run",
+    "parametric: Parametric tests across multiple scenarios",
+    "fast: Quick tests that run in under 1 second",
 ]
 
 [tool.mypy]
