@@ -129,7 +129,7 @@ class TestDesignSpaceCoverageGaps:
         assert len(output) == 3
         assert output[0].shape[0] == 5  # [T_max, drying_time, sub_flux_avg, sub_flux_max, sub_flux_end]
     
-    @pytest.mark.skip(reason="Ramp-down scenarios cause temperatures too low for sublimation, leading to numerical overflow. The ramp-down code path (lines 103-105) is tested implicitly but cannot complete physically.")
+    # @pytest.mark.skip(reason="Ramp-down scenarios cause temperatures too low for sublimation, leading to numerical overflow. The ramp-down code path (lines 103-105) is tested implicitly but cannot complete physically.")
     def test_design_space_shelf_temp_ramp_down(self, design_space_setup):
         """Test design space with shelf temperature ramping down.
         

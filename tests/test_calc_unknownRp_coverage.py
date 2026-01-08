@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 import os
 from lyopronto import calc_unknownRp
-from .test_helpers import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output
 
 
 class TestCalcUnknownRp:

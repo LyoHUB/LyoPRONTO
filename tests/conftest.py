@@ -70,51 +70,9 @@ def standard_setup(standard_vial, standard_product, standard_ht,
         'dt': 0.01
     }
 
-
-def assert_physically_reasonable_output(output):
-    """
-    Assert that simulation output is physically reasonable.
-    
-    Args:
-        output: numpy array with columns [time, Tsub, Tbot, Tsh, Pch_mTorr, flux, frac_dried]
-        
-    Column descriptions:
-        [0] time [hr]
-        [1] Tsub - sublimation temperature [degC]
-        [2] Tbot - vial bottom temperature [degC]
-        [3] Tsh - shelf temperature [degC]
-        [4] Pch - chamber pressure [mTorr]
-        [5] flux - sublimation flux [kg/hr/m**2]
-        [6] frac_dried - fraction dried (0-1, NOT percentage!)
-    """
-    assert output.shape[1] == 7, "Output should have 7 columns"
-    
-    # Time should be non-negative and monotonically increasing
-    assert np.all(output[:, 0] >= 0), "Time should be non-negative"
-    assert np.all(np.diff(output[:, 0]) >= 0), "Time should be monotonically increasing"
-    
-    # Sublimation temperature should be below freezing
-    assert np.all(output[:, 1] < 0), "Sublimation temperature should be below 0°C"
-    
-    # Bottom temperature should be >= sublimation temperature (with small tolerance for numerical errors)
-    assert np.all(output[:, 2] >= output[:, 1] - 0.5), \
-        "Bottom temp should be >= sublimation temp (within 0.5°C tolerance)"
-    
-    # Shelf temperature should be reasonable
-    assert np.all(output[:, 3] >= -50) and np.all(output[:, 3] <= 50), \
-        "Shelf temperature should be between -50 and 50°C"
-    
-    # Chamber pressure should be positive (in mTorr, so typically 50-500)
-    assert np.all(output[:, 4] > 0), "Chamber pressure should be positive"
-    assert np.all(output[:, 4] < 1000), "Chamber pressure seems unreasonably high (check units)"
-    
-    # Sublimation flux should be non-negative
-    assert np.all(output[:, 5] >= 0), "Sublimation flux should be non-negative"
-    
-    # Fraction dried should be between 0 and 1
-    assert np.all(output[:, 6] >= 0) and np.all(output[:, 6] <= 1.01), \
-        "Fraction dried should be between 0 and 1 (allowing small numerical overshoot)"
-    
-    # Fraction dried should be monotonically increasing
-    assert np.all(np.diff(output[:, 6]) >= -1e-6), \
-        "Fraction dried should be monotonically increasing (allowing small numerical errors)"
+@pytest.fixture
+def unpack_standard_setup(standard_setup):
+    """Unpack standard setup into individual components."""
+    return (standard_setup['vial'], standard_setup['product'], 
+            standard_setup['ht'], standard_setup['Pchamber'], 
+            standard_setup['Tshelf'], standard_setup['dt'])

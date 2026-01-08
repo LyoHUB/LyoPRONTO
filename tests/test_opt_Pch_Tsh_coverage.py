@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from lyopronto import opt_Pch_Tsh, opt_Pch, opt_Tsh
-from .test_helpers import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output
 
 
 class TestOptPchTsh:

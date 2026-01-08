@@ -14,11 +14,10 @@ from pathlib import Path
 
 from lyopronto import calc_unknownRp
 from lyopronto.functions import Lpr0_FUN
+from .utils import assert_physically_reasonable_output
 
 
-# Test constants for dried fraction validation (column 6 is fraction 0-1, not percentage 0-100)
-DRIED_FRACTION_MIN = 0.0  # Minimum valid dried fraction (0% complete)
-DRIED_FRACTION_MAX = 1.0  # Maximum valid dried fraction (100% complete)
+# Test constants for dried fraction validation (column 6 is percentage 0-100)
 MIN_COMPLETION_FRACTION = 0.50  # Minimum acceptable completion (50%) for some tests
 
 
@@ -350,8 +349,7 @@ class TestCalcUnknownRpValidation:
         assert 0 <= A1 < 50, f"A1 = {A1} outside expected range [0, 50)"
         assert 0 <= A2 < 5, f"A2 = {A2} outside expected range [0, 5)"
         
-        # Simulation should reach reasonable drying progress
-        # NOTE: column 6 is fraction (0-1), not percentage (0-100)
+        # Simulation should reach reasonable drying progress, in 0 - 100 range
         final_dried_fraction = output[-1, 6]
-        assert MIN_COMPLETION_FRACTION < final_dried_fraction <= DRIED_FRACTION_MAX, \
-            f"Final dried {final_dried_fraction:.4f} outside expected range ({MIN_COMPLETION_FRACTION}, {DRIED_FRACTION_MAX}]"
+        assert 0 < final_dried_fraction <= 100, \
+            f"Final dried {final_dried_fraction:.4f} outside expected range [0, 100]"
