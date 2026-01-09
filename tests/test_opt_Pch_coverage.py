@@ -23,7 +23,7 @@ class TestOptPchOnly:
         Tshelf = {
             'init': -40.0,
             'setpt': [-20.0, -10.0],
-            'dt_setpt': [120.0, 120.0],  # 2 hours in [min]
+            'dt_setpt': [120.0, 1200.0],  # 22 hours in [min]
             'ramp_rate': 1.0  # Ramp rate [degC/min]
         }
         
@@ -344,8 +344,8 @@ class TestOptPchEdgeCases:
         """
         # Reduce equipment capability
         # TODO: is this physically meaningful?
-        conservative_setup['eq_cap']['a'] = 2.0
-        conservative_setup['eq_cap']['b'] = 5.0
+        conservative_setup['eq_cap']['a'] = 0.1
+        conservative_setup['eq_cap']['b'] = 0.005
         
         output = opt_Pch.dry(
             conservative_setup['vial'],
