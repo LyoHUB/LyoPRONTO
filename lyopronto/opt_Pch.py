@@ -42,7 +42,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     percent_dried = Lck/Lpr0*100.0        # Percent dried
 
     # Initial chamber pressure
-    P0 = 0.1    # Initial guess for chamber pressure in Torr
+    P0 = (Pchamber['min'] + Pchamber['max'])/2.0    # Initial guess for chamber pressure in Torr
 
     # Initial shelf temperature
     Tsh = Tshelf['init']        # degC
@@ -81,6 +81,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         # Minimize the objective function i.e. maximize the sublimation rate
         res = sp.minimize(fun,x0,bounds = bnds, constraints = cons)
         [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv] = res['x']    # Results in Torr, kg/hr, degC, degC, Torr, degC, cal/s/K/cm^2
+        print(f"Pch={Pch:.3f}, Psub={Psub:.3f}, dmdt={dmdt:.6f}, Tbot={Tbot:.3f}, Tsh={Tsh:.3f}, Tsub={Tsub:.3f}, Kv={Kv:.6e}")
 
         # Sublimated ice length
         dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
