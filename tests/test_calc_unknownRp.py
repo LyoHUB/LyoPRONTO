@@ -20,66 +20,67 @@ from .utils import assert_physically_reasonable_output
 # Test constants for dried percent validation (column 6 is percentage 0-100)
 MIN_COMPLETION_PERCENT = 50.0  # Minimum acceptable completion (50%) for some tests
 
+@pytest.fixture
+def standard_inputs_nodt():
+    """Standard inputs from ex_unknownRp_PD.py."""
+    vial = {
+        'Av': 3.80,
+        'Ap': 3.14,
+        'Vfill': 2.0
+    }
+    
+    product = {
+        'cSolid': 0.05,
+        'T_pr_crit': -5.0
+    }
+    
+    ht = {
+        'KC': 2.75e-4,
+        'KP': 8.93e-4,
+        'KD': 0.46
+    }
+    
+    Pchamber = {
+        'setpt': [0.15],
+        'dt_setpt': [1800.0],
+        'ramp_rate': 0.5
+    }
+    
+    Tshelf = {
+        'init': -35.0,
+        'setpt': [20.0],
+        'dt_setpt': [1800.0],
+        'ramp_rate': 1.0
+    }
+    
+    return vial, product, ht, Pchamber, Tshelf
+
+@pytest.fixture
+def temperature_data():
+    """Load temperature data from test_data/temperature.txt."""
+    data_path = Path('test_data/temperature.txt')
+    if not data_path.exists():
+        pytest.skip("Temperature data file not found")
+    
+    dat = np.loadtxt(data_path)
+    
+    # Handle different file formats
+    if dat.ndim == 1:
+        time = np.array([dat[0]])
+        Tbot_exp = np.array([dat[1]])
+    elif dat.shape[1] == 2:
+        time = dat[:, 0]
+        Tbot_exp = dat[:, 1]
+    else:
+        time = dat[:, 1]
+        Tbot_exp = dat[:, 2]
+    
+    return time, Tbot_exp
 
 class TestCalcUnknownRpBasic:
     """Basic functionality tests for parameter estimation."""
     
-    @pytest.fixture
-    def standard_inputs_nodt(self):
-        """Standard inputs from ex_unknownRp_PD.py."""
-        vial = {
-            'Av': 3.80,
-            'Ap': 3.14,
-            'Vfill': 2.0
-        }
-        
-        product = {
-            'cSolid': 0.05,
-            'T_pr_crit': -5.0
-        }
-        
-        ht = {
-            'KC': 2.75e-4,
-            'KP': 8.93e-4,
-            'KD': 0.46
-        }
-        
-        Pchamber = {
-            'setpt': [0.15],
-            'dt_setpt': [1800.0],
-            'ramp_rate': 0.5
-        }
-        
-        Tshelf = {
-            'init': -35.0,
-            'setpt': [20.0],
-            'dt_setpt': [1800.0],
-            'ramp_rate': 1.0
-        }
-        
-        return vial, product, ht, Pchamber, Tshelf
     
-    @pytest.fixture
-    def temperature_data(self):
-        """Load temperature data from test_data/temperature.txt."""
-        data_path = Path('test_data/temperature.txt')
-        if not data_path.exists():
-            pytest.skip("Temperature data file not found")
-        
-        dat = np.loadtxt(data_path)
-        
-        # Handle different file formats
-        if dat.ndim == 1:
-            time = np.array([dat[0]])
-            Tbot_exp = np.array([dat[1]])
-        elif dat.shape[1] == 2:
-            time = dat[:, 0]
-            Tbot_exp = dat[:, 1]
-        else:
-            time = dat[:, 1]
-            Tbot_exp = dat[:, 2]
-        
-        return time, Tbot_exp
     
     def test_calc_unknownRp_runs(self, standard_inputs_nodt, temperature_data):
         """Test that calc_unknownRp.dry() executes successfully."""
@@ -221,33 +222,24 @@ class TestCalcUnknownRpBasic:
 class TestCalcUnknownRpEdgeCases:
     """Test edge cases and different input scenarios."""
     
-    def test_short_time_series(self):
+    def test_short_time_series(self, standard_inputs_nodt):
         """Test with minimal time points."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {'cSolid': 0.05, 'T_pr_crit': -5.0}
-        ht = {'KC': 2.75e-4, 'KP': 8.93e-4, 'KD': 0.46}
-        Pchamber = {'setpt': [0.15], 'dt_setpt': [1800.0], 'ramp_rate': 0.5}
-        Tshelf = {'init': -35.0, 'setpt': [20.0], 'dt_setpt': [1800.0], 'ramp_rate': 1.0}
-        
         # Minimal time series (3 points)
         time = np.array([0.0, 1.0, 2.0])
         Tbot_exp = np.array([-40.0, -37.0, -35.0])
         
         # Should run without error
-        output, product_res = calc_unknownRp.dry(
-            vial, product, ht, Pchamber, Tshelf, time, Tbot_exp
+        output, product_res = calc_unknownRp.dry(*standard_inputs_nodt,
+            time, Tbot_exp
         )
         
         assert output is not None
-        assert len(output) == 3, "Should have exactly 3 time points to match temperature input"
+        assert len(output) == len(Tbot_exp)+1, "Should have exactly 3 time points to match temperature input"
     
-    def test_different_pressure(self):
+    def test_different_pressure(self, standard_inputs_nodt):
         """Test with different chamber pressure."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {'cSolid': 0.05, 'T_pr_crit': -5.0}
-        ht = {'KC': 2.75e-4, 'KP': 8.93e-4, 'KD': 0.46}
+        vial, product, ht, _, Tshelf = standard_inputs_nodt
         Pchamber = {'setpt': [0.10], 'dt_setpt': [1800.0], 'ramp_rate': 0.5}  # Lower pressure
-        Tshelf = {'init': -35.0, 'setpt': [20.0], 'dt_setpt': [1800.0], 'ramp_rate': 1.0}
         
         time = np.array([0.0, 1.0, 2.0, 3.0])
         Tbot_exp = np.array([-35.0, -32.0, -28.0, -25.0])
@@ -259,19 +251,13 @@ class TestCalcUnknownRpEdgeCases:
         # Check pressure in output (should be 100 mTorr)
         assert np.allclose(output[:, 4], 100.0, atol=1.0), "Pch should be ~100 mTorr"
     
-    def test_different_product_concentration(self):
+    def test_different_product_concentration(self, standard_inputs_nodt, temperature_data):
         """Test with different solute concentration."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
+        vial, _, ht, Pchamber, Tshelf = standard_inputs_nodt
         product = {'cSolid': 0.10, 'T_pr_crit': -5.0}  # Higher concentration
-        ht = {'KC': 2.75e-4, 'KP': 8.93e-4, 'KD': 0.46}
-        Pchamber = {'setpt': [0.15], 'dt_setpt': [1800.0], 'ramp_rate': 0.5}
-        Tshelf = {'init': -35.0, 'setpt': [20.0], 'dt_setpt': [1800.0], 'ramp_rate': 1.0}
-        
-        time = np.array([0.0, 1.0, 2.0, 3.0])
-        Tbot_exp = np.array([-35.0, -32.0, -28.0, -25.0])
         
         output, product_res = calc_unknownRp.dry(
-            vial, product, ht, Pchamber, Tshelf, time, Tbot_exp
+            vial, product, ht, Pchamber, Tshelf, *temperature_data
         )
         
         assert output is not None
