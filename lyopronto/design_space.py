@@ -101,10 +101,10 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                         Tsh = Tsh + Tshelf['ramp_rate']*constant.hr_To_min*dt
                     else:
                         Tsh = Tsh - Tshelf['ramp_rate']*constant.hr_To_min*dt
+                    print(f"Tsh ramping: {Tsh}°C at time {t} hr, {dmdt}, Lck={Lck}")
                 else:
                     Tsh = Tsh_setpt    # Maintain at set point
-      
-                    iStep = iStep + 1 # Time iteration number
+                iStep = iStep + 1 # Time iteration number
 
             ######################################################
 
@@ -175,8 +175,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                 t = iStep*dt + dL/((dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute)) # hr
             else:
                 t = (iStep+1) * dt # Time in hr
-
-                iStep = iStep + 1 # Time iteration number
+            iStep = iStep + 1 # Time iteration number
 
         ######################################################
 
@@ -212,5 +211,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
     #####################################################
 
-    return np.array([T_max,drying_time,sub_flux_avg,sub_flux_max,sub_flux_end]), np.array([np.array([product['T_pr_crit'],product['T_pr_crit']]),drying_time_pr,sub_flux_avg_pr,sub_flux_min_pr,sub_flux_end_pr]), np.array([T_max_eq_cap,drying_time_eq_cap,sub_flux_eq_cap])
+    return np.array([T_max,drying_time,sub_flux_avg,sub_flux_max,sub_flux_end]), \
+        np.array([np.array([product['T_pr_crit'],product['T_pr_crit']]),drying_time_pr,sub_flux_avg_pr,sub_flux_min_pr,sub_flux_end_pr]), \
+        np.array([T_max_eq_cap,drying_time_eq_cap,sub_flux_eq_cap])
 
