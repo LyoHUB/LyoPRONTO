@@ -35,10 +35,10 @@ class TestCalcKnownRp:
             standard_setup['dt']
         )
         
-        # Should reach at least 99% dried (column 6 is fraction 0-1, not percentage)
-        final_fraction_dried = output[-1, 6]
-        assert final_fraction_dried >= 0.99, \
-            f"Only {final_fraction_dried*100:.1f}% dried (fraction={final_fraction_dried:.4f})"
+        # Should reach at least 99% dried 
+        final_percent_dried = output[-1, 6]
+        assert final_percent_dried >= 99, \
+            f"Only {final_percent_dried:.1f}% dried, expected at least 99%"
     
     def test_reasonable_drying_time(self, standard_setup):
         """Test that drying time is in a reasonable range."""
@@ -98,6 +98,7 @@ class TestCalcKnownRp:
         flux_end = output[-1, 5]
         assert flux_end < flux_peak, "Final flux should be less than peak flux"
     
+    #TODO: does this make sense?
     def test_small_vial_dries_faster(self, small_vial, standard_product, standard_ht,
                                      standard_pchamber, standard_tshelf,
                                      standard_vial):
@@ -150,9 +151,9 @@ class TestCalcKnownRp:
         
         # Higher pressure generally allows higher shelf temp without exceeding
         # critical product temp, but with same shelf temp, low pressure is better
-        # Check they both complete (fraction >= 0.99)
-        assert output_low[-1, 6] >= 0.99
-        assert output_high[-1, 6] >= 0.99
+        # Check they both complete (percent dried >=99%)
+        assert output_low[-1, 6] >= 99.0
+        assert output_high[-1, 6] >= 99.0
     
     def test_concentrated_product_takes_longer(self, standard_vial, dilute_product,
                                                concentrated_product, standard_ht,
@@ -277,8 +278,8 @@ class TestEdgeCases:
             setup['dt']
         )
         
-        # Should complete quickly (fraction >= 0.99)
-        assert output[-1, 6] >= 0.99
+        # Should complete quickly (percent dried >= 99%)
+        assert output[-1, 6] >= 99.0
         assert output[-1, 0] < 20.0  # Should dry in less than 20 hours
     
     def test_high_resistance_product(self, standard_setup):

@@ -11,6 +11,7 @@ import pandas as pd
 from pathlib import Path
 
 from lyopronto import calc_knownRp
+from .utils import assert_physically_reasonable_output
 
 
 class TestWebInterfaceExample:
@@ -80,8 +81,8 @@ class TestWebInterfaceExample:
             f"Temperature {max_temp:.2f}°C exceeds critical temp (-5°C)"
         
         # Check drying completion
-        assert final_dried >= 0.99, \
-            f"Final dried fraction {final_dried:.2f} < 0.99"
+        assert final_dried >= 99.0, \
+            f"Final dried percent {final_dried:.2f} < 99%"
     
     def test_compare_with_reference_csv(self, web_interface_inputs):
         """Test that output matches reference CSV from web interface."""
@@ -109,34 +110,10 @@ class TestWebInterfaceExample:
             f"Max temperature differs by >1°C: {sim_max_temp:.2f} vs {ref_max_temp:.2f}°C"
         
         # Compare final drying percentage
-        ref_final_dried = df_ref['Percent Dried'].iloc[-1] / 100  # Convert to fraction
+        ref_final_dried = df_ref['Percent Dried'].iloc[-1]
         sim_final_dried = output[-1, 6]
-        assert abs(ref_final_dried - sim_final_dried) < 0.05, \
-            f"Final dried fraction differs: {sim_final_dried:.2f} vs {ref_final_dried:.2f}"
-    
-    def test_temperature_profile_reasonable(self, web_interface_inputs):
-        """Test that temperature profile is physically reasonable."""
-        vial, product, ht, Pchamber, Tshelf, dt = web_interface_inputs
-        
-        output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
-        
-        Tsub = output[:, 1]
-        Tbot = output[:, 2]
-        Tsh = output[:, 3]
-        
-        # Temperature should be within physical bounds
-        assert np.all(Tsub >= -60), "Sublimation temp too low"
-        assert np.all(Tsub <= 0), "Sublimation temp above freezing"
-        
-        # Shelf temperature should ramp from -35 to 20°C
-        assert Tsh[0] == pytest.approx(-35.0, abs=0.5), "Initial shelf temp incorrect"
-        assert Tsh[-1] <= 20.0, "Final shelf temp exceeds setpoint"
-        
-        # Temperature gradient should generally be Tsh > Tbot > Tsub
-        # (allowing some tolerance for edge cases)
-        violations = np.sum(Tbot < Tsub)
-        assert violations < len(output) * 0.1, \
-            f"Too many Tbot < Tsub violations: {violations}/{len(output)}"
+        assert abs(ref_final_dried - sim_final_dried) < 5.0, \
+            f"Final dried percent differs: {sim_final_dried:.2f} vs {ref_final_dried:.2f}"
     
     def test_flux_profile_non_monotonic(self, web_interface_inputs):
         """Test that flux profile shows expected non-monotonic behavior."""
@@ -209,21 +186,15 @@ class TestWebInterfaceExample:
         
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
-        # Output should have 7 columns
-        assert output.shape[1] == 7, "Should have 7 columns"
-        
-        # Column 0: Time (hr) - should start at 0 and increase
-        assert output[0, 0] == 0.0, "Time should start at 0"
-        assert np.all(np.diff(output[:, 0]) > 0), "Time should increase"
         
         # Column 4: Pch should be [mTorr] (not Torr)
         assert output[0, 4] == pytest.approx(150.0, abs=1.0), \
             "Pch should be [mTorr] (150, not 0.15)"
+
+        assert_physically_reasonable_output(output)
         
-        # Column 6: Dried should be fraction 0-1 (not percentage)
-        assert 0 <= output[0, 6] <= 1.0, "Dried should be fraction 0-1"
-        assert output[-1, 6] == pytest.approx(1.0, abs=0.01), \
-            "Final dried should be ~1.0"
+        assert output[-1, 6] == pytest.approx(100.0, abs=1.0), \
+            "Final dried should be ~100.0"
 
 
 class TestWebInterfaceComparison:

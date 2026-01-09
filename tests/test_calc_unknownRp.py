@@ -17,8 +17,8 @@ from lyopronto.functions import Lpr0_FUN
 from .utils import assert_physically_reasonable_output
 
 
-# Test constants for dried fraction validation (column 6 is percentage 0-100)
-MIN_COMPLETION_FRACTION = 0.50  # Minimum acceptable completion (50%) for some tests
+# Test constants for dried percent validation (column 6 is percentage 0-100)
+MIN_COMPLETION_PERCENT = 50.0  # Minimum acceptable completion (50%) for some tests
 
 
 class TestCalcUnknownRpBasic:
@@ -195,8 +195,8 @@ class TestCalcUnknownRpBasic:
         final_dried_percent = output[-1, 6]
         
         # Should reach near completion (within experimental data range)
-        assert final_dried_percent > MIN_COMPLETION_FRACTION * 100, \
-            f"Should dry at least {MIN_COMPLETION_FRACTION*100:.0f}%, got {final_dried_percent:.1f}%"
+        assert final_dried_percent > MIN_COMPLETION_PERCENT , \
+            f"Should dry at least {MIN_COMPLETION_PERCENT:.0f}%, got {final_dried_percent:.1f}%"
     
     def test_cake_length_reaches_initial_height(self, standard_inputs_nodt, temperature_data):
         """Test that cake length approaches initial product height."""
@@ -231,7 +231,7 @@ class TestCalcUnknownRpEdgeCases:
         
         # Minimal time series (3 points)
         time = np.array([0.0, 1.0, 2.0])
-        Tbot_exp = np.array([-35.0, -30.0, -25.0])
+        Tbot_exp = np.array([-40.0, -37.0, -35.0])
         
         # Should run without error
         output, product_res = calc_unknownRp.dry(
@@ -239,7 +239,7 @@ class TestCalcUnknownRpEdgeCases:
         )
         
         assert output is not None
-        assert len(output) >= 3, "Should have at least 3 time points"
+        assert len(output) == 3, "Should have exactly 3 time points to match temperature input"
     
     def test_different_pressure(self):
         """Test with different chamber pressure."""
@@ -277,6 +277,7 @@ class TestCalcUnknownRpEdgeCases:
         assert output is not None
         # Higher concentration means less ice to sublimate, different drying time
         assert output.size > 0
+        assert_physically_reasonable_output(output)
 
 
 class TestCalcUnknownRpValidation:
@@ -328,6 +329,6 @@ class TestCalcUnknownRpValidation:
         assert 0 <= A2 < 5, f"A2 = {A2} outside expected range [0, 5)"
         
         # Simulation should reach reasonable drying progress, in 0 - 100 range
-        final_dried_fraction = output[-1, 6]
-        assert 0 < final_dried_fraction <= 100, \
-            f"Final dried {final_dried_fraction:.4f} outside expected range [0, 100]"
+        final_dried_percent = output[-1, 6]
+        assert 0 < final_dried_percent <= 100, \
+            f"Final dried {final_dried_percent:.4f} outside expected range [0, 100]"

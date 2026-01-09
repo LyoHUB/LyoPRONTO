@@ -161,9 +161,9 @@ class TestOptPchTshBasic:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        # Fraction dried (column 6) should reach > 0.99
+        # Percent dried (column 6) should reach > 99.0
         final_dried = output[-1, 6]
-        assert final_dried > 0.99, f"Should dry to >99%, got {final_dried*100:.1f}%"
+        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
     
     def test_shelf_temp_varies_over_time(self, standard_opt_pch_tsh_inputs):
         """Test that optimized shelf temperature varies during drying.

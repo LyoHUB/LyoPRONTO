@@ -204,7 +204,8 @@ class TestOptPchTsh:
     
     @pytest.mark.slow
     def test_opt_both_reaches_completion(self, opt_both_setup):
-        """Test that drying reaches completion."""
+        """Test that drying reaches completion, drying time is reasonable, and both 
+        variables are actively optimized."""
         output = opt_Pch_Tsh.dry(
             opt_both_setup['vial'],
             opt_both_setup['product'],
@@ -216,42 +217,14 @@ class TestOptPchTsh:
             opt_both_setup['nVial']
         )
         
-        final_fraction = output[-1, 6]
-        assert final_fraction >= 0.99, \
-            f"Should reach 99% dried, got {final_fraction*100:.1f}%"
-    
-    @pytest.mark.slow
-    def test_opt_both_convergence(self, opt_both_setup):
-        """Test optimization converges to a solution."""
-        output = opt_Pch_Tsh.dry(
-            opt_both_setup['vial'],
-            opt_both_setup['product'],
-            opt_both_setup['ht'],
-            opt_both_setup['Pchamber'],
-            opt_both_setup['Tshelf'],
-            opt_both_setup['dt'],
-            opt_both_setup['eq_cap'],
-            opt_both_setup['nVial']
-        )
-        
+        final_percent = output[-1, 6]
+        assert final_percent >= 99, \
+            f"Should reach 99% dried, got {final_percent:.1f}%"
+
         # If optimization converged, should have reasonable drying time
         total_time = output[-1, 0]
         assert 1.0 <= total_time <= 50.0, \
             f"Drying time {total_time:.1f} hr seems unreasonable"
-    
-    @pytest.mark.slow
-    def test_opt_both_variables_optimized(self, opt_both_setup):
-        """Test that both Pch and Tsh are actively optimized."""
-        output = opt_Pch_Tsh.dry(
-            opt_both_setup['vial'],
-            opt_both_setup['product'],
-            opt_both_setup['ht'],
-            opt_both_setup['Pchamber'],
-            opt_both_setup['Tshelf'],
-            opt_both_setup['dt'],
-            opt_both_setup['eq_cap'],
-            opt_both_setup['nVial']
-        )
         
         Pch = output[:, 4] / 1000  # Torr
         Tsh = output[:, 3]  # °C

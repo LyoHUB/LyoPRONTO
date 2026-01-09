@@ -8,6 +8,7 @@ Tests based on working example_optimizer.py structure.
 import pytest
 import numpy as np
 from lyopronto import opt_Pch
+from .utils import assert_physically_reasonable_output
 
 
 # Test constants for numerical comparison
@@ -73,61 +74,27 @@ def standard_opt_pch_inputs():
 class TestOptPchBasic:
     """Basic functionality tests for opt_Pch module."""
     
-    def test_opt_pch_runs(self, standard_opt_pch_inputs):
-        """Test that opt_Pch.dry executes successfully."""
+    def test_output_columns(self, standard_opt_pch_inputs):
+        """Test that opt_Pch.dry executes,  output has correct structure, and 
+        each output column contains valid data."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
+
         assert output is not None, "opt_Pch.dry should return output"
         assert isinstance(output, np.ndarray), "Output should be numpy array"
-    
-    def test_output_shape(self, standard_opt_pch_inputs):
-        """Test that output has correct shape and structure."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
-        
-        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
+
         # Should have 7 columns: time, Tsub, Tbot, Tsh, Pch, flux, percent_dried
         assert output.shape[1] == 7, f"Expected 7 columns, got {output.shape[1]}"
         
         # Should have multiple time points
         assert output.shape[0] > 1, "Should have multiple time points"
-    
-    def test_output_columns(self, standard_opt_pch_inputs):
-        """Test that each output column contains valid data."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
         
-        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        # Column 0: Time should increase
-        assert np.all(np.diff(output[:, 0]) > 0), "Time should increase monotonically"
-        
-        # Column 1: Tsub should be below 0°C
-        assert np.all(output[:, 1] < 0), "Sublimation temperature should be below 0°C"
-        
-        # Column 2: Tbot should be reasonable
-        assert np.all(output[:, 2] >= -50), "Tbot should be above -50°C"
-        assert np.all(output[:, 2] <= 25), "Tbot should be below 25°C"
-        
-        # Column 3: Tsh follows the shelf temperature profile
-        assert np.all(output[:, 3] >= -50), "Tsh should be above -50°C"
-        assert np.all(output[:, 3] <= 130), "Tsh should be below 130°C"
-        
-        # Column 4: Pch should be positive and [mTorr]
-        assert np.all(output[:, 4] > 0), "Chamber pressure should be positive"
-        # Pch should be >= min pressure (0.05 Torr = 50 mTorr)
-        assert np.all(output[:, 4] >= 50), f"Pch should be >= 50 mTorr (min), got min {output[:, 4].min()}"
-        
-        # Column 5: Flux should be non-negative
-        assert np.all(output[:, 5] >= 0), "Sublimation flux should be non-negative"
-        
-        # Column 6: Percent dried should be 0-100
-        assert np.all(output[:, 6] >= 0), "Percent dried should be >= 0"
-        assert np.all(output[:, 6] <= 100.0), "Percent dried should be <= 100"
+        assert_physically_reasonable_output(output)
     
     def test_pressure_optimization(self, standard_opt_pch_inputs):
-        """Test that pressure is optimized (varies over time)."""
+        """Test that pressure is optimized (varies over time), shelf temperature follows 
+        specified profile, and product temperature stays below critical temperature."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
@@ -139,12 +106,6 @@ class TestOptPchBasic:
         # Pressure should respect minimum bound (50 mTorr = 0.05 Torr)
         assert np.all(Pch_values >= 50), "Pressure should be >= min bound"
     
-    def test_shelf_temperature_follows_profile(self, standard_opt_pch_inputs):
-        """Test that shelf temperature follows the specified profile."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
-        
-        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
         # Shelf temperature (column 3) should start at init
         assert np.abs(output[0, 3] - Tshelf['init']) < 1.0, \
             f"Initial Tsh should be ~{Tshelf['init']}°C"
@@ -153,27 +114,15 @@ class TestOptPchBasic:
         # Note: May not reach final setpoint if drying completes first
         assert output[-1, 3] > output[0, 3], \
             "Shelf temperature should increase from initial value"
-    
-    def test_product_temperature_constraint(self, standard_opt_pch_inputs):
-        """Test that product temperature stays at or below critical temperature."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
-        
-        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
+
         # Tbot (column 2) should stay at or below T_pr_crit
         T_crit = product['T_pr_crit']
         assert np.all(output[:, 2] <= T_crit + 0.5), \
             f"Product temperature should be <= {T_crit}°C (critical)"
     
-    def test_drying_completes(self, standard_opt_pch_inputs):
-        """Test that drying reaches near completion."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
-        
-        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        # Fraction dried (column 6) should reach > 0.99 (was percentage 0-100, now fraction 0-1)
+        # Percent dried (column 6) should reach > 99.0 
         final_dried = output[-1, 6]
-        assert final_dried > 0.99, f"Should dry to >99%, got {final_dried*100:.1f}%"
+        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
 
 
 class TestOptPchEdgeCases:

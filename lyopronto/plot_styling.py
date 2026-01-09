@@ -99,7 +99,7 @@ def axis_style_percdried(
     """ Function to set styling for axes, with time on x and percent dried on y """
 
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,fontweight='bold',fontname="Arial")
-    ax.set_ylabel("Fraction Dried",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
+    ax.set_ylabel("Percent Dried",fontsize=gcafontSize,color=color,fontweight='bold',fontname="Arial")
 
     axis_tick_styling(
         ax,

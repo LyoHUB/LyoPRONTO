@@ -179,7 +179,7 @@ class TestOptPchOnly:
         """Test that Pch optimization makes drying progress.
         
         Note: Optimization with constraints may not always reach 99% completion
-        within time limits. Test validates the optimizer runs and makes progress.
+        within time limits, but for most cases it should.
         """
         output = opt_Pch.dry(
             opt_pch_setup['vial'],
@@ -192,12 +192,12 @@ class TestOptPchOnly:
             opt_pch_setup['nVial']
         )
         
-        final_fraction = output[-1, 6]
+        final_percent = output[-1, 6]
         # Optimizer should show progress, but may not reach full completion
-        assert final_fraction > 0.0, \
-            f"Should show drying progress, got {final_fraction*100:.1f}%"
-        assert final_fraction <= 1.0, \
-            f"Fraction dried should not exceed 100%, got {final_fraction*100:.1f}%"
+        assert final_percent > 0.0, \
+            f"Should show drying progress, got {final_percent:.1f}%"
+        assert final_percent == pytest.approx(100.0, abs=0.1), \
+            f"Percent dried should approach 100%, got {final_percent:.1f}%"
     
     def test_opt_pch_convergence(self, opt_pch_setup):
         """Test optimization converges to a solution."""
@@ -249,12 +249,12 @@ class TestOptPchEdgeCases:
             'R0': 1.4,
             'A1': 16.0,
             'A2': 0.0,
-            'T_pr_crit': -40.0  # Very conservative
+            'T_pr_crit': -35.0  # Very conservative
         }
         
         Tshelf = {
             'init': -45.0,
-            'setpt': [-35.0],
+            'setpt': [-30.0],
             'dt_setpt': [120.0],
             'ramp_rate': 1.0
         }
@@ -296,16 +296,17 @@ class TestOptPchEdgeCases:
         T_crit = conservative_setup['product']['T_pr_crit']
         
         # Should respect conservative constraint
-        assert np.max(Tbot) <= T_crit + 0.5
+        assert np.max(Tbot) <= T_crit
     
     def test_high_product_resistance(self, conservative_setup):
         """Test with high product resistance."""
-        conservative_setup['product']['R0'] = 3.0
-        conservative_setup['product']['A1'] = 30.0
+        new_product = conservative_setup['product'].copy()
+        new_product['R0'] = 3.0
+        new_product['A1'] = 30.0
         
         output = opt_Pch.dry(
             conservative_setup['vial'],
-            conservative_setup['product'],
+            new_product,
             conservative_setup['ht'],
             conservative_setup['Pchamber'],
             conservative_setup['Tshelf'],
@@ -314,19 +315,18 @@ class TestOptPchEdgeCases:
             conservative_setup['nVial']
         )
         
-        assert output.shape[0] > 0
+        assert output.shape[0] > 1
         assert_physically_reasonable_output(output)
     
     def test_narrow_pressure_range(self, conservative_setup):
         """Test with narrow pressure optimization range."""
-        conservative_setup['Pchamber']['min'] = 0.070
-        conservative_setup['Pchamber']['max'] = 0.090
+        new_Pch = {'min': 0.070, 'max': 0.090}
         
         output = opt_Pch.dry(
             conservative_setup['vial'],
             conservative_setup['product'],
             conservative_setup['ht'],
-            conservative_setup['Pchamber'],
+            new_Pch,
             conservative_setup['Tshelf'],
             conservative_setup['dt'],
             conservative_setup['eq_cap'],
@@ -334,7 +334,7 @@ class TestOptPchEdgeCases:
         )
         
         Pch = output[:, 4] / 1000
-        assert np.all((Pch >= 0.065) & (Pch <= 0.095))
+        assert np.all((Pch >= 0.070) & (Pch <= 0.090))
     
     def test_tight_equipment_constraint(self, conservative_setup):
         """Test with tight equipment capability constraint.
@@ -343,6 +343,7 @@ class TestOptPchEdgeCases:
         high completion rates. Test validates optimizer handles constraints gracefully.
         """
         # Reduce equipment capability
+        # TODO: is this physically meaningful?
         conservative_setup['eq_cap']['a'] = 2.0
         conservative_setup['eq_cap']['b'] = 5.0
         
@@ -359,7 +360,6 @@ class TestOptPchEdgeCases:
         
         # Should run without errors and show some progress despite tight constraint
         assert output is not None
-        assert output.size > 0
-        final_fraction = output[-1, 6]
-        assert final_fraction >= 0.0, "Should have non-negative drying progress"
-        assert final_fraction <= 1.0, "Fraction should not exceed 100%"
+        assert output.shape[0] > 1
+        assert_physically_reasonable_output(output)
+        
