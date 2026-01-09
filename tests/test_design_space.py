@@ -13,7 +13,7 @@ def physical_props():
     """Standard inputs for design space tests."""
     vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
     product = {
-        'T_pr_crit': -5.0,
+        'T_pr_crit': -20.0,
         'cSolid': 0.05,
         'R0': 1.4,
         'A1': 16.0,
@@ -38,77 +38,26 @@ def design_space_1T1P(physical_props):
         'setpt': np.array([0.15]),
         'ramp_rate': 0.5
     }
-    return vial, product, ht, Pchamber, Tshelf, eq_cap, nVial, dt
+    return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+
+#TODO: make fixtures with multiple Tshelf and Pchamber for more complex tests
 
 class TestDesignSpaceBasic:
     """Basic functionality tests for design space generation."""
     
-    def test_design_space_runs(self, design_space_inputs):
-        """Test that design space generation completes without errors."""
+    def test_design_space_runs(self, design_space_1T1P):
+        """Test that design space generation completes without errors, returns correct 
+        structure, and gives physically reasonable results."""
         # Use conservative parameters that avoid edge cases
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {
-            'T_pr_crit': -5.0,
-            'cSolid': 0.05,
-            'R0': 1.4,
-            'A1': 16.0,
-            'A2': 0.0
-        }
-        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
-        
-        # Use parameters that ensure reasonable drying time
-        Tshelf = {
-            'init': -35.0,
-            'setpt': np.array([0.0]),  # More conservative than 20°C
-            'ramp_rate': 1.0
-        }
-        Pchamber = {
-            'setpt': np.array([0.15]),  # 150 mTorr
-            'ramp_rate': 0.5
-        }
-        eq_cap = {'a': -0.182, 'b': 11.7}
-        nVial = 398
-        dt = 0.01
         
         # Should complete without errors
-        shelf_results, product_results, eq_cap_results = design_space.dry(
-            vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
-        )
+        shelf_results, product_results, eq_cap_results = design_space.dry(*design_space_1T1P)
         
         # Basic validation
         assert shelf_results is not None
         assert product_results is not None
         assert eq_cap_results is not None
     
-    def test_design_space_output_structure(self):
-        """Test that design space output has correct structure."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {
-            'T_pr_crit': -5.0,
-            'cSolid': 0.05,
-            'R0': 1.4,
-            'A1': 16.0,
-            'A2': 0.0
-        }
-        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
-        
-        Tshelf = {
-            'init': -35.0,
-            'setpt': np.array([0.0]),
-            'ramp_rate': 1.0
-        }
-        Pchamber = {
-            'setpt': np.array([0.15]),
-            'ramp_rate': 0.5
-        }
-        eq_cap = {'a': -0.182, 'b': 11.7}
-        nVial = 398
-        dt = 0.01
-        
-        shelf_results, product_results, eq_cap_results = design_space.dry(
-            vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
-        )
-        
         # Shelf results: [T_max, drying_time, avg_flux, max_flux, end_flux]
         assert len(shelf_results) == 5
         assert shelf_results[0].shape == (1, 1)  # T_max for 1 Tshelf x 1 Pch
@@ -127,35 +76,6 @@ class TestDesignSpaceBasic:
         assert eq_cap_results[0].shape == (1,)  # T_max for 1 Pch
         assert eq_cap_results[1].shape == (1,)  # drying_time
         assert eq_cap_results[2].shape == (1,)  # flux
-    
-    def test_design_space_physical_constraints(self):
-        """Test that design space results satisfy physical constraints."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {
-            'T_pr_crit': -5.0,
-            'cSolid': 0.05,
-            'R0': 1.4,
-            'A1': 16.0,
-            'A2': 0.0
-        }
-        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
-        
-        Tshelf = {
-            'init': -35.0,
-            'setpt': np.array([0.0]),
-            'ramp_rate': 1.0
-        }
-        Pchamber = {
-            'setpt': np.array([0.15]),
-            'ramp_rate': 0.5
-        }
-        eq_cap = {'a': -0.182, 'b': 11.7}
-        nVial = 398
-        dt = 0.01
-        
-        shelf_results, product_results, eq_cap_results = design_space.dry(
-            vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
-        )
         
         # Extract values
         T_max_shelf = shelf_results[0][0, 0]
@@ -184,73 +104,19 @@ class TestDesignSpaceBasic:
         assert drying_time_eq > 0, "Equipment drying time must be positive"
         assert flux_eq > 0, "Equipment flux must be positive"
     
-    def test_product_temperature_constraint(self):
-        """Test that product temperature results match critical temperature."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        T_crit = -5.0
-        product = {
-            'T_pr_crit': T_crit,
-            'cSolid': 0.05,
-            'R0': 1.4,
-            'A1': 16.0,
-            'A2': 0.0
-        }
-        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
+    def test_constraint(self, design_space_1T1P):
+        """Test that each piece of results matches constraints."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
         
-        Tshelf = {
-            'init': -35.0,
-            'setpt': np.array([0.0]),
-            'ramp_rate': 1.0
-        }
-        Pchamber = {
-            'setpt': np.array([0.15]),
-            'ramp_rate': 0.5
-        }
-        eq_cap = {'a': -0.182, 'b': 11.7}
-        nVial = 398
-        dt = 0.01
-        
-        _, product_results, _ = design_space.dry(
-            vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
-        )
+        _, product_results, eq_cap_results = design_space.dry(*design_space_1T1P)
         
         # Product temperature should equal critical temperature
         T_product = product_results[0][0]
-        assert abs(T_product - T_crit) < 0.01, \
-            f"Product temperature {T_product}°C should equal critical {T_crit}°C"
+        assert T_product == pytest.approx(product['T_pr_crit'], abs=0.01), \
+            f"Product temperature {T_product}°C should equal critical {product['T_pr_crit']}°C"
     
-    def test_equipment_capability_mass_balance(self):
-        """Test that equipment capability respects equipment constraints."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {
-            'T_pr_crit': -5.0,
-            'cSolid': 0.05,
-            'R0': 1.4,
-            'A1': 16.0,
-            'A2': 0.0
-        }
-        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
-        
-        Tshelf = {
-            'init': -35.0,
-            'setpt': np.array([0.0]),
-            'ramp_rate': 1.0
-        }
-        Pch = 0.15  # Torr
-        Pchamber = {
-            'setpt': np.array([Pch]),
-            'ramp_rate': 0.5
-        }
-        eq_cap = {'a': -0.182, 'b': 11.7}
-        nVial = 398
-        dt = 0.01
-        
-        _, _, eq_cap_results = design_space.dry(
-            vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
-        )
-        
         # Equipment sublimation rate
-        dmdt_eq = eq_cap['a'] + eq_cap['b'] * Pch  # kg/hr for all vials
+        dmdt_eq = eq_cap['a'] + eq_cap['b'] * Pchamber['setpt'][0]  # kg/hr for all vials
         flux_eq_expected = dmdt_eq / nVial / (vial['Ap'] * 1e-4)  # kg/hr/m²
         
         flux_eq_calculated = eq_cap_results[2][0]
