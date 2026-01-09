@@ -234,7 +234,7 @@ class TestDesignSpaceCoverageGaps:
         assert product_temp_data.shape[0] == 5
         assert product_temp_data[1].shape[0] == 2  # drying_time_pr for 2 pressures
     
-    @pytest.skip(reason="Behavior to be defined. If calculation happens in a single timestep, results should be either error or NaN.")
+    @pytest.mark.skip(reason="Behavior to be defined. If calculation happens in a single timestep, results should be either error or NaN.")
     def test_design_space_single_timestep_both_sections(self, design_space_setup):
         """Test both shelf temp and product temp sections with single timestep completion.
         

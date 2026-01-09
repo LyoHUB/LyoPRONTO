@@ -72,53 +72,7 @@ class TestCalcUnknownRp:
         
         # Should return an array
         assert isinstance(output, np.ndarray)
-        assert output.shape[0] > 0
-        assert output.shape[1] == 7  # Standard output columns
-    
-    def test_unknown_rp_output_shape(self, unknown_rp_setup):
-        """Test output has correct dimensions and structure."""
-        output, product_res = calc_unknownRp.dry(
-            unknown_rp_setup['vial'],
-            unknown_rp_setup['product'],
-            unknown_rp_setup['ht'],
-            unknown_rp_setup['Pchamber'],
-            unknown_rp_setup['Tshelf'],
-            unknown_rp_setup['time'],
-            unknown_rp_setup['Tbot_exp']
-        )
-        
-        # Check number of columns
-        assert output.shape[1] == 7, "Output should have 7 columns"
-        
-        # Check output columns exist and are numeric
-        assert np.all(np.isfinite(output[:, 0])), "Time column has invalid values"
-        assert np.all(np.isfinite(output[:, 1])), "Tsub column has invalid values"
-        assert np.all(np.isfinite(output[:, 2])), "Tbot column has invalid values"
-        assert np.all(np.isfinite(output[:, 3])), "Tsh column has invalid values"
-        assert np.all(np.isfinite(output[:, 4])), "Pch column has invalid values"
-        assert np.all(np.isfinite(output[:, 5])), "flux column has invalid values"
-        assert np.all(np.isfinite(output[:, 6])), "frac_dried column has invalid values"
-    
-    def test_unknown_rp_time_progression(self, unknown_rp_setup):
-        """Test time progresses monotonically."""
-        output, product_res = calc_unknownRp.dry(
-            unknown_rp_setup['vial'],
-            unknown_rp_setup['product'],
-            unknown_rp_setup['ht'],
-            unknown_rp_setup['Pchamber'],
-            unknown_rp_setup['Tshelf'],
-            unknown_rp_setup['time'],
-            unknown_rp_setup['Tbot_exp']
-        )
-        
-        time = output[:, 0]
-        
-        # Time should be monotonically increasing
-        time_diffs = np.diff(time)
-        assert np.all(time_diffs >= 0), "Time must be monotonically increasing"
-        
-        # Time should start at or near zero
-        assert time[0] >= 0, f"Initial time should be non-negative, got {time[0]}"
+        assert_physically_reasonable_output(output)
     
     def test_unknown_rp_shelf_temp_changes(self, unknown_rp_setup):
         """Test shelf temperature follows ramp schedule."""
@@ -160,9 +114,9 @@ class TestCalcUnknownRp:
         min_setpt = min(unknown_rp_setup['Pchamber']['setpt'])
         max_setpt = max(unknown_rp_setup['Pchamber']['setpt'])
         
-        assert np.min(Pch) >= min_setpt * 0.9, \
+        assert np.min(Pch) >= min_setpt, \
             f"Min pressure {np.min(Pch):.3f} below setpoint range"
-        assert np.max(Pch) <= max_setpt * 1.1, \
+        assert np.max(Pch) <= max_setpt, \
             f"Max pressure {np.max(Pch):.3f} above setpoint range"
     
     def test_unknown_rp_physically_reasonable(self, unknown_rp_setup):
@@ -177,63 +131,8 @@ class TestCalcUnknownRp:
             unknown_rp_setup['Tbot_exp']
         )
         
+        # This includes checks for drying progress, temperature, flux, etc.
         assert_physically_reasonable_output(output)
-    
-    def test_unknown_rp_reaches_completion(self, unknown_rp_setup):
-        """Test that drying progresses with parameter estimation.
-        
-        Note: Parameter estimation with experimental data may not always
-        reach high completion due to physics constraints and fitting complexity.
-        """
-        output, product_res = calc_unknownRp.dry(
-            unknown_rp_setup['vial'],
-            unknown_rp_setup['product'],
-            unknown_rp_setup['ht'],
-            unknown_rp_setup['Pchamber'],
-            unknown_rp_setup['Tshelf'],
-            unknown_rp_setup['time'],
-            unknown_rp_setup['Tbot_exp']
-        )
-        
-        final_fraction = output[-1, 6]
-        # Parameter estimation may have limited progress - check for any drying
-        assert final_fraction > 0.0, \
-            f"Should show drying progress, got {final_fraction:.1f}%"
-        assert final_fraction <= 100.0, \
-            f"Fraction dried should not exceed 100%, got {final_fraction:.1f}%"
-    
-    def test_unknown_rp_fraction_dried_monotonic(self, unknown_rp_setup):
-        """Test fraction dried increases monotonically."""
-        output, product_res = calc_unknownRp.dry(
-            unknown_rp_setup['vial'],
-            unknown_rp_setup['product'],
-            unknown_rp_setup['ht'],
-            unknown_rp_setup['Pchamber'],
-            unknown_rp_setup['Tshelf'],
-            unknown_rp_setup['time'],
-            unknown_rp_setup['Tbot_exp']
-        )
-        
-        frac_dried = output[:, 6]
-        
-        # Fraction dried should be monotonically increasing
-        diffs = np.diff(frac_dried)
-        assert np.all(diffs >= -1e-6), "Fraction dried must increase monotonically"
-    
-    def test_unknown_rp_flux_positive(self, unknown_rp_setup):
-        """Test sublimation flux is non-negative."""
-        output, product_res = calc_unknownRp.dry(
-            unknown_rp_setup['vial'],
-            unknown_rp_setup['product'],
-            unknown_rp_setup['ht'],
-            unknown_rp_setup['Pchamber'],
-            unknown_rp_setup['Tshelf'],
-            unknown_rp_setup['time'],
-            unknown_rp_setup['Tbot_exp']
-        )
-        
-        flux = output[:, 5]
-        assert np.all(flux >= 0), "Sublimation flux must be non-negative"
     
     def test_unknown_rp_different_initial_pressure(self, unknown_rp_setup):
         """Test with different initial chamber pressure."""

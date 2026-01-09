@@ -18,6 +18,15 @@ def assert_physically_reasonable_output(output):
         [6] percent_dried - percent dried (0-100%)
     """
     assert output.shape[1] == 7, "Output should have 7 columns"
+        
+    # Check output columns exist and are numeric
+    assert np.all(np.isfinite(output[:, 0])), "Time column has invalid values"
+    assert np.all(np.isfinite(output[:, 1])), "Tsub column has invalid values"
+    assert np.all(np.isfinite(output[:, 2])), "Tbot column has invalid values"
+    assert np.all(np.isfinite(output[:, 3])), "Tsh column has invalid values"
+    assert np.all(np.isfinite(output[:, 4])), "Pch column has invalid values"
+    assert np.all(np.isfinite(output[:, 5])), "flux column has invalid values"
+    assert np.all(np.isfinite(output[:, 6])), "frac_dried column has invalid values"
     
     # Time should be non-negative and monotonically increasing
     assert np.all(output[:, 0] >= 0), "Time should be non-negative"

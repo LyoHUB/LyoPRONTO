@@ -17,7 +17,6 @@
 
 from scipy.optimize import fsolve
 import numpy as np
-import math
 from . import constant
 
 ####################### Functions #######################
@@ -41,7 +40,7 @@ def Lpr0_FUN(Vfill,Ap,cSolid):
     Args:
         Vfill (float): fill volume in mL
         Ap (float): product area in cm^2
-        cSolid (float): fractional concentration of the solute in solution
+        cSolid (float): concentration of the solute in solution, g/mL
 
     Returns:
         (float): initial fill height of the frozen product, in cm.

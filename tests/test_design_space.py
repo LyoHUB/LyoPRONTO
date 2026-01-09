@@ -6,14 +6,44 @@ Tests the design space generation functionality for primary drying optimization.
 
 import pytest
 import numpy as np
-import os
 import lyopronto.design_space as design_space
 
+@pytest.fixture
+def physical_props():
+    """Standard inputs for design space tests."""
+    vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
+    product = {
+        'T_pr_crit': -5.0,
+        'cSolid': 0.05,
+        'R0': 1.4,
+        'A1': 16.0,
+        'A2': 0.0
+    }
+    ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
+    eq_cap = {'a': -0.182, 'b': 11.7}
+    nVial = 398
+    dt = 0.01
+    return vial, product, ht, eq_cap, nVial, dt
+
+@pytest.fixture
+def design_space_1T1P(physical_props):
+    """Design space inputs for 1 Tshelf and 1 Pchamber."""
+    vial, product, ht, eq_cap, nVial, dt = physical_props
+    Tshelf = {
+        'init': -35.0,
+        'setpt': np.array([0.0]),
+        'ramp_rate': 1.0
+    }
+    Pchamber = {
+        'setpt': np.array([0.15]),
+        'ramp_rate': 0.5
+    }
+    return vial, product, ht, Pchamber, Tshelf, eq_cap, nVial, dt
 
 class TestDesignSpaceBasic:
     """Basic functionality tests for design space generation."""
     
-    def test_design_space_runs(self):
+    def test_design_space_runs(self, design_space_inputs):
         """Test that design space generation completes without errors."""
         # Use conservative parameters that avoid edge cases
         vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
