@@ -40,6 +40,18 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
         for i_Pch,Pch in enumerate(Pchamber['setpt']):
 
+            # Check for feasibility
+            if functions.Vapor_pressure(Tsh_setpt) < Pch:
+                # TODO: decide about how to gracefully exit
+                # For now, just set outputs to NaN and continue
+                print(f"At Tshelf={Tsh_setpt} and Pch={Pch}, sublimation is not feasible (vapor pressure < chamber pressure).")
+                T_max[i_Tsh,i_Pch] = np.nan
+                drying_time[i_Tsh,i_Pch] = np.nan
+                sub_flux_avg[i_Tsh,i_Pch] = np.nan
+                sub_flux_max[i_Tsh,i_Pch] = np.nan
+                sub_flux_end[i_Tsh,i_Pch] = np.nan
+                continue
+
             ##################  Initialization ################
 
             # Initialization of time
@@ -71,7 +83,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                 Tsub = sp.fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
                 dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
                 if dmdt<0:
-                    print("Shelf temperature is too low for sublimation.")
+                    print(f"At t={t}hr, shelf temperature Tsh={Tsh} is too low for sublimation.")
                     dmdt = 0.0
                 Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
 
@@ -101,7 +113,6 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                         Tsh = Tsh + Tshelf['ramp_rate']*constant.hr_To_min*dt
                     else:
                         Tsh = Tsh - Tshelf['ramp_rate']*constant.hr_To_min*dt
-                    print(f"Tsh ramping: {Tsh}°C at time {t} hr, {dmdt}, Lck={Lck}")
                 else:
                     Tsh = Tsh_setpt    # Maintain at set point
                 iStep = iStep + 1 # Time iteration number
