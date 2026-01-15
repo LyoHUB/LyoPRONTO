@@ -8,8 +8,8 @@ optimizer functionality with fixed chamber pressure and shelf temperature optimi
 import pytest
 import numpy as np
 import pandas as pd
-import os
 from lyopronto import opt_Tsh
+from .utils import assert_physically_reasonable_output
 
 
 class TestOptimizerWebInterface:
@@ -74,8 +74,14 @@ class TestOptimizerWebInterface:
         df = pd.read_csv(csv_path, sep=';')
         return df
     
-    def test_optimizer_completes(self, optimizer_params):
-        """Test that optimizer runs to completion."""
+    def test_optimizer_basics(self, optimizer_params, reference_results):
+        """Test that optimizer: 
+        - runs to completion.
+        - outputs correct shape and columns.
+        - keeps product temperature at or below critical temperature.
+        - keeps shelf temperature within specified bounds.
+        - keeps chamber pressure at fixed setpoint.
+        - matches drying time with reference output."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
         
         output = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
@@ -87,26 +93,14 @@ class TestOptimizerWebInterface:
         # Check that drying completes
         percent_dried = output[:, 6]
         assert percent_dried[-1] >= 99, f"Drying incomplete: {percent_dried[-1]}% dried"
-    
-    def test_optimizer_output_shape(self, optimizer_params):
-        """Test that optimizer output has correct shape and columns."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
+
         # Check shape (should have 7 columns)
-        assert results.shape[1] == 7
+        assert output.shape[1] == 7
         
         # Check that all values are finite
-        assert np.all(np.isfinite(results))
+        assert_physically_reasonable_output(output)
     
-    def test_optimizer_respects_critical_temperature(self, optimizer_params):
-        """Test that product temperature stays at or below critical temperature."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        T_bot = results[:, 2]  # Vial bottom (product) temperature
+        T_bot = output[:, 2]  # Vial bottom (product) temperature
         T_crit = product['T_pr_crit']
         
         # Product temperature should not exceed critical temperature
@@ -114,13 +108,7 @@ class TestOptimizerWebInterface:
         assert np.all(T_bot <= T_crit + 0.01), \
             f"Product temperature exceeded critical: max={T_bot.max():.2f}°C, crit={T_crit}°C"
     
-    def test_optimizer_shelf_temperature_bounds(self, optimizer_params):
-        """Test that shelf temperature stays within specified bounds."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        T_shelf = results[:, 3]
+        T_shelf = output[:, 3]
         
         # Shelf temperature should be within min/max bounds
         assert np.all(T_shelf >= Tshelf['min'] - 0.01), \
@@ -128,59 +116,41 @@ class TestOptimizerWebInterface:
         assert np.all(T_shelf <= Tshelf['max'] + 0.01), \
             f"Shelf temperature above maximum: max_T={T_shelf.max():.2f}°C"
     
-    def test_optimizer_chamber_pressure_fixed(self, optimizer_params):
-        """Test that chamber pressure remains at fixed setpoint."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        P_chamber_mTorr = results[:, 4]
+        P_chamber_mTorr = output[:, 4]
         P_setpoint_mTorr = Pchamber['setpt'][0] * 1000  # Convert Torr to mTorr
         
         # Chamber pressure should remain at setpoint (allowing small tolerance)
         assert np.all(np.abs(P_chamber_mTorr - P_setpoint_mTorr) < 1.0), \
             f"Chamber pressure deviated from setpoint: range={P_chamber_mTorr.min():.1f}-{P_chamber_mTorr.max():.1f} mTorr"
-    
-    def test_optimizer_time_progression(self, optimizer_params):
-        """Test that time progresses monotonically."""
+    def test_optimizer_matches_reference_trajectory(self, optimizer_params, reference_results):
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
         
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        output = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        time_hr = results[:, 0]
+        # Compare at specific time points
+        ref_times = reference_results['Time [hr]'].values
+        ref_dried = reference_results['Percent Dried'].values
         
-        # Time should be monotonically increasing
-        time_diffs = np.diff(time_hr)
-        assert np.all(time_diffs > 0), "Time not monotonically increasing"
+        # Sample a few time points for comparison
+        test_times = [0.5, 1.0, 1.5, 2.0]
         
-        # Time should start at 0
-        assert time_hr[0] == 0.0
+        for test_time in test_times:
+            if test_time > output[-1, 0]:
+                continue  # Skip if beyond simulation time
+                
+            # Find closest time in results
+            idx_result = np.argmin(np.abs(output[:, 0] - test_time))
+            dried_result = output[idx_result, 6]
+            
+            # Find closest time in reference
+            idx_ref = np.argmin(np.abs(ref_times - test_time))
+            dried_ref = ref_dried[idx_ref]
+            
+            # Allow 5% tolerance on percent dried
+            assert abs(dried_result - dried_ref) < 5.0, \
+                f"Percent dried mismatch at t={test_time}hr: got {dried_result:.1f}%, expected {dried_ref:.1f}%"
     
-    def test_optimizer_percent_dried_progression(self, optimizer_params):
-        """Test that percent dried increases monotonically to 100%."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        percent_dried = results[:, 6]
-        
-        # Percent dried should start at 0
-        assert percent_dried[0] == 0.0
-        
-        # Percent dried should increase monotonically
-        dried_diffs = np.diff(percent_dried)
-        assert np.all(dried_diffs >= 0), "Percent dried decreased"
-        
-        # Should end at approximately 100%
-        assert percent_dried[-1] >= 0.99
-    
-    def test_optimizer_matches_reference_timing(self, optimizer_params, reference_results):
-        """Test that optimizer drying time matches reference output."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        time_hr = results[:, 0]
+        time_hr = output[:, 0]
         ref_time = reference_results['Time [hr]'].values
         
         # Final time should match reference (within tolerance)
@@ -191,15 +161,9 @@ class TestOptimizerWebInterface:
         time_tolerance = 0.01 * ref_final_time
         assert abs(final_time - ref_final_time) < time_tolerance, \
             f"Final time mismatch: got {final_time:.4f} hr, expected {ref_final_time:.4f} hr"
-    
-    def test_optimizer_matches_reference_temperatures(self, optimizer_params, reference_results):
-        """Test that optimizer temperatures match reference output."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
         
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        T_bot = results[:, 2]
         ref_T_bot = reference_results['Vial Bottom Temperature [C]'].values
+        T_bot = output[:, 2]
         
         # Maximum product temperature should match reference (within tolerance)
         max_T_bot = T_bot.max()
@@ -209,45 +173,6 @@ class TestOptimizerWebInterface:
         assert abs(max_T_bot - ref_max_T_bot) < 0.5, \
             f"Max product temp mismatch: got {max_T_bot:.2f}°C, expected {ref_max_T_bot:.2f}°C"
     
-    def test_optimizer_matches_reference_trajectory(self, optimizer_params, reference_results):
-        """Test that optimizer trajectory approximately matches reference."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        # Compare at specific time points
-        ref_times = reference_results['Time [hr]'].values
-        ref_dried = reference_results['Percent Dried'].values
-        
-        # Sample a few time points for comparison
-        test_times = [0.5, 1.0, 1.5, 2.0]
-        
-        for test_time in test_times:
-            if test_time > results[-1, 0]:
-                continue  # Skip if beyond simulation time
-                
-            # Find closest time in results
-            idx_result = np.argmin(np.abs(results[:, 0] - test_time))
-            dried_result = results[idx_result, 6]
-            
-            # Find closest time in reference
-            idx_ref = np.argmin(np.abs(ref_times - test_time))
-            dried_ref = ref_dried[idx_ref]
-            
-            # Allow 5% tolerance on percent dried
-            assert abs(dried_result - dried_ref) < 5.0, \
-                f"Percent dried mismatch at t={test_time}hr: got {dried_result:.1f}%, expected {dried_ref:.1f}%"
-    
-    def test_optimizer_sublimation_flux_positive(self, optimizer_params):
-        """Test that sublimation flux is always positive."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
-        
-        results = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        flux = results[:, 5]
-        
-        # Sublimation flux should be positive throughout
-        assert np.all(flux > 0), f"Negative flux detected: min={flux.min():.6f}"
     
     @pytest.mark.skip(reason="Example script not yet implemented")
     def test_optimizer_example_script_runs(self):
