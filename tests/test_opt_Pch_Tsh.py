@@ -7,7 +7,7 @@ Tests based on working example_optimizer.py structure.
 
 import pytest
 import numpy as np
-from lyopronto import opt_Pch_Tsh, opt_Pch, constant
+from lyopronto import opt_Pch_Tsh, opt_Pch, constant, opt_Tsh
 from .utils import assert_physically_reasonable_output
 
 # Constants for test assertions
@@ -67,6 +67,67 @@ def standard_opt_pch_tsh_inputs():
     
     return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
 
+def opt_both_consistency(output, setup):
+    vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = setup
+
+    assert output is not None, "opt_Pch_Tsh.dry should return output"
+    assert isinstance(output, np.ndarray), "Output should be numpy array"
+
+    # Should have 7 columns: time, Tsub, Tbot, Tsh, Pch, flux, percent_dried
+    assert output.shape[1] == 7, f"Expected 7 columns, got {output.shape[1]}"
+    
+    # Should have multiple time points
+    assert output.shape[0] > 1, "Should have multiple time points"
+
+    assert_physically_reasonable_output(output, Tmax=120)
+
+    # Pch should be >= min pressure (0.05 Torr = 50 mTorr)
+    assert np.all(output[:, 4] >= Pchamber['min']*constant.Torr_to_mTorr), f"Pch should be >= 50 mTorr (min), got min {output[:, 4].min()}"
+    
+    # Column 5: Flux should be non-negative
+    assert np.all(output[:, 5] >= 0), "Sublimation flux should be non-negative"
+    
+    # Column 6: Percent dried should be 0-100
+    assert np.all(output[:, 6] >= 0), "Percent dried should be >= 0"
+    assert np.all(output[:, 6] <= 100.0), "Percent dried should be <= 100"
+
+    # Pressure (column 4) should vary
+    Pch_values = output[:, 4]
+    assert np.std(Pch_values) > 0, "Pressure should vary (be optimized)"
+    
+    # Shelf temperature (column 3) should vary
+    Tsh_values = output[:, 3]
+    assert np.std(Tsh_values) > 0, "Shelf temperature should vary (be optimized)"
+    
+    # Both should respect bounds
+    assert np.all(Pch_values >= Pchamber['min']*constant.Torr_to_mTorr), "Pressure should be >= min bound"
+    if hasattr(Pchamber, 'max'):
+        assert np.all(Pch_values <= Pchamber['max']*constant.Torr_to_mTorr), "Pressure should be <= max bound"
+    assert np.all(Tsh_values >= Tshelf['min']), "Tsh should be >= min bound"
+    assert np.all(Tsh_values <= Tshelf['max']), "Tsh should be <= max bound"
+
+    # Tbot (column 2) should stay at or below T_pr_crit
+    T_crit = product['T_pr_crit']
+    assert np.all(output[:, 2] <= T_crit+0.01), \
+        f"Product temperature should be <= {T_crit}°C (critical)"
+
+    # Percent dried (column 6) should reach > 99.0
+    final_dried = output[-1, 6]
+    assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+
+    
+    # Should not exceed equipment capability (with small tolerance)
+    # Equipment capability at different pressures
+    Pch = output[:, 4] / 1000  # [Torr]
+    actual_cap = eq_cap['a'] + eq_cap['b'] * Pch  # [kg/hr]
+    # Total sublimation rate per vial
+    flux = output[:, 5]  # Sublimation flux [kg/hr/m**2]
+    Ap_m2 = vial['Ap'] * constant.cm_To_m**2  # Convert [cm**2] to [m**2]
+    dmdt = flux * Ap_m2  # [kg/hr/vial]
+    violations = dmdt - actual_cap
+    
+    assert np.all(violations <= 0), \
+        f"Equipment capability exceeded by {np.max(violations):.3e} kg/hr"
 
 class TestOptPchTshBasic:
     """Basic functionality tests for opt_Pch_Tsh module."""
@@ -83,49 +144,21 @@ class TestOptPchTshBasic:
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_tsh_inputs
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        assert output is not None, "opt_Pch_Tsh.dry should return output"
-        assert isinstance(output, np.ndarray), "Output should be numpy array"
+        opt_both_consistency(output, standard_opt_pch_tsh_inputs)
     
-        # Should have 7 columns: time, Tsub, Tbot, Tsh, Pch, flux, percent_dried
-        assert output.shape[1] == 7, f"Expected 7 columns, got {output.shape[1]}"
+    def test_opt_pch_tsh_tight_ranges(self, standard_opt_pch_tsh_inputs):
+        """Test with tight optimization ranges."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_tsh_inputs
         
-        # Should have multiple time points
-        assert output.shape[0] > 1, "Should have multiple time points"
-    
-        assert_physically_reasonable_output(output, Tmax=120)
-
-        # Pch should be >= min pressure (0.05 Torr = 50 mTorr)
-        assert np.all(output[:, 4] >= Pchamber['min']*constant.Torr_to_mTorr), f"Pch should be >= 50 mTorr (min), got min {output[:, 4].min()}"
+        # Set tight ranges
+        Pchamber['min'] = 0.40
+        Pchamber['max'] = 0.70
+        Tshelf['min'] = -20.0
+        Tshelf['max'] = 0.0
         
-        # Column 5: Flux should be non-negative
-        assert np.all(output[:, 5] >= 0), "Sublimation flux should be non-negative"
+        output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        # Column 6: Percent dried should be 0-100
-        assert np.all(output[:, 6] >= 0), "Percent dried should be >= 0"
-        assert np.all(output[:, 6] <= 100.0), "Percent dried should be <= 100"
-    
-        # Pressure (column 4) should vary
-        Pch_values = output[:, 4]
-        assert np.std(Pch_values) > 0, "Pressure should vary (be optimized)"
-        
-        # Shelf temperature (column 3) should vary
-        Tsh_values = output[:, 3]
-        assert np.std(Tsh_values) > 0, "Shelf temperature should vary (be optimized)"
-        
-        # Both should respect bounds
-        assert np.all(Pch_values >= Pchamber['min']*constant.Torr_to_mTorr), "Pressure should be >= min bound"
-        assert np.all(Tsh_values >= Tshelf['min']), "Tsh should be >= min bound"
-        assert np.all(Tsh_values <= Tshelf['max']), "Tsh should be <= max bound"
-    
-        # Tbot (column 2) should stay at or below T_pr_crit
-        T_crit = product['T_pr_crit']
-        assert np.all(output[:, 2] <= T_crit+0.01), \
-            f"Product temperature should be <= {T_crit}°C (critical)"
-    
-        # Percent dried (column 6) should reach > 99.0
-        final_dried = output[-1, 6]
-        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+        opt_both_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
 
 class TestOptPchTshEdgeCases:
     """Edge case tests for opt_Pch_Tsh module."""
@@ -183,7 +216,17 @@ class TestOptPchTshEdgeCases:
         assert output[-1, 6] > 99, "Should complete drying"
         # All pressures should be >= 100 [mTorr]
         assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
+        opt_both_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
 
+    def test_concentrated_product(self, standard_opt_pch_tsh_inputs):
+        """Test with high solids concentration."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_tsh_inputs
+        product['cSolid'] = 0.15  # 15% solids
+
+        output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+
+        assert_physically_reasonable_output(output)
+        opt_both_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
 
 class TestOptPchTshValidation:
     """Validation tests comparing opt_Pch_Tsh behavior."""
@@ -207,13 +250,20 @@ class TestOptPchTshValidation:
             'ramp_rate': 1.0,
         }
         output_pressure_only = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf_fixed, dt, eq_cap, nVial)
+        Pchamber_fixed = {
+            'setpt': [0.5],  # Fixed pressure at 0.5 Torr
+            'dt_setpt': [3600],  # Long time at fixed pressure
+        }
+        output_temperature_only = opt_Tsh.dry(vial, product, ht, Pchamber_fixed, Tshelf, dt, eq_cap, nVial)
         
         # Both optimizations should complete successfully
         assert output_joint[-1, 6] > 99, "Joint optimization should reach >99% dried"
         assert output_pressure_only[-1, 6] > 99, "P-only optimization should reach >99% dried"
+        assert output_temperature_only[-1, 6] > 99, "T-only optimization should reach >99% dried"
 
         # Joint optimization drying time should be <= pressure-only drying time
-        assert output_joint[-1, 0] <= output_pressure_only[-1, 0], "Joint optimization should beat single-DOF optimization"
+        assert output_joint[-1, 0] <= output_pressure_only[-1, 0], "Joint optimization should beat P-only optimization"
+        assert output_joint[-1, 0] <= output_temperature_only[-1, 0], "Joint optimization should beat T-only optimization"
     
     @pytest.mark.slow
     def test_consistent_results(self, standard_opt_pch_tsh_inputs):
