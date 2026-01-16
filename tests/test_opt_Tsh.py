@@ -98,7 +98,7 @@ class TestOptimizerWebInterface:
         assert output.shape[1] == 7
         
         # Check that all values are finite
-        assert_physically_reasonable_output(output)
+        assert_physically_reasonable_output(output, Tmax=120)
     
         T_bot = output[:, 2]  # Vial bottom (product) temperature
         T_crit = product['T_pr_crit']
