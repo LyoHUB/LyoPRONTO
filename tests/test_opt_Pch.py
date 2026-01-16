@@ -231,6 +231,34 @@ class TestOptPchEdgeCases:
         # All pressures should be >= 100 mTorr
         assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
 
+    def test_narrow_pressure_range(self, standard_opt_pch_inputs):
+        """Test with narrow pressure optimization range."""
+        vial, product, ht, _, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
+        new_Pch = {'min': 0.070, 'max': 0.090}
+        product['T_pr_crit'] = -30.0  # Lower critical temperature to challenge
+        Tshelf['setpt'] = [-20.0]    # Lower shelf temperature to make feasible
+        
+        output = opt_Pch.dry( vial, product, ht, new_Pch, Tshelf, dt, eq_cap, nVial)
+        
+        Pch = output[:, 4] / 1000
+        assert np.all((Pch >= 0.070) & (Pch <= 0.090))
+
+    def test_tight_equipment_constraint(self, standard_opt_pch_inputs):
+        """Test with tighter equipment capability constraint.  """
+        vial, product, ht, Pchamber, Tshelf, dt, _, nVial = standard_opt_pch_inputs
+        # Reduce equipment capability
+        tight_eq_cap = {
+            'a' : -0.3, #[kg/hr]
+            'b' : 5.0,   #[kg/hr/Torr]
+        }
+        
+        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, tight_eq_cap, nVial)
+        
+        # Should run without errors and show some progress despite tighter constraint
+        assert output is not None
+        assert output[-1,6] > 99.0, "Should complete drying"
+        assert_physically_reasonable_output(output)
+
     @pytest.mark.slow
     def test_consistent_results(self, standard_opt_pch_inputs):
         """Test that repeated runs give consistent results."""
