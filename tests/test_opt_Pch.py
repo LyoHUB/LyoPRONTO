@@ -7,7 +7,7 @@ Tests based on working example_optimizer.py structure.
 
 import pytest
 import numpy as np
-from lyopronto import opt_Pch
+from lyopronto import opt_Pch, constant
 from .utils import assert_physically_reasonable_output
 
 
@@ -99,7 +99,7 @@ class TestOptPchBasic:
         assert np.std(Pch_values) > 0, "Pressure should vary (be optimized)"
         
         # Pressure should respect minimum bound (50 mTorr = 0.05 Torr)
-        assert np.all(Pch_values >= 50), "Pressure should be >= min bound"
+        assert np.all(Pch_values >= Pchamber['min']*constant.Torr_to_mTorr), "Pressure should be >= min bound"
     
         # Shelf temperature (column 3) should start at init
         assert np.abs(output[0, 3] - Tshelf['init']) < 1.0, \
@@ -147,15 +147,16 @@ class TestOptPchBasic:
 class TestOptPchEdgeCases:
     """Edge case tests for opt_Pch module."""
     
-    @pytest.mark.skip(reason="TODO: needs some feasibility checking")
+    # @pytest.mark.skip(reason="TODO: needs some feasibility checking")
     def test_low_critical_temperature(self, standard_opt_pch_inputs):
         """Test with very low critical temperature (-35°C)."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
         
         # Lower critical temperature
         product['T_pr_crit'] = -35.0
-        Pchamber['min'] = 0.001  # Lower min pressure to 20 mTorr
+        Pchamber['min'] = 0.001  # Lower min pressure to 1 mTorr
         Pchamber['max'] = 2.00  # Raise max pressure to 2.00 Torr
+        Tshelf['setpt'] = [-30] # Lower shelf temperature to make feasible
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
@@ -171,8 +172,12 @@ class TestOptPchEdgeCases:
         # Increase resistance
         product['R0'] = 3.0
         product['A1'] = 30.0
+        # Drop shelf temperature to make constraint feasible
+        Tshelf['setpt'] = np.array([-20.0])
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+
+        assert_physically_reasonable_output(output)
         
         assert output[-1,6] >= 99.0, "Should complete drying"
         # Higher resistance should lead to longer drying time
@@ -187,6 +192,8 @@ class TestOptPchEdgeCases:
         Tshelf['dt_setpt'] = np.array([1800])
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+
+        assert_physically_reasonable_output(output)
         
         assert np.all(np.isfinite(output)) and output.shape[0] > 1, "Should complete with two setpoints"
         assert output[-1, 6] > 99.0, "Should complete drying"
@@ -197,17 +204,43 @@ class TestOptPchEdgeCases:
         
         # Higher minimum pressure
         Pchamber['min'] = 0.10  # Torr = 100 mTorr
+        # Needs a lower shelf temperature to complete drying
+        Tshelf['setpt'] = np.array([-20.0])
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+
+        assert_physically_reasonable_output(output)
         
         assert output[-1, 6] > 99.0, "Should complete drying"
         # All pressures should be >= 100 mTorr
         assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
 
+    def test_incomplete_optimization(self, standard_opt_pch_inputs):
+        """Test with higher minimum pressure constraint (0.10 Torr)."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
+        
+        # Higher minimum pressure
+        Pchamber['min'] = 0.10  # Torr = 100 mTorr
+        # With higher shelf temperature, CANNOT complete drying and adhere to constraints
+        Tshelf['setpt'] = [0]
+        
+        with pytest.warns(UserWarning, match="Optimization failed"):
+            output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        
+        assert output[-1, 6] < 100.0, "Should NOT complete drying"
+        # All pressures should be >= 100 mTorr
+        assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
 
-class TestOptPchValidation:
-    """Validation tests comparing opt_Pch behavior."""
-    
+    @pytest.mark.slow
+    def test_consistent_results(self, standard_opt_pch_inputs):
+        """Test that repeated runs give consistent results."""
+        # Run twice
+        output1 = opt_Pch.dry(*standard_opt_pch_inputs)
+        output2 = opt_Pch.dry(*standard_opt_pch_inputs)
+        
+        # Results should be identical (deterministic optimization)
+        np.testing.assert_array_almost_equal(output1, output2, decimal=DECIMAL_PRECISION)
+
     #TODO: check whether this is actually expected. If so, merge with basic test above to avoid rerunning unnecessarily
     @pytest.mark.skip(reason="TODO: check that this is expected, and if so why")
     def test_pressure_decreases_with_progress(self, standard_opt_pch_inputs):
@@ -227,12 +260,3 @@ class TestOptPchValidation:
         assert late_Pch >= early_Pch, \
             f"Late pressure ({late_Pch:.1f}) should be >= early ({early_Pch:.1f})"
     
-    @pytest.mark.slow
-    def test_consistent_results(self, standard_opt_pch_inputs):
-        """Test that repeated runs give consistent results."""
-        # Run twice
-        output1 = opt_Pch.dry(*standard_opt_pch_inputs)
-        output2 = opt_Pch.dry(*standard_opt_pch_inputs)
-        
-        # Results should be identical (deterministic optimization)
-        np.testing.assert_array_almost_equal(output1, output2, decimal=DECIMAL_PRECISION)
