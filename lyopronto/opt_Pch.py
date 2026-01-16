@@ -99,15 +99,13 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                 break
             else:
                 continue
-        if dmdt < 0 or Tbot > Tsh:
-            warnings.warn(f"Unphysical results at time {t} hr, {percent_dried:.1f}% dried, Tsh={Tsh:.1f}, Tbot={Tbot:.1f}")
 
         # Sublimated ice length
         dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
 
         # Update record as functions of the cycle time
         if (iStep==0):
-            output_saved =np.array([[t, float(Tsub), float(Tbot), Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]])
+            output_saved = np.array([[t, float(Tsub), float(Tbot), Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]])
         else:
             output_saved = np.append(output_saved, [[t, float(Tsub), float(Tbot), Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]],axis=0)
     
@@ -124,7 +122,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         percent_dried = Lck/Lpr0*100   # Percent dried
 
         if len(np.where(Tshelf['t_setpt']>t)[0])==0:
-            print("Total time exceeded. Drying incomplete")    # Shelf temperature set point time exceeded, drying not done
+            warnings.warn("Total time exceeded. Drying incomplete")    # Shelf temperature set point time exceeded, drying not done
             break
         else:
             i = np.where(Tshelf['t_setpt']>t)[0][0]

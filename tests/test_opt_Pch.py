@@ -160,9 +160,23 @@ class TestOptPchEdgeCases:
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output.shape[-1,6] > 99, "Should complete drying"
+        assert output[-1,6] > 99, "Should complete drying"
         assert np.all(output[:, 2] <= product['T_pr_crit']), "Should respect lower T_crit"
-        assert np.all(output[:, 2] <= product['T_pr_crit']), "Should respect lower T_crit"
+
+        assert_physically_reasonable_output(output)
+
+    def test_insufficient_time(self, standard_opt_pch_inputs):
+        """Test with very low critical temperature (-35°C)."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
+        
+        Tshelf['dt_setpt'] = [120] # Less drying time
+        
+        with pytest.warns(UserWarning, match="Drying incomplete"):
+            output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        
+        assert output[-1,6] < 100, "Incomplete drying"
+
+        assert_physically_reasonable_output(output)
     
     @pytest.mark.slow
     def test_high_resistance_product(self, standard_opt_pch_inputs):
@@ -183,19 +197,18 @@ class TestOptPchEdgeCases:
         # Higher resistance should lead to longer drying time
         assert output[-1, 0] > 1.0, "High resistance should take longer to dry"
     
-    def test_two_shelf_temperature_setpoints(self, standard_opt_pch_inputs):
+    def test_multi_shelf_temperature_setpoints(self, standard_opt_pch_inputs):
         """Test with two shelf temperature setpoints."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
         
         # Two setpoints
-        Tshelf['setpt'] = np.array([-20.0, 0.0])
-        Tshelf['dt_setpt'] = np.array([1800])
+        Tshelf['setpt'] = np.array([-20.0, 0.0, -10.0])
+        Tshelf['dt_setpt'] = np.array([120, 120, 1200])
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
         assert_physically_reasonable_output(output)
         
-        assert np.all(np.isfinite(output)) and output.shape[0] > 1, "Should complete with two setpoints"
         assert output[-1, 6] > 99.0, "Should complete drying"
     
     def test_higher_min_pressure(self, standard_opt_pch_inputs):
