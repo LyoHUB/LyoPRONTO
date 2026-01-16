@@ -104,10 +104,11 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         else:
             j = np.where(Pchamber['t_setpt']>t)[0][0]
             # Ramp shelf temperature till next set point is reached and then maintain at set point
+            ramp_rate = Pchamber.get('ramp_rate', 0.0)  # Default to no ramp if not specified
             if Pchamber['setpt'][j] >= Pchamber['setpt'][j-1]:
-                Pch = min(Pchamber['setpt'][j-1] + Pchamber['ramp_rate']*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
+                Pch = min(Pchamber['setpt'][j-1] + ramp_rate*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
             else:
-                Pch = max(Pchamber['setpt'][j-1] - Pchamber['ramp_rate']*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
+                Pch = max(Pchamber['setpt'][j-1] - ramp_rate*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
           
         iStep = iStep + 1 # Time iteration number
 
