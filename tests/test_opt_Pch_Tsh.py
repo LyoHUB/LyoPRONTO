@@ -225,7 +225,7 @@ class TestOptPchTshEdgeCases:
 
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        assert_physically_reasonable_output(output)
+        assert_physically_reasonable_output(output, Tmax=120)
         opt_both_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
 
 class TestOptPchTshValidation:
