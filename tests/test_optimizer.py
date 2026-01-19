@@ -9,6 +9,7 @@ import pytest
 import numpy as np
 import pandas as pd
 import os
+from pathlib import Path
 from lyopronto import opt_Tsh
 
 
@@ -70,7 +71,7 @@ class TestOptimizerWebInterface:
     @pytest.fixture
     def reference_results(self):
         """Load reference results from web interface optimizer output."""
-        csv_path = 'test_data/reference_optimizer.csv'
+        csv_path = Path(__file__).parent.parent / 'test_data/reference_optimizer.csv'
         df = pd.read_csv(csv_path, sep=';')
         return df
     

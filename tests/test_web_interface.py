@@ -92,7 +92,7 @@ class TestWebInterfaceExample:
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
         # Load reference CSV (if it exists)
-        ref_csv = Path('test_data/reference_primary_drying.csv')
+        ref_csv = Path(__file__).parent.parent / 'test_data/reference_primary_drying.csv'
         if not ref_csv.exists():
             pytest.skip(f"Reference CSV not found: {ref_csv}")
         
@@ -203,7 +203,7 @@ class TestWebInterfaceComparison:
     def test_exact_match_with_reference(self):
         """Test for exact match with reference web output."""
         # This test uses the actual reference CSV
-        ref_csv = Path('test_data/reference_primary_drying.csv')
+        ref_csv = Path(__file__).parent.parent / 'test_data/reference_primary_drying.csv'
         if not ref_csv.exists():
             pytest.skip(f"Reference CSV not found: {ref_csv}")
         

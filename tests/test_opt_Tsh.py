@@ -5,6 +5,7 @@ These tests validate the optimizer examples that match the web interface
 optimizer functionality with fixed chamber pressure and shelf temperature optimization.
 """
 
+from pathlib import Path
 import pytest
 import numpy as np
 import pandas as pd
@@ -70,7 +71,7 @@ class TestOptimizerWebInterface:
     @pytest.fixture
     def reference_results(self):
         """Load reference results from web interface optimizer output."""
-        csv_path = 'test_data/reference_optimizer.csv'
+        csv_path = Path(__file__).parent.parent / 'test_data/reference_optimizer.csv'
         df = pd.read_csv(csv_path, sep=';')
         return df
     

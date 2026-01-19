@@ -58,7 +58,7 @@ def standard_inputs_nodt():
 @pytest.fixture
 def temperature_data():
     """Load temperature data from test_data/temperature.txt."""
-    data_path = Path('test_data/temperature.txt')
+    data_path = Path(__file__).parent.parent / 'test_data/temperature.txt'
     if not data_path.exists():
         pytest.skip("Temperature data file not found")
     
@@ -279,7 +279,7 @@ class TestCalcUnknownRpValidation:
         Tshelf = {'init': -35.0, 'setpt': [20.0], 'dt_setpt': [1800.0], 'ramp_rate': 1.0}
         
         # Load temperature data
-        data_path = Path('test_data/temperature.txt')
+        data_path = Path(__file__).parent.parent / 'test_data/temperature.txt'
         if not data_path.exists():
             pytest.skip("Temperature data file not found")
         
