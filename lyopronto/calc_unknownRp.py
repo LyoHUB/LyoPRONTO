@@ -17,8 +17,6 @@
 from warnings import warn
 import scipy.optimize as sp
 import numpy as np
-import math
-import csv
 from . import constant
 from . import functions
 
@@ -86,7 +84,6 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
             product_res = np.append(product_res, [[t, float(Lck), float(Rp)]],axis=0)
     
         # Advance counters
-        Lck_prev = Lck # Previous cake length in cm
         Lck = Lck + dL # Cake length in cm
 
         percent_dried = Lck/Lpr0*100   # Percent dried
