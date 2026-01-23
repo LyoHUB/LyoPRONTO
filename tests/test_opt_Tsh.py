@@ -13,7 +13,7 @@ from lyopronto import opt_Tsh
 from .utils import assert_physically_reasonable_output
 
 
-class TestOptimizerWebInterface:
+class TestOptimizerInterface:
     """Test optimizer functionality matching web interface examples."""
     
     @pytest.fixture
@@ -75,7 +75,7 @@ class TestOptimizerWebInterface:
         df = pd.read_csv(csv_path, sep=';')
         return df
     
-    def test_optimizer_basics(self, optimizer_params, reference_results):
+    def test_optimizer_basics(self, optimizer_params):
         """Test that optimizer: 
         - runs to completion.
         - outputs correct shape and columns.
@@ -123,6 +123,7 @@ class TestOptimizerWebInterface:
         # Chamber pressure should remain at setpoint (allowing small tolerance)
         assert np.all(np.abs(P_chamber_mTorr - P_setpoint_mTorr) < 1.0), \
             f"Chamber pressure deviated from setpoint: range={P_chamber_mTorr.min():.1f}-{P_chamber_mTorr.max():.1f} mTorr"
+
     def test_optimizer_matches_reference_trajectory(self, optimizer_params, reference_results):
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
         
