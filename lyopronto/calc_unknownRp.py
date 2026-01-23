@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from warnings import warn
 import scipy.optimize as sp
 import numpy as np
 import math
@@ -69,7 +70,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
         Rp = functions.Rp_finder(Tsub,Lpr0,Lck,Pch,Tbot_exp[iStep])    #     Product resistance in cm^2-Torr-hr/g
         dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
         if dmdt<0:
-            print(f"No sublimation. t={t:1.2f}, Tsh={Tsh:2.1f}, Tsub={Tsub:3.1f}, dmdt={dmdt:1.2e}, Rp={Rp:1.2f}, Lck={Lck:1.2f}")
+            warn(f"No sublimation. t={t:1.2f}, Tsh={Tsh:2.1f}, Tsub={Tsub:3.1f}, dmdt={dmdt:1.2e}, Rp={Rp:1.2f}, Lck={Lck:1.2f}")
             dmdt = 0.0
             Rp = 0.0
 
@@ -91,10 +92,12 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
         percent_dried = Lck/Lpr0*100   # Percent dried
 
         if Lck > Lpr0:
+            warn(f"Reached end of drying at t={t:1.2f} hr, computed drying progress {percent_dried:1.1f}%.\n\
+                  Check temperature profile and drying time: inputs may be incorrect for given experiment.")
             break
     
         if len(np.where(Tshelf['t_setpt']>t)[0])==0:
-            print("Total time exceeded. Drying incomplete")    # Shelf temperature set point time exceeded, drying not done
+            warn("Total shelf temperature setpoint time exceeded; not all temperature data used.")    # Shelf temperature set point time exceeded, drying not done
             break
         else:
             i = np.where(Tshelf['t_setpt']>t)[0][0]
@@ -105,7 +108,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
                 Tsh = max(Tshelf['setpt'][i-1] - Tshelf['ramp_rate']*constant.hr_To_min*(t-Tshelf['t_setpt'][i-1]),Tshelf['setpt'][i])
 
         if len(np.where(Pchamber['t_setpt']>t)[0])==0:
-            print("Total time exceeded. Drying incomplete")    # Shelf tempertaure set point time exceeded, drying not done
+            warn("Total chamber pressure setpoint time exceeded; not all temperature data used.")    # Shelf temperature set point time exceeded, drying not done
             break
         else:
             j = np.where(Pchamber['t_setpt']>t)[0][0]

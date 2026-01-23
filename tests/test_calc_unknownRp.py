@@ -177,6 +177,73 @@ class TestCalcUnknownRpEdgeCases:
         # Check pressure in output (should be 100 mTorr)
         assert np.allclose(output[:, 4], 100.0, atol=1.0), "Pch should be ~100 mTorr"
         assert_physically_reasonable_output(output)
+
+    def test_infeasible(self, standard_inputs_nodt):
+        """Test with input temperatures above shelf temperature."""
+        
+        time = np.array([0.0, 1.0, 2.0, 3.0])
+        # initial temperatures above shelf temp (-35C)
+        Tbot_exp = np.array([-30.0, -38.0, -32.0, -25.0])
+        
+        with pytest.warns(UserWarning, match="No sublimation"):
+            output, product_res = calc_unknownRp.dry(*standard_inputs_nodt,
+                time, Tbot_exp
+            )
+
+        # initial temperatures below, but later tempratures above
+        Tbot_exp = np.array([-40.0, -25.0, -20.0, -15.0])
+
+        with pytest.warns(UserWarning, match="No sublimation"):
+            output, product_res = calc_unknownRp.dry(*standard_inputs_nodt,
+                time, Tbot_exp
+            )
+
+    def test_too_long_time_series(self, standard_inputs_nodt):
+        """Test with long time series: reaches end of drying before data exhausted."""
+        time = np.linspace(0, 50, 10001)  # 10001 points over long time
+        Tbot_exp = -40.0 + 0.005 * time  # Gradual increase
+        
+        with pytest.warns(UserWarning, match="Reached end of drying"):
+            output, product_res = calc_unknownRp.dry(*standard_inputs_nodt,
+                time, Tbot_exp
+            )
+        
+        assert output is not None
+        assert len(output) < len(Tbot_exp)+1, "Should not have reached end of time series"
+        
+        assert_physically_reasonable_output(output)
+
+    def test_short_shelf_temp_schedule(self, standard_inputs_nodt, temperature_data):
+        """Test with shelf temperature schedule shorter than temperature data."""
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
+        
+        # Short shelf temperature schedule
+        Tshelf['setpt'] = [-20.0]
+        Tshelf['dt_setpt'] = [60.0]  # 1 hour
+        
+        with pytest.warns(UserWarning, match="time exceeded"):
+            output, product_res = calc_unknownRp.dry(
+                vial, product, ht, Pchamber, Tshelf, *temperature_data
+            )
+        
+        assert output is not None
+        assert_physically_reasonable_output(output)
+        
+    def test_short_pressure_schedule(self, standard_inputs_nodt, temperature_data):
+        """Test with chamber pressure schedule shorter than temperature data."""
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
+        
+        # Short chamber pressure schedule
+        Pchamber['setpt'] = [0.10]
+        Pchamber['dt_setpt'] = [60.0]  # 1 hour
+        
+        with pytest.warns(UserWarning, match="time exceeded"):
+            output, product_res = calc_unknownRp.dry(
+                vial, product, ht, Pchamber, Tshelf, *temperature_data
+            )
+        
+        assert output is not None
+        assert_physically_reasonable_output(output)
     
     def test_different_product_concentration(self, standard_inputs_nodt, temperature_data):
         """Test with different solute concentration."""
@@ -191,19 +258,19 @@ class TestCalcUnknownRpEdgeCases:
         # Higher concentration means less ice to sublimate, different drying time
         assert_physically_reasonable_output(output)
 
-    def test_unknown_rp_condition_changes(self, timevarying_inputs_nodt, temperature_data):
+    def test_unknown_rp_condition_changes(self, standard_inputs_nodt, temperature_data):
         """Test shelf temperature and chamber pressure follow varying schedules."""
-        vial, product, ht, _, __ = timevarying_inputs_nodt
+        vial, product, ht, _, __ = standard_inputs_nodt
     
         Tshelf = {
             'init': -35.0,
-            'setpt': [-20.0, -10.0],  # Two ramp stages
+            'setpt': [-10.0, -20.0],  # Two ramp stages
             'dt_setpt': [120.0, 1200.0],  # 2 + 20 hours in [min]
             'ramp_rate': 0.5  # deg/min
         }
         
         Pchamber = {
-            'setpt': [0.060, 0.080, 0.100],  # Three pressure stages
+            'setpt': [0.100, 0.080, 0.100],  # Three pressure stages
             'dt_setpt': [60.0, 120.0, 120.0],  # Time at each stage [min]
             'ramp_rate': 0.5  # Ramp rate [Torr/min]
         }

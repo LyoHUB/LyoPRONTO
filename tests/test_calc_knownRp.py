@@ -1,7 +1,7 @@
 """Integration tests for primary drying calculators."""
 import pytest
 import numpy as np
-from lyopronto import calc_knownRp, calc_unknownRp
+from lyopronto import calc_knownRp
 from .utils import assert_physically_reasonable_output
 
 
