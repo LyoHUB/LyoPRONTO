@@ -9,21 +9,12 @@ import numpy as np
 import lyopronto.design_space as design_space
 
 @pytest.fixture
-def physical_props():
+def physical_props(standard_vial, standard_product, standard_ht):
     """Standard inputs for design space tests."""
-    vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-    product = {
-        'T_pr_crit': -20.0,
-        'cSolid': 0.05,
-        'R0': 1.4,
-        'A1': 16.0,
-        'A2': 0.0
-    }
-    ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
     eq_cap = {'a': -0.182, 'b': 11.7}
     nVial = 398
     dt = 0.01
-    return vial, product, ht, eq_cap, nVial, dt
+    return standard_vial, standard_product, standard_ht, eq_cap, nVial, dt
 
 @pytest.fixture
 def design_space_1T1P(physical_props):
@@ -40,7 +31,74 @@ def design_space_1T1P(physical_props):
     }
     return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
 
-#TODO: make fixtures with multiple Tshelf and Pchamber for more complex tests
+@pytest.fixture
+def design_space_1T3P(physical_props):
+    """Design space inputs for 1 Tshelf and 3 Pchamber."""
+    vial, product, ht, eq_cap, nVial, dt = physical_props
+    Tshelf = {
+        'init': -35.0,
+        'setpt': np.array([0.0]),
+        'ramp_rate': 1.0
+    }
+    Pchamber = {
+        'setpt': np.array([0.05, 0.10, 0.15]),
+    }
+    return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+
+@pytest.fixture
+def design_space_3T1P(physical_props):
+    """Design space inputs for 3 Tshelf and 1 Pchamber."""
+    vial, product, ht, eq_cap, nVial, dt = physical_props
+    Tshelf = {
+        'init': -35.0,
+        'setpt': np.array([-20, -10, 0.0]),
+        'ramp_rate': 1.0
+    }
+    Pchamber = {
+        'setpt': np.array([0.10]),
+    }
+    return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+
+@pytest.fixture
+def design_space_3T3P(physical_props):
+    """Design space inputs for 3 Tshelf and 3 Pchamber."""
+    vial, product, ht, eq_cap, nVial, dt = physical_props
+    Tshelf = {
+        'init': -35.0,
+        'setpt': np.array([-20, -10, 0.0]),
+        'ramp_rate': 1.0
+    }
+    Pchamber = {
+        'setpt': np.array([0.05, 0.10, 0.15]),
+    }
+    return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+
+def check_shape(output, Pchamber, Tshelf):
+    """Helper function to check output shapes."""
+    shelf_results, product_results, eq_cap_results = output
+    
+    n_Tsh = len(Tshelf['setpt'])
+    n_Pch = len(Pchamber['setpt'])
+    
+    # Shelf results: 5 components, each with shape (n_Tsh, n_Pch)
+    assert len(shelf_results) == 5
+    # for each of (Tmax, drying_time, avg_flux, max_flux, end_flux),
+    # there should be a value for each combination (n_Tsh x n_Pch)
+    for component in shelf_results:
+        assert component.shape == (n_Tsh, n_Pch)
+    
+    # Product results: 2 values for each Pchamber
+    assert len(product_results) == 5
+    # for each of (T_product, drying_time, avg_flux, min_flux, end_flux),
+    # 2 values
+    for component in product_results:
+        assert component.shape == (2,)  # 2 T_product values x n_Pch
+    
+    # Equipment capability results: 1 value per Pchamber
+    assert len(eq_cap_results) == 3
+    # for each of (Tmax, drying_time, flux), 1 value per Pch
+    for component in eq_cap_results:
+        assert component.shape == (n_Pch,)  # n_Pch
 
 class TestDesignSpaceBasic:
     """Basic functionality tests for design space generation."""
@@ -51,31 +109,9 @@ class TestDesignSpaceBasic:
         # Use conservative parameters that avoid edge cases
         
         # Should complete without errors
-        shelf_results, product_results, eq_cap_results = design_space.dry(*design_space_1T1P)
-        
-        # Basic validation
-        assert shelf_results is not None
-        assert product_results is not None
-        assert eq_cap_results is not None
-    
-        # Shelf results: [T_max, drying_time, avg_flux, max_flux, end_flux]
-        assert len(shelf_results) == 5
-        assert shelf_results[0].shape == (1, 1)  # T_max for 1 Tshelf x 1 Pch
-        assert shelf_results[1].shape == (1, 1)  # drying_time
-        assert shelf_results[2].shape == (1, 1)  # avg_flux
-        assert shelf_results[3].shape == (1, 1)  # max_flux
-        assert shelf_results[4].shape == (1, 1)  # end_flux
-        
-        # Product results: [T_product (2 values), drying_time, avg_flux, min_flux, end_flux]
-        assert len(product_results) == 5
-        assert product_results[0].shape == (2,)  # T_product for first and last Pch
-        assert product_results[1].shape == (2,)  # drying_time
-        
-        # Equipment capability results: [T_max, drying_time, flux]
-        assert len(eq_cap_results) == 3
-        assert eq_cap_results[0].shape == (1,)  # T_max for 1 Pch
-        assert eq_cap_results[1].shape == (1,)  # drying_time
-        assert eq_cap_results[2].shape == (1,)  # flux
+        output = design_space.dry(*design_space_1T1P)
+        shelf_results, product_results, eq_cap_results = output
+        check_shape(output, design_space_1T1P[3], design_space_1T1P[4])
         
         # Extract values
         T_max_shelf = shelf_results[0][0, 0]
@@ -103,6 +139,24 @@ class TestDesignSpaceBasic:
         assert T_max_eq <= 50.0, "Equipment max temp too high"
         assert drying_time_eq > 0, "Equipment drying time must be positive"
         assert flux_eq > 0, "Equipment flux must be positive"
+
+    def test_design_space_shape_3T3P(self, design_space_3T3P):
+        """Test that design space outputs have correct shapes for multiple Tshelf and Pchamber."""
+        output = design_space.dry(*design_space_3T3P)
+        
+        check_shape(output, design_space_3T3P[3], design_space_3T3P[4])
+
+    def test_design_space_shape_1T3P(self, design_space_1T3P):
+        """Test that design space outputs have correct shapes for one Tshelf, multiple Pchamber."""
+        output = design_space.dry(*design_space_1T3P)
+
+        check_shape(output, design_space_1T3P[3], design_space_1T3P[4])
+        
+    def test_design_space_shape_3T1P(self, design_space_3T1P):
+        """Test that design space outputs have correct shapes for one Tshelf, multiple Pchamber."""
+        output = design_space.dry(*design_space_3T1P)
+        # Shelf results: 5 components, each with shape (3, 1)
+        check_shape(output, design_space_3T1P[3], design_space_3T1P[4])
     
     def test_constraint(self, design_space_1T1P):
         """Test that each piece of results matches constraints."""
@@ -125,37 +179,93 @@ class TestDesignSpaceBasic:
         assert abs(flux_eq_calculated - flux_eq_expected) / flux_eq_expected < 0.01, \
             f"Equipment flux mismatch: {flux_eq_calculated} vs {flux_eq_expected}"
 
+class TestDesignSpaceEdgeCases:
+    def test_design_space_negative_sublimation(self, design_space_1T1P):
+        """Test design space with conditions that could lead to negative sublimation.  """
+        # Set very low shelf temperature to potentially trigger dmdt < 0
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        Tshelf['init'] = -60.0
+        Tshelf['setpt'] = [-55.0]
+        
+        # Expect a warning about infeasible sublimation
+        with pytest.warns(UserWarning, match="sublimation"):
+            output = design_space.dry( vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        
+        # Calculation completes anyway
+        assert len(output) == 3
+        assert output[0].shape[0] == 5  # [T_max, drying_time, sub_flux_avg, sub_flux_max, sub_flux_end]
+        # But should have some NaNs due to infeasibility
+        assert np.any(np.isnan(output[0])), "Output should contain NaNs for infeasible conditions"
+
+    def test_design_space_shelf_ramp_down(self, design_space_1T1P):
+        """Test design space with ramp-down in shelf temperature.  """
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        # Set ramp down in shelf temperature
+        Tshelf['init'] = -10.0
+        Tshelf['setpt'] = [-20.0]
+        
+        output = design_space.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        check_shape(output, Pchamber, Tshelf)
+
+    def test_design_space_no_sub(self, design_space_1T1P):
+        """Test design space with no sublimation at initial shelf temperature.  """
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        # Set ramp down in shelf temperature
+        Tshelf['init'] = -60.0
+        Tshelf['setpt'] = [-30.0]
+        
+        with pytest.warns(UserWarning, match="too low for sublimation"):
+            output = design_space.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        check_shape(output, Pchamber, Tshelf)
+
+    #TODO: assess whether this should be erroring, not just warning
+    def test_design_space_fast_completion_Tpr(self, design_space_1T1P):
+        """Test design space with conditions leading to very fast drying.  """
+        # Use high temperature and large timestep for fast drying
+        vial, product, ht, Pchamber, Tshelf, _, eq_cap, nVial = design_space_1T1P
+        Tshelf['init'] = 0.0
+        Tshelf['setpt'] = [0.0]
+        product['T_pr_crit'] = -1.0
+        dt = 1.0  # Very large timestep
+
+        with pytest.warns(UserWarning, match="At Pch"):
+            output = design_space.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        check_shape(output, Pchamber, Tshelf)
+
+    def test_design_space_fast_completion_Tsh(self, design_space_1T1P):
+        """Test design space with conditions leading to very fast drying.  """
+        # Use high temperature and large timestep for fast drying
+        vial, product, ht, Pchamber, Tshelf, _, eq_cap, nVial = design_space_1T1P
+        Pchamber['setpt'] = [0.01]
+        eq_cap['a'] = 0
+        Tshelf['init'] = 30.0
+        Tshelf['setpt'] = [30.0]
+        product['T_pr_crit'] = -10.0
+        dt = 100.0  # Very large timestep
+
+        # Check for both warnings, since I couldn't trigger the Tsh one without Pch one
+        with pytest.warns(UserWarning, match="At Tsh"):
+            with pytest.warns(UserWarning, match="At Pch"):
+                output = design_space.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        check_shape(output, Pchamber, Tshelf)
+
+    def test_design_space_subzero_eqcap(self, design_space_1T1P):
+        """Test design space with equipment capability leading to subzero sublimation.  """
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        Pchamber['setpt'] = [0.001] # Pch such that a + b*Pch < 0
+
+        with pytest.warns(UserWarning, match="negative"):
+            output = design_space.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        
+        check_shape(output, Pchamber, Tshelf)
 
 class TestDesignSpaceComparison:
     """Comparative tests between different design space modes."""
     
-    def test_shelf_vs_product_temperature_modes(self):
+    def test_shelf_vs_product_temperature_modes(self, design_space_1T1P):
         """Test that shelf and product temperature modes give different results."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {
-            'T_pr_crit': -5.0,
-            'cSolid': 0.05,
-            'R0': 1.4,
-            'A1': 16.0,
-            'A2': 0.0
-        }
-        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
-        
-        Tshelf = {
-            'init': -35.0,
-            'setpt': np.array([0.0]),
-            'ramp_rate': 1.0
-        }
-        Pchamber = {
-            'setpt': np.array([0.15]),
-            'ramp_rate': 0.5
-        }
-        eq_cap = {'a': -0.182, 'b': 11.7}
-        nVial = 398
-        dt = 0.01
-        
         shelf_results, product_results, _ = design_space.dry(
-            vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+            *design_space_1T1P
         )
         
         # Shelf temperature mode (fixed Tshelf)
@@ -169,33 +279,10 @@ class TestDesignSpaceComparison:
         assert drying_time_shelf != drying_time_product, \
             "Shelf and product modes should give different drying times"
     
-    def test_equipment_capability_fastest(self):
+    def test_equipment_capability_fastest(self, design_space_1T1P):
         """Test that equipment capability gives fastest drying (if feasible)."""
-        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
-        product = {
-            'T_pr_crit': -5.0,
-            'cSolid': 0.05,
-            'R0': 1.4,
-            'A1': 16.0,
-            'A2': 0.0
-        }
-        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
-        
-        Tshelf = {
-            'init': -35.0,
-            'setpt': np.array([0.0]),
-            'ramp_rate': 1.0
-        }
-        Pchamber = {
-            'setpt': np.array([0.15]),
-            'ramp_rate': 0.5
-        }
-        eq_cap = {'a': -0.182, 'b': 11.7}
-        nVial = 398
-        dt = 0.01
-        
         shelf_results, product_results, eq_cap_results = design_space.dry(
-            vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+            *design_space_1T1P
         )
         
         drying_time_eq = eq_cap_results[1][0]

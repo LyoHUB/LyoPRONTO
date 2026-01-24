@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from warnings import warn
 import scipy.optimize as sp
 import numpy as np
 import math
@@ -44,7 +45,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
             if functions.Vapor_pressure(Tsh_setpt) < Pch:
                 # TODO: decide about how to gracefully exit
                 # For now, just set outputs to NaN and continue
-                print(f"At Tshelf={Tsh_setpt} and Pch={Pch}, sublimation is not feasible (vapor pressure < chamber pressure).")
+                warn(f"At Tshelf={Tsh_setpt} and Pch={Pch}, sublimation is not feasible (vapor pressure < chamber pressure).")
                 T_max[i_Tsh,i_Pch] = np.nan
                 drying_time[i_Tsh,i_Pch] = np.nan
                 sub_flux_avg[i_Tsh,i_Pch] = np.nan
@@ -83,7 +84,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                 Tsub = sp.fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
                 dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
                 if dmdt<0:
-                    print(f"At t={t}hr, shelf temperature Tsh={Tsh} is too low for sublimation.")
+                    warn(f"At t={t}hr, shelf temperature Tsh={Tsh} is too low for sublimation.")
                     dmdt = 0.0
                 Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
 
@@ -122,8 +123,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
             T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1])    # Maximum product temperature in C
             drying_time[i_Tsh,i_Pch] = t    # Total drying time in hr
             # TODO: consider whether to make this error rather than return NaN
-            if output_saved.shape[0] == 1:
-                print(f"At Tsh={Tsh} and Pch={Pch}, drying completed in single timestep: check inputs.")
+            if output_saved.shape[0] <= 2:
+                warn(f"At Tsh={Tsh} and Pch={Pch}, drying completed in single timestep: check inputs.")
                 sub_flux_avg[i_Tsh,i_Pch] = np.nan
                 sub_flux_max[i_Tsh,i_Pch] = np.nan
                 sub_flux_end[i_Tsh,i_Pch] = np.nan
@@ -173,7 +174,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
             # Update record as functions of the cycle time
             if (iStep==0):
-                output_saved =np.array([[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]])
+                output_saved = np.array([[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]])
             else:
                 output_saved = np.append(output_saved, [[t, dmdt/(vial['Ap']*constant.cm_To_m**2)]],axis=0)
         
@@ -192,8 +193,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
 
         drying_time_pr[j] = t    # Total drying time in hr
         # TODO: consider whether this should error rather than return NaN
-        if output_saved.shape[0] == 1:
-            print(f"At Pch={Pch} and critical temp {product['T_pr_crit']}, drying completed in single timestep: check inputs.")
+        if output_saved.shape[0] <= 2:
+            warn(f"At Pch={Pch} and critical temp {product['T_pr_crit']}, drying completed in single timestep: check inputs.")
             sub_flux_avg_pr[j] = np.nan
             sub_flux_min_pr[j] = np.nan
             sub_flux_end_pr[j] = np.nan
@@ -211,6 +212,10 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     ############  Equipment Capability ##########
 
     dmdt_eq_cap = eq_cap['a'] + eq_cap['b']*np.array(Pchamber['setpt'])    # Sublimation rate in kg/hr
+    if np.any(dmdt_eq_cap < 0):
+        warn("Equipment capability sublimation rate is negative for some chamber pressures; setting to nan.")
+        # dmdt_eq_cap = np.maximum(dmdt_eq_cap, 0.0)
+        dmdt_eq_cap[dmdt_eq_cap <=0.0] = np.nan
     sub_flux_eq_cap = dmdt_eq_cap/nVial/(vial['Ap']*constant.cm_To_m**2)    # Sublimation flux in kg/hr/m^2
     
     drying_time_eq_cap = Lpr0/((dmdt_eq_cap/nVial*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute))    # Drying time in hr
