@@ -8,7 +8,7 @@ Tests based on working example_optimizer.py structure.
 import pytest
 import numpy as np
 from lyopronto import opt_Pch, constant
-from .utils import assert_physically_reasonable_output, assert_complete_drying
+from .utils import assert_physically_reasonable_output, assert_complete_drying, assert_incomplete_drying
 
 
 # Test constants for numerical comparison
@@ -170,7 +170,7 @@ class TestOptPchEdgeCases:
         with pytest.warns(UserWarning, match="Drying incomplete"):
             output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output[-1,6] < 100, "Incomplete drying"
+        assert_incomplete_drying(output)
 
         assert_physically_reasonable_output(output)
     
@@ -237,7 +237,7 @@ class TestOptPchEdgeCases:
         with pytest.warns(UserWarning, match="Optimization failed"):
             output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output[-1, 6] < 100.0, "Should NOT complete drying"
+        assert_incomplete_drying(output)
         # All pressures should be >= 100 mTorr
         assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
 

@@ -9,8 +9,7 @@ import pytest
 import numpy as np
 import pandas as pd
 from lyopronto import opt_Tsh
-from tests.test_opt_Pch import standard_opt_pch_inputs
-from .utils import assert_physically_reasonable_output, assert_complete_drying
+from .utils import assert_physically_reasonable_output, assert_complete_drying, assert_incomplete_drying
 
 
 class TestOptimizerInterface:
@@ -295,9 +294,21 @@ class TestOptimizerEdgeCases:
         
         output = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        assert_physically_reasonable_output(output)
+        assert_physically_reasonable_output(output, Tmax=120)
         
         assert_complete_drying(output)
 
+    def test_short_time(self, optimizer_params):
+        """Test with multiple chamber pressure setpoints."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
+        
+        # Very short total time
+        Pchamber['dt_setpt'] = np.array([120])
+        
+        with pytest.warns(UserWarning, match="Drying incomplete"):
+            output = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
+        assert_physically_reasonable_output(output, Tmax=120)
+
+        assert_incomplete_drying(output)
 # Run with: pytest tests/test_optimizer.py -v

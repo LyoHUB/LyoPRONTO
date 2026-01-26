@@ -313,7 +313,6 @@ class TestPhysicalConsistency:
         assert np.isclose(Q_sublimation, Q_conduction, rtol=1e-6)
     
 class TestIneqConstraints:
-    """Tests to cover missing lines in functions.py (95% -> 100%)."""
     
     def test_ineq_constraints_all_branches(self):
         """Test Ineq_Constraints function with various inputs.

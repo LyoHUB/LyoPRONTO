@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from lyopronto import calc_knownRp, constant
-from .utils import assert_physically_reasonable_output, assert_complete_drying
+from .utils import assert_physically_reasonable_output, assert_complete_drying, assert_incomplete_drying
 
 @pytest.fixture
 def knownRp_standard_setup(standard_setup):
@@ -170,7 +170,7 @@ class TestEdgeCases:
         with pytest.warns(UserWarning, match="time"):
             output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         assert_physically_reasonable_output(output)
-        assert output[-1, 6] < 100.0
+        assert_incomplete_drying(output)
 
         Tshelf = {'init': -35.0, 'setpt': [10, 20.0], 
                            'dt_setpt': [10.0], 'ramp_rate': 0.5}
@@ -178,7 +178,7 @@ class TestEdgeCases:
         with pytest.warns(UserWarning, match="time"):
             output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         assert_physically_reasonable_output(output)
-        assert output[-1, 6] < 100.0
+        assert_incomplete_drying(output)
 
 
         Tshelf = {'init': -35.0, 'setpt': [20.0], 
@@ -188,14 +188,7 @@ class TestEdgeCases:
         with pytest.warns(UserWarning, match="time"):
             output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         assert_physically_reasonable_output(output)
-        assert output[-1, 6] < 100.0
-        
-        # Should still produce valid output
-        assert output.shape[0] > 0
-        # Check that drying is incomplete
-        assert output[-1, 6] < 100.0
-
-        assert_physically_reasonable_output(output)
+        assert_incomplete_drying(output)
 
     def test_very_low_shelf_temperature(self, knownRp_standard_setup):
         """Test with very low shelf temperature (should not dry at all). """

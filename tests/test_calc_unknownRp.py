@@ -13,7 +13,7 @@ import scipy.optimize as sp
 
 from lyopronto import calc_unknownRp
 from lyopronto.functions import Lpr0_FUN, Rp_FUN
-from .utils import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output, assert_incomplete_drying
 
 
 # Test constants for dried percent validation (column 6 is percentage 0-100)
@@ -309,6 +309,9 @@ class TestCalcUnknownRpValidation:
         
         # Run calc_unknownRp
         output, product_res = calc_unknownRp.dry(*standard_inputs_nodt, *temperature_data)
+
+        assert_physically_reasonable_output(output)
+        assert_incomplete_drying(output)
         
         # Estimate parameters
         params, _ = sp.curve_fit(
@@ -329,7 +332,3 @@ class TestCalcUnknownRpValidation:
         assert 0 <= A1 < 50, f"A1 = {A1} outside expected range [0, 50)"
         assert 0 <= A2 < 5, f"A2 = {A2} outside expected range [0, 5)"
         
-        # Simulation should reach reasonable drying progress, in 0 - 100 range
-        final_dried_percent = output[-1, 6]
-        assert 0 < final_dried_percent <= 100, \
-            f"Final dried {final_dried_percent:.4f} outside expected range [0, 100]"

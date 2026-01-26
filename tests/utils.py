@@ -69,10 +69,20 @@ def assert_physically_reasonable_output(output, Tmax=60):
 
 def assert_complete_drying(output):
     """
-    Assert that drying completed in the simulation output.
+    Assert that drying completed for given simulation output.
     
     Args:
         output: numpy array with columns [time, Tsub, Tbot, Tsh, Pch_mTorr, flux, frac_dried]
     """
     final_percent_dried = output[-1, 6]
     assert final_percent_dried >= 99.0, f"Drying did not complete, reached only {final_percent_dried:.1f}%"
+
+def assert_incomplete_drying(output):
+    """
+    Assert that drying did not complete for given simulation output.
+    
+    Args:
+        output: numpy array with columns [time, Tsub, Tbot, Tsh, Pch_mTorr, flux, frac_dried]
+    """
+    final_percent_dried = output[-1, 6]
+    assert final_percent_dried < 99.0, f"Drying unexpectedly completed, reached {final_percent_dried:.1f}%"
