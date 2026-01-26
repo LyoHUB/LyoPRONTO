@@ -9,6 +9,7 @@ import pytest
 import numpy as np
 import pandas as pd
 from lyopronto import opt_Tsh
+from tests.test_opt_Pch import standard_opt_pch_inputs
 from .utils import assert_physically_reasonable_output, assert_complete_drying
 
 
@@ -284,11 +285,11 @@ class TestOptimizerEdgeCases:
         assert results_high[-1, 0] < results_low[-1, 0], \
             "Higher critical temperature should result in faster drying"
 
-    def test_multi_chamber_pressure_setpoints(self, standard_opt_pch_inputs):
+    def test_multi_chamber_pressure_setpoints(self, optimizer_params):
         """Test with multiple chamber pressure setpoints."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
         
-        # Two setpoints
+        # Three setpoints
         Pchamber['setpt'] = np.array([0.1, 0.08, 0.12])
         Pchamber['dt_setpt'] = np.array([120, 120, 1200])
         

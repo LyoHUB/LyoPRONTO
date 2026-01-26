@@ -331,11 +331,9 @@ class TestRegression:
         assert np.isclose(output[:,6], output_ref[:,6], atol=0.1).all() 
 
     # This is partially redundant with above, but is one more sanity check
-    def test_flux_profile_non_monotonic(self, web_interface_inputs):
+    def test_flux_profile_non_monotonic(self, reference_case):
         """Test that flux profile shows expected non-monotonic behavior."""
-        vial, product, ht, Pchamber, Tshelf, dt = web_interface_inputs
-        
-        output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        output = calc_knownRp.dry(*reference_case)
         
         flux = output[:, 5]
         
