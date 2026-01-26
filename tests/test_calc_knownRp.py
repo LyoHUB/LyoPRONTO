@@ -173,6 +173,26 @@ class TestEdgeCases:
         
         with pytest.warns(UserWarning, match="time"):
             output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        assert_physically_reasonable_output(output)
+        assert output[-1, 6] < 100.0
+
+        Tshelf = {'init': -35.0, 'setpt': [10, 20.0], 
+                           'dt_setpt': [10.0], 'ramp_rate': 0.5}
+        Pchamber['dt_setpt'] = [10.0]
+        with pytest.warns(UserWarning, match="time"):
+            output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        assert_physically_reasonable_output(output)
+        assert output[-1, 6] < 100.0
+
+
+        Tshelf = {'init': -35.0, 'setpt': [20.0], 
+                           'dt_setpt': [10.0], 'ramp_rate': 0.5}
+        Pchamber['setpt'] = [.1, .12]
+        Pchamber['dt_setpt'] = [10.0]
+        with pytest.warns(UserWarning, match="time"):
+            output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        assert_physically_reasonable_output(output)
+        assert output[-1, 6] < 100.0
         
         # Should still produce valid output
         assert output.shape[0] > 0
@@ -315,3 +335,29 @@ class TestRegression:
         assert np.isclose(output[:,0:6], output_ref[:,0:6], rtol=0.05).all()
         # This one is more finicky, use absolute tolerance of 0.1% dried
         assert np.isclose(output[:,6], output_ref[:,6], atol=0.1).all() 
+
+    # This is partially redundant with above, but is one more sanity check
+    def test_flux_profile_non_monotonic(self, web_interface_inputs):
+        """Test that flux profile shows expected non-monotonic behavior."""
+        vial, product, ht, Pchamber, Tshelf, dt = web_interface_inputs
+        
+        output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        
+        flux = output[:, 5]
+        
+        # Flux should be non-negative
+        assert np.all(flux >= 0), "Negative flux detected"
+        
+        # Find maximum flux
+        max_flux_idx = np.argmax(flux)
+        
+        # Maximum should not be at the very beginning or end
+        assert max_flux_idx > len(flux) * 0.05, \
+            "Max flux too early - should increase initially"
+        assert max_flux_idx < len(flux) * 0.95, \
+            "Max flux too late - should decrease eventually"
+        
+        # After peak, flux should generally decrease (late stage)
+        late_stage = flux[int(len(flux)*0.8):]
+        assert np.all(np.diff(late_stage) <= 0.0), \
+            "Flux should decrease in late stage"

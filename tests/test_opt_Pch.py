@@ -198,7 +198,7 @@ class TestOptPchEdgeCases:
         assert output[-1, 0] > 1.0, "High resistance should take longer to dry"
     
     def test_multi_shelf_temperature_setpoints(self, standard_opt_pch_inputs):
-        """Test with two shelf temperature setpoints."""
+        """Test with multiple shelf temperature setpoints."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
         
         # Two setpoints
@@ -301,3 +301,8 @@ class TestOptPchEdgeCases:
         assert late_Pch >= early_Pch, \
             f"Late pressure ({late_Pch:.1f}) should be >= early ({early_Pch:.1f})"
     
+class TestOptPchReference:
+    @pytest.mark.skip(reason="Reference test not yet implemented")
+    def test_opt_pch_reference(self):
+        # TODO test against an example case in test_data, to be created
+        pass

@@ -283,5 +283,19 @@ class TestOptimizerEdgeCases:
         assert results_high[-1, 0] < results_low[-1, 0], \
             "Higher critical temperature should result in faster drying"
 
+    def test_multi_chamber_pressure_setpoints(self, standard_opt_pch_inputs):
+        """Test with multiple chamber pressure setpoints."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
+        
+        # Two setpoints
+        Pchamber['setpt'] = np.array([0.1, 0.08, 0.12])
+        Pchamber['dt_setpt'] = np.array([120, 120, 1200])
+        
+        output = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+
+        assert_physically_reasonable_output(output)
+        
+        assert output[-1, 6] > 99.0, "Should complete drying"
+
 
 # Run with: pytest tests/test_optimizer.py -v
