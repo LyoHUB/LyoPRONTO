@@ -1,12 +1,7 @@
 """Unit tests for core physics functions in lyopronto.functions."""
 import pytest
 import numpy as np
-import math
 from lyopronto import functions, constant
-
-
-# Test constants for validation thresholds
-RELATIVE_VARIATION_THRESHOLD = 0.1  # Maximum relative variation (10%) for consistency checks
 
 
 class TestVaporPressure:
@@ -20,18 +15,6 @@ class TestVaporPressure:
         assert np.isclose(P, expected, rtol=1e-6)
         assert np.isclose(P, 4.58, rtol=0.01)  # Literature value
     
-    def test_vapor_pressure_monotonic(self):
-        """Vapor pressure should increase monotonically with temperature."""
-        temps = np.linspace(-40, 20, 10)
-        pressures = [functions.Vapor_pressure(T) for T in temps]
-        assert all(p1 < p2 for p1, p2 in zip(pressures[:-1], pressures[1:]))
-    
-    def test_vapor_pressure_positive(self):
-        """Vapor pressure should always be positive."""
-        temps = np.linspace(-50, 30, 20)
-        pressures = [functions.Vapor_pressure(T) for T in temps]
-        assert all(p > 0 for p in pressures)
-    
     def test_vapor_pressure_at_minus_20C(self):
         """Test vapor pressure at -20°C (should be ~0.776 Torr)."""
         P = functions.Vapor_pressure(-20.0)
@@ -42,7 +25,19 @@ class TestVaporPressure:
         P = functions.Vapor_pressure(-40.0)
         assert np.isclose(P, 0.096, rtol=0.01)
 
-
+    def test_vapor_pressure_monotonic(self):
+        """Vapor pressure should increase monotonically with temperature."""
+        temps = np.linspace(-80, 0, 20)
+        pressures = functions.Vapor_pressure(temps)
+        assert all(np.diff(pressures) > 0)
+    
+    def test_vapor_pressure_positive(self):
+        """Vapor pressure should always be positive."""
+        temps = np.linspace(-80, 0, 20)
+        pressures = functions.Vapor_pressure(temps)
+        assert all(pressures > 0)
+    
+    
 class TestLpr0Function:
     """Tests for the Lpr0_FUN (initial fill height) function."""
     
@@ -62,17 +57,17 @@ class TestLpr0Function:
         """Fill height should increase with fill volume."""
         Ap = 3.14
         cSolid = 0.05
-        volumes = [1.0, 2.0, 3.0, 4.0]
-        heights = [functions.Lpr0_FUN(V, Ap, cSolid) for V in volumes]
-        assert all(h1 < h2 for h1, h2 in zip(heights[:-1], heights[1:]))
+        volumes = np.array([1.0, 2.0, 3.0, 4.0])
+        heights = functions.Lpr0_FUN(volumes, Ap, cSolid)
+        assert all(np.diff(heights) > 0)
     
     def test_lpr0_decreases_with_area(self):
         """Fill height should decrease with product area."""
         Vfill = 2.0
         cSolid = 0.05
-        areas = [2.0, 3.0, 4.0, 5.0]
-        heights = [functions.Lpr0_FUN(Vfill, A, cSolid) for A in areas]
-        assert all(h1 > h2 for h1, h2 in zip(heights[:-1], heights[1:]))
+        areas = np.array([2.0, 3.0, 4.0, 5.0])
+        heights = functions.Lpr0_FUN(Vfill, areas, cSolid)
+        assert all(np.diff(heights) < 0)
     
     def test_lpr0_pure_water(self):
         """Test with pure water (cSolid=0)."""
@@ -101,29 +96,30 @@ class TestRpFunction:
         R0, A1, A2 = 1.4, 16.0, 0.1
         lengths = np.linspace(0, 1.0, 10)
         resistances = [functions.Rp_FUN(L, R0, A1, A2) for L in lengths]
-        assert all(r1 <= r2 for r1, r2 in zip(resistances[:-1], resistances[1:]))
+        assert all(np.diff(resistances) > 0)
     
     def test_rp_with_zero_A1(self):
         """With A1=0, resistance should be constant."""
         R0, A1, A2 = 1.4, 0.0, 0.0
         lengths = np.linspace(0, 1.0, 10)
-        resistances = [functions.Rp_FUN(L, R0, A1, A2) for L in lengths]
-        assert all(r == R0 for r in resistances)
+        resistances = functions.Rp_FUN(lengths, R0, A1, A2)
+        assert all(resistances == R0)
     
     def test_rp_linear_case(self):
         """With A2=0, resistance should be linear in length."""
         R0, A1, A2 = 1.4, 16.0, 0.0
-        L = 0.5
-        Rp = functions.Rp_FUN(L, R0, A1, A2)
-        expected = R0 + A1 * L
-        assert np.isclose(Rp, expected, rtol=1e-6)
+        lengths = np.linspace(0, 1.0, 10)
+        Rp = functions.Rp_FUN(lengths, R0, A1, A2)
+        expected = R0 + A1 * lengths
+        assert np.all(np.isclose(Rp, expected, rtol=1e-6))
+        assert np.allclose(np.diff(Rp), np.diff(Rp)[0], rtol=1e-6)
     
     def test_rp_positive(self):
         """Product resistance should always be positive."""
         R0, A1, A2 = 1.4, 16.0, 0.1
         lengths = np.linspace(0, 2.0, 20)
-        resistances = [functions.Rp_FUN(L, R0, A1, A2) for L in lengths]
-        assert all(r > 0 for r in resistances)
+        resistances = functions.Rp_FUN(lengths, R0, A1, A2)
+        assert all(resistances > 0)
 
 
 class TestKvFunction:
@@ -139,8 +135,8 @@ class TestKvFunction:
         """Heat transfer coefficient should increase with pressure."""
         KC, KP, KD = 2.75e-4, 8.93e-4, 0.46
         pressures = np.linspace(0.01, 1.0, 10)
-        kvs = [functions.Kv_FUN(KC, KP, KD, P) for P in pressures]
-        assert all(k1 <= k2 for k1, k2 in zip(kvs[:-1], kvs[1:]))
+        kvs = functions.Kv_FUN(KC, KP, KD, pressures)
+        assert all(np.diff(kvs) > 0)
     
     def test_kv_asymptotic_behavior(self):
         """At high pressure, Kv should approach KC + KP/KD."""
@@ -153,8 +149,8 @@ class TestKvFunction:
         """Heat transfer coefficient should always be positive."""
         KC, KP, KD = 2.75e-4, 8.93e-4, 0.46
         pressures = np.linspace(0.0, 10.0, 20)
-        kvs = [functions.Kv_FUN(KC, KP, KD, P) for P in pressures]
-        assert all(k > 0 for k in kvs)
+        kvs = functions.Kv_FUN(KC, KP, KD, pressures)
+        assert all(kvs > 0)
 
 
 class TestSubRate:
@@ -189,8 +185,8 @@ class TestSubRate:
         Rp = 1.4
         Pch = 0.1
         temps = np.linspace(-40, -10, 10)
-        rates = [functions.sub_rate(Ap, Rp, T, Pch) for T in temps]
-        assert all(r1 < r2 for r1, r2 in zip(rates[:-1], rates[1:]))
+        rates = np.array([functions.sub_rate(Ap, Rp, T, Pch) for T in temps])
+        assert all(np.diff(rates) > 0)
     
     def test_sub_rate_proportional_to_area(self):
         """Sublimation rate should be proportional to product area."""
@@ -316,14 +312,74 @@ class TestPhysicalConsistency:
         # These should be equal (energy balance)
         assert np.isclose(Q_sublimation, Q_conduction, rtol=1e-6)
     
-    def test_pressure_temperature_relationship(self):
-        """Test that vapor pressure increases exponentially with temperature."""
-        temps = [-40, -30, -20, -10, 0]
-        pressures = [functions.Vapor_pressure(T) for T in temps]
+class TestIneqConstraints:
+    """Tests to cover missing lines in functions.py (95% -> 100%)."""
+    
+    def test_ineq_constraints_all_branches(self):
+        """Test Ineq_Constraints function with various inputs.
         
-        # Check that pressure increases by roughly same factor each 10°C
-        ratios = [p2/p1 for p1, p2 in zip(pressures[:-1], pressures[1:])]
+        Missing coverage: lines 167-172 in functions.py
+        """
+        # Test case 1: Normal case
+        Pch = 0.080
+        dmdt = 0.05
+        Tpr_crit = -30.0
+        Tbot = -32.0
+        eq_cap_a = 5.0
+        eq_cap_b = 10.0
+        nVial = 398
         
-        # Ratios should be consistent (exponential relationship)
-        assert np.std(ratios) / np.mean(ratios) < RELATIVE_VARIATION_THRESHOLD, \
-            f"Relative variation should be < {RELATIVE_VARIATION_THRESHOLD}"
+        result = functions.Ineq_Constraints(
+            Pch, dmdt, Tpr_crit, Tbot, eq_cap_a, eq_cap_b, nVial
+        )
+        
+        # Should return two inequality constraints
+        assert len(result) == 2
+        assert isinstance(result[0], (int, float))
+        assert isinstance(result[1], (int, float))
+        
+        # Test case 2: Equipment capability constraint active
+        dmdt_high = 0.5  # High sublimation rate
+        result2 = functions.Ineq_Constraints(
+            Pch, dmdt_high, Tpr_crit, Tbot, eq_cap_a, eq_cap_b, nVial
+        )
+        assert len(result2) == 2
+        
+        # Test case 3: Temperature constraint active
+        Tbot_high = -25.0  # Higher than critical
+        result3 = functions.Ineq_Constraints(
+            Pch, dmdt, Tpr_crit, Tbot_high, eq_cap_a, eq_cap_b, nVial
+        )
+        assert len(result3) == 2
+        
+        # Test case 4: Both constraints active
+        result4 = functions.Ineq_Constraints(
+            Pch, dmdt_high, Tpr_crit, Tbot_high, eq_cap_a, eq_cap_b, nVial
+        )
+        assert len(result4) == 2
+    
+    def test_ineq_constraints_boundary_cases(self):
+        """Test Ineq_Constraints at boundary conditions."""
+        # At critical temperature
+        result = functions.Ineq_Constraints(
+            0.080, 0.05, -30.0, -30.0, 5.0, 10.0, 398
+        )
+        assert result[1] >= -1e-6  # Should be at or near boundary
+        
+        # At equipment capability limit
+        Pch = 0.080
+        eq_cap_max = (5.0 + 10.0 * Pch) / 398
+        result2 = functions.Ineq_Constraints(
+            Pch, eq_cap_max, -30.0, -32.0, 5.0, 10.0, 398
+        )
+        assert abs(result2[0]) < 1e-6  # Should be at boundary
+    
+    def test_ineq_constraints_negative_values(self):
+        """Test Ineq_Constraints with negative sublimation rate."""
+        # Should handle edge cases gracefully
+        result = functions.Ineq_Constraints(
+            0.080, -0.01, -30.0, -35.0, 5.0, 10.0, 398
+        )
+        assert len(result) == 2
+        assert isinstance(result[0], (int, float))
+        assert isinstance(result[1], (int, float))

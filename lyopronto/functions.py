@@ -296,9 +296,11 @@ def calc_step(t, Lck, config):
     Tsub = fsolve(T_sub_solver_FUN, 250, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
     dmdt = sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
     if dmdt<0:
-        # print("Shelf temperature is too low for sublimation.")
         dmdt = 0.0
-    Tbot = T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
+        Tsub = Tsh  # No sublimation, Tsub equals shelf temp
+        Tbot = Tsh
+    else:
+        Tbot = T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
     dry_percent = (Lck/Lpr0)*100
 
     col = np.array([t, Tsub, Tbot, Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), dry_percent])
