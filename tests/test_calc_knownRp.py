@@ -1,14 +1,21 @@
 """Integration tests for primary drying calculators."""
 import pytest
+from pathlib import Path
 import numpy as np
 from lyopronto import calc_knownRp, constant
 from .utils import assert_physically_reasonable_output
 
+@pytest.fixture
+def knownRp_standard_setup(standard_setup):
+    """Unpack standard setup into individual components."""
+    return (standard_setup['vial'], standard_setup['product'], 
+            standard_setup['ht'], standard_setup['Pchamber'], 
+            standard_setup['Tshelf'], None)
 
 class TestCalcKnownRp:
     """Tests for the calc_knownRp.dry calculator."""
     
-    def test_dry_basics(self, unpack_standard_setup):
+    def test_dry_basics(self, knownRp_standard_setup):
         """Test that primary drying calculator completes without errors."""
         """Test that: 
         - drying reaches near completion.
@@ -16,7 +23,7 @@ class TestCalcKnownRp:
         - values are physically reasonable.
         """
         
-        output = calc_knownRp.dry(*unpack_standard_setup)
+        output = calc_knownRp.dry(*knownRp_standard_setup)
         
         # Should return an array
         assert isinstance(output, np.ndarray)
@@ -42,9 +49,9 @@ class TestCalcKnownRp:
         flux_end = output[-1, 5]
         assert flux_end < flux_peak, "Final flux should be less than peak flux"
     
-    def test_small_fill_dries_faster(self, unpack_standard_setup):
+    def test_small_fill_dries_faster(self, knownRp_standard_setup):
         """Test that smaller fill volumes dry faster than larger fill volumes."""
-        vial, product, ht, Pchamber, Tshelf, dt = unpack_standard_setup
+        vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
         small_fill = vial.copy()
         small_fill['Vfill'] /= 2.0  # smaller fill volume
         
@@ -52,17 +59,17 @@ class TestCalcKnownRp:
         output_small = calc_knownRp.dry( small_fill, product, ht, Pchamber, Tshelf, dt)
         
         # Standard fill
-        output_standard = calc_knownRp.dry(*unpack_standard_setup)
+        output_standard = calc_knownRp.dry(*knownRp_standard_setup)
         
         time_small = output_small[-1, 0]
         time_standard = output_standard[-1, 0]
         
         assert time_small < time_standard, "Small fill volume should dry faster"
     
-    def test_other_pressures(self, unpack_standard_setup):
+    def test_other_pressures(self, knownRp_standard_setup):
         """Test that runs with different chamber pressure leads to faster drying."""
         # Low pressure
-        vial, product, ht, Pchamber, Tshelf, dt = unpack_standard_setup
+        vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
         Pchamber_low = {'setpt': [0.05], 'dt_setpt': [1800.0], 'ramp_rate': 0.5}
         Pchamber_high = {'setpt': [0.20], 'dt_setpt': [1800.0], 'ramp_rate': 0.5}
 
@@ -73,18 +80,19 @@ class TestCalcKnownRp:
         assert output_low[-1, 6] >= 99.0
         assert output_high[-1, 6] >= 99.0
 
-    def test_conservative_shelf_temp_case(self, unpack_standard_setup):
+    def test_conservative_shelf_temp_case(self, knownRp_standard_setup):
         """Test conservative shelf temperature case (-20°C)."""
-        vial, product, ht, Pchamber, _, dt = unpack_standard_setup
+        vial, product, ht, Pchamber, _, dt = knownRp_standard_setup
         Tshelf = {'init': -40.0, 'setpt': [-20.0],
                   'dt_setpt': [1800.0], 'ramp_rate': 0.5}
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
 
+        print(output[:,3] - output[:,1])
         assert_physically_reasonable_output(output)
     
-    def test_concentrated_product_takes_longer(self, unpack_standard_setup):
+    def test_concentrated_product_takes_longer(self, knownRp_standard_setup):
         """Test that dilute product takes longer to dry, given same Rp."""
-        vial, product, ht, Pchamber, Tshelf, dt = unpack_standard_setup
+        vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
 
         product_dilute = product.copy()
         product_concentrated = product.copy()
@@ -102,32 +110,34 @@ class TestCalcKnownRp:
         
         assert time_concentrated < time_dilute, "Dilute product should take longer"
     
-    def test_reproducibility(self, unpack_standard_setup):
+    def test_reproducibility(self, knownRp_standard_setup):
         """Test that running same simulation twice gives same results."""
-        output1 = calc_knownRp.dry(*unpack_standard_setup)
+        output1 = calc_knownRp.dry(*knownRp_standard_setup)
         
-        output2 = calc_knownRp.dry(*unpack_standard_setup)
+        output2 = calc_knownRp.dry(*knownRp_standard_setup)
         
         np.testing.assert_array_almost_equal(output1, output2, decimal=10)
     
-    def test_different_timesteps_similar_results(self, unpack_standard_setup):
+    def test_different_timesteps_similar_results(self, knownRp_standard_setup):
         """Test that different timesteps give similar final results."""
         # Coarse timestep
-        output_coarse = calc_knownRp.dry(*unpack_standard_setup[:-1], 0.05)
+        output_coarse = calc_knownRp.dry(*knownRp_standard_setup[:-1], 0.02)
         
         # Fine timestep
-        output_fine = calc_knownRp.dry(*unpack_standard_setup[:-1], 0.005)
+        output_fine = calc_knownRp.dry(*knownRp_standard_setup[:-1], 0.005)
         
         time_coarse = output_coarse[-1, 0]
         time_fine = output_fine[-1, 0]
         
         # Times should be within 5% of each other
         assert time_coarse == pytest.approx(time_fine, rel=0.05)
+        assert np.isclose(output_fine[0, :], output_coarse[0, :], atol=1e-3).all()
+        assert np.isclose(output_fine[-1, :], output_coarse[-1, :], atol=1e-3).all()
 
-    def test_mass_balance_conservation(self, unpack_standard_setup):
+    def test_mass_balance_conservation(self, knownRp_standard_setup):
         """Test that integrated mass removed equals initial mass."""
-        vial, product, ht, Pchamber, Tshelf, dt = unpack_standard_setup
-        output = calc_knownRp.dry(*unpack_standard_setup)
+        vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
+        output = calc_knownRp.dry(*knownRp_standard_setup)
         
         # Calculate initial water mass
         Vfill = vial['Vfill']  # mL
@@ -154,30 +164,42 @@ class TestCalcKnownRp:
 class TestEdgeCases:
     """Tests for edge cases and error handling."""
     
-    def test_very_low_shelf_temperature(self, unpack_standard_setup):
-        """Test with very low shelf temperature (should dry very slowly or not at all).
+    def test_short_time(self, knownRp_standard_setup):
+        """Test with short time (should not finish drying). """
+        vial, product, ht, Pchamber, _, dt = knownRp_standard_setup
+        Tshelf = {'init': -35.0, 'setpt': [20.0], 
+                           'dt_setpt': [10.0], 'ramp_rate': 0.5}
+        Pchamber['dt_setpt'] = [10.0]
         
-        Note: At extremely low shelf temperatures, the heat available for sublimation
-        may be insufficient, leading to physical edge cases where Tbot can be computed
-        to be less than Tsub (which is thermodynamically impossible but can occur in
-        the numerical solution when driving force is very small).
-        """
-        vial, product, ht, Pchamber, _, dt = unpack_standard_setup
-        Tshelf = {'init': -50.0, 'setpt': [-40.0], 
-                           'dt_setpt': [1800.0], 'ramp_rate': 0.5}
-        
-        output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        with pytest.warns(UserWarning, match="time"):
+            output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
         # Should still produce valid output
         assert output.shape[0] > 0
-        # Skip physical reasonableness check for this edge case
-        # since very low temperatures can cause numerical issues
-        assert np.all(output[:, 6] >= 0) and np.all(output[:, 6] <= 1.01)
-        assert np.all(output[:, 5] >= 0)  # Non-negative flux
+        # Check that drying is incomplete
+        assert output[-1, 6] < 100.0
+
+        assert_physically_reasonable_output(output)
+
+    def test_very_low_shelf_temperature(self, knownRp_standard_setup):
+        """Test with very low shelf temperature (should not dry at all). """
+        vial, product, ht, Pchamber, _, dt = knownRp_standard_setup
+        Tshelf = {'init': -50.0, 'setpt': [-40.0], 
+                           'dt_setpt': [1800.0], 'ramp_rate': 0.5}
+        
+        with pytest.warns(UserWarning, match="vapor pressure"):
+            output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        
+        # Should still produce valid output
+        assert output.shape[0] > 0
+        # Check that temperatures match shelf
+        # Check that no drying occurs 
+        assert np.all(output[:, 5] == 0)  # Non-negative flux
+        assert np.all(output[:, 6] == 0) 
     
-    def test_very_small_fill(self, unpack_standard_setup):
+    def test_very_small_fill(self, knownRp_standard_setup):
         """Test with very small fill volume."""
-        vial, product, ht, Pchamber, Tshelf, dt = unpack_standard_setup
+        vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
         vial['Vfill'] = 0.5
         
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
@@ -186,9 +208,9 @@ class TestEdgeCases:
         assert output[-1, 6] >= 99.0
         assert_physically_reasonable_output(output)
     
-    def test_high_resistance_product(self, unpack_standard_setup):
+    def test_high_resistance_product(self, knownRp_standard_setup):
         """Test with high resistance product (should dry slowly)."""
-        vial, product, ht, Pchamber, Tshelf, dt = unpack_standard_setup
+        vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
         product['R0'] = 5.0
         product['A1'] = 50.0
         
@@ -200,7 +222,7 @@ class TestEdgeCases:
         assert_physically_reasonable_output(output)
 
 
-class TestRegressionStandardCase:
+class TestRegression:
     """
     Regression tests against standard reference case.
     
@@ -252,8 +274,8 @@ class TestRegressionStandardCase:
         assert initial_time == 0.0
         assert initial_Tsub == pytest.approx(-35.8, abs=0.1)  # Should start very cold
         assert initial_Tbot == pytest.approx(-35.8, abs=0.1)  # Should start very cold
-        assert initial_Tsh == -35.0  # Initial shelf temp
-        assert initial_Pch_mTorr == 150.0 # Chamber pressure [mTorr]
+        assert initial_Tsh == pytest.approx(-35.0, abs=0.0001)  # Initial shelf temp
+        assert initial_Pch_mTorr == pytest.approx(150.0, abs=0.1) # Chamber pressure [mTorr]
         assert initial_percent == 0.0  # Starting at 0 percent dried
     
         # Check final values (last row)
@@ -263,8 +285,33 @@ class TestRegressionStandardCase:
         final_flux = output[-1, 5]
         final_percent = output[-1, 6]
         
-        assert np.isclose(final_Tsh, 20.0, rtol=0.01)  # Should reach target shelf temp
+        assert final_Tsh == pytest.approx(20.0, abs=0.01)  # Should reach target shelf temp
         assert final_Tbot == pytest.approx(-14.7, abs=0.1)
-        assert final_Tbot == pytest.approx(final_Tsub)
+        assert final_Tbot == pytest.approx(final_Tsub, abs=0.1)
         assert final_flux == pytest.approx(0.8945, abs=0.01) # Flux should still be significant
         assert final_percent >= 99.0  # Should be essentially complete
+
+    def test_match_web_output(self):
+        """Test for exact match with reference web output."""
+        # This test uses the actual reference CSV
+        ref_csv = Path(__file__).parent.parent / 'test_data/reference_primary_drying.csv'
+        if not ref_csv.exists():
+            pytest.skip(f"Reference CSV not found: {ref_csv}")
+
+        output_ref = np.loadtxt(ref_csv, delimiter=';', skiprows=1)
+        
+        # Set up exact inputs from web interface
+        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
+        product = {'R0': 1.4, 'A1': 16.0, 'A2': 0.0, 'cSolid': 0.05}
+        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
+        Pchamber = {'setpt': [0.15], 'dt_setpt': [1800.0], 'ramp_rate': 0.5}
+        Tshelf = {'init': -35.0, 'setpt': [20.0], 'dt_setpt': [1800.0], 'ramp_rate': 1.0}
+        dt = 0.01
+        
+        # Run simulation
+        output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
+        
+        # Compare all except percent dried with relative tolerance 5%
+        assert np.isclose(output[:,0:6], output_ref[:,0:6], rtol=0.05).all()
+        # This one is more finicky, use absolute tolerance of 0.1% dried
+        assert np.isclose(output[:,6], output_ref[:,6], atol=0.1).all() 

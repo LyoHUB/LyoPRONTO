@@ -16,6 +16,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from scipy.optimize import fsolve
+from scipy.interpolate import PchipInterpolator, make_interp_spline
 import numpy as np
 from . import constant
 
@@ -315,11 +316,29 @@ def fill_output(sol, config):
 
     Returns:
         (np.ndarray): The output array filled with the results from the ODE solver.
+
+    Each call to calc_step requires a nonlinear solve for Tsub, so doing this for thousands 
+    of points is impractical. Instead, we calculate at the the ODE solver points, and 
+    interpolate elsewhere.
     """
-    vial, product, ht, Pchamber, Tshelf, dt, Lpr0 = config
+    dt = config[5]
+
+    interp_points = np.zeros((len(sol.t), 7))
+    for i,(t, y) in enumerate(zip(sol.t, sol.y[0])):
+        interp_points[i,:] = calc_step(t, y, config)
     # out_t = np.arange(0, sol.t[-1], dt)   
-    out_t = np.linspace(0, sol.t[-1], 100)   
+    if dt is None:
+        return interp_points
+    else:
+        out_t = np.arange(0, sol.t[-1], dt)   
     fullout = np.zeros((len(out_t), len(calc_step(0, 0, config))))
-    for i,t in enumerate(out_t):
-        fullout[i,:] = calc_step(t, sol.sol(t)[0], config)
+    interp_points = np.zeros((len(sol.t), 7))
+    for i,(t, y) in enumerate(zip(sol.t, sol.y[0])):
+        interp_points[i,:] = calc_step(t, y, config)
+    interp_func = PchipInterpolator(sol.t, interp_points, axis=0)
+    # interp_func = make_interp_spline(sol.t, interp_points, axis=0, k=3)
+    for i, t in enumerate(out_t):
+        if np.any(sol.t == t):
+            fullout[i,:] = interp_points[sol.t == t, :]
+        fullout[i,:] = interp_func(t)
     return fullout
