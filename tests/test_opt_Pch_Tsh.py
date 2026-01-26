@@ -8,7 +8,7 @@ Tests based on working example_optimizer.py structure.
 import pytest
 import numpy as np
 from lyopronto import opt_Pch_Tsh, opt_Pch, constant, opt_Tsh
-from .utils import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output, assert_complete_drying
 
 # Constants for test assertions
 MAX_AGGRESSIVE_OPTIMIZATION_TIME = 5.0  # Maximum expected drying time with aggressive optimization [hr]
@@ -111,9 +111,7 @@ def opt_both_consistency(output, setup):
     assert np.all(output[:, 2] <= T_crit+0.01), \
         f"Product temperature should be <= {T_crit}°C (critical)"
 
-    # Percent dried (column 6) should reach > 99.0
-    final_dried = output[-1, 6]
-    assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+    assert_complete_drying(output)
 
     
     # Should not exceed equipment capability (with small tolerance)
@@ -173,7 +171,7 @@ class TestOptPchTshEdgeCases:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output[-1, 6] > 99, "Should complete drying"
+        assert_complete_drying(output)
         # All temperatures should be within range
         assert np.all(output[:, 3] >= -10), "Tsh should be >= -10°C"
         assert np.all(output[:, 3] <= 10), "Tsh should be <= 10°C"
@@ -187,7 +185,7 @@ class TestOptPchTshEdgeCases:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output[-1, 6] > 99, "Should complete drying"
+        assert_complete_drying(output)
         assert np.all(output[:, 2] <= -35.0+0.01), "Should respect lower T_crit"
     
     def test_high_resistance_product(self, standard_opt_pch_tsh_inputs):
@@ -200,8 +198,9 @@ class TestOptPchTshEdgeCases:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output[-1, 6] > 99, "Should complete drying"
+        assert_complete_drying(output)
         # Higher resistance should lead to longer drying time
+        # TODO: this can be made concrete
         assert output[-1, 0] > 1.0, "High resistance should take longer to dry"
     
     def test_higher_min_pressure(self, standard_opt_pch_tsh_inputs):
@@ -213,7 +212,7 @@ class TestOptPchTshEdgeCases:
         
         output = opt_Pch_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output[-1, 6] > 99, "Should complete drying"
+        assert_complete_drying(output)
         # All pressures should be >= 100 [mTorr]
         assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
         opt_both_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
@@ -257,9 +256,9 @@ class TestOptPchTshValidation:
         output_temperature_only = opt_Tsh.dry(vial, product, ht, Pchamber_fixed, Tshelf, dt, eq_cap, nVial)
         
         # Both optimizations should complete successfully
-        assert output_joint[-1, 6] > 99, "Joint optimization should reach >99% dried"
-        assert output_pressure_only[-1, 6] > 99, "P-only optimization should reach >99% dried"
-        assert output_temperature_only[-1, 6] > 99, "T-only optimization should reach >99% dried"
+        assert_complete_drying(output_joint)
+        assert_complete_drying(output_pressure_only)
+        assert_complete_drying(output_temperature_only)
 
         # Joint optimization drying time should be <= pressure-only drying time
         assert output_joint[-1, 0] <= output_pressure_only[-1, 0], "Joint optimization should beat P-only optimization"
@@ -290,7 +289,7 @@ class TestOptPchTshValidation:
 
         assert_physically_reasonable_output(output, Tmax=150)
         
-        assert output[-1, 6] > 99, "Should complete drying"
+        assert_complete_drying(output)
         
         # Should complete relatively quickly with aggressive optimization
         assert output[-1, 0] < MAX_AGGRESSIVE_OPTIMIZATION_TIME, \

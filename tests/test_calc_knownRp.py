@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from lyopronto import calc_knownRp, constant
-from .utils import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output, assert_complete_drying
 
 @pytest.fixture
 def knownRp_standard_setup(standard_setup):
@@ -28,13 +28,10 @@ class TestCalcKnownRp:
         assert isinstance(output, np.ndarray)
         assert output.shape[0] > 0  # Should have at least some time steps
         assert output.shape[1] == 7  # Should have 7 columns
-        assert output[-1,6] >= 99.0  # Should be at least 99% dried
+        assert_complete_drying(output)
         assert_physically_reasonable_output(output)
     
-        # Should reach at least 99% dried 
-        final_percent_dried = output[-1, 6]
-        assert final_percent_dried >= 99, \
-            f"Only {final_percent_dried:.1f}% dried, expected at least 99%"
+        assert_complete_drying(output)
     
         drying_time = output[-1, 0]  # hours
         
@@ -76,8 +73,8 @@ class TestCalcKnownRp:
         output_high = calc_knownRp.dry(vial, product, ht, Pchamber_high, Tshelf, dt)
         
         # Both complete drying
-        assert output_low[-1, 6] >= 99.0
-        assert output_high[-1, 6] >= 99.0
+        assert_complete_drying(output_low)
+        assert_complete_drying(output_high)
 
     def test_conservative_shelf_temp_case(self, knownRp_standard_setup):
         """Test conservative shelf temperature case (-20°C)."""
@@ -223,8 +220,7 @@ class TestEdgeCases:
         
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
-        # Should complete quickly (percent dried >= 99%)
-        assert output[-1, 6] >= 99.0
+        assert_complete_drying(output)
         assert_physically_reasonable_output(output)
     
     def test_high_resistance_product(self, knownRp_standard_setup):
@@ -236,7 +232,7 @@ class TestEdgeCases:
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
         # High resistance means longer drying, but check it completes
-        assert output[-1, 6] >= 99.0  # Should eventually complete
+        assert_complete_drying(output)
         # Note: May not take >20 hours depending on other parameters
         assert_physically_reasonable_output(output)
 
@@ -302,13 +298,12 @@ class TestRegression:
         final_Tbot = output[-1, 2]
         final_Tsh = output[-1, 3]
         final_flux = output[-1, 5]
-        final_percent = output[-1, 6]
         
         assert final_Tsh == pytest.approx(20.0, abs=0.01)  # Should reach target shelf temp
         assert final_Tbot == pytest.approx(-14.7, abs=0.1)
         assert final_Tbot == pytest.approx(final_Tsub, abs=0.1)
         assert final_flux == pytest.approx(0.8945, abs=0.01) # Flux should still be significant
-        assert final_percent >= 99.0  # Should be essentially complete
+        assert_complete_drying(output)
 
     def test_match_web_output(self, reference_data_path):
         """Test for exact match with reference web output."""

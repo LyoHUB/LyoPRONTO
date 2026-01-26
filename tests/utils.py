@@ -66,3 +66,13 @@ def assert_physically_reasonable_output(output, Tmax=60):
     # Percent dried should be monotonically increasing
     assert np.all(np.diff(output[:, 6]) >= -1e-6), \
         "Percent dried should be monotonically increasing (allowing small numerical errors)"
+
+def assert_complete_drying(output):
+    """
+    Assert that drying completed in the simulation output.
+    
+    Args:
+        output: numpy array with columns [time, Tsub, Tbot, Tsh, Pch_mTorr, flux, frac_dried]
+    """
+    final_percent_dried = output[-1, 6]
+    assert final_percent_dried >= 99.0, f"Drying did not complete, reached only {final_percent_dried:.1f}%"

@@ -8,7 +8,7 @@ Tests based on working example_optimizer.py structure.
 import pytest
 import numpy as np
 from lyopronto import opt_Pch, constant
-from .utils import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output, assert_complete_drying
 
 
 # Test constants for numerical comparison
@@ -115,9 +115,7 @@ class TestOptPchBasic:
         assert np.all(output[:, 2] <= T_crit), \
             f"Product temperature should be <= {T_crit}°C (critical)"
     
-        # Percent dried (column 6) should reach > 99.0 
-        final_dried = output[-1, 6]
-        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+        assert_complete_drying(output)
 
         # Drying time should be reasonable (0.5 to 10 hours)
         drying_time = output[-1, 0]
@@ -140,9 +138,7 @@ class TestOptPchBasic:
 
         assert_physically_reasonable_output(output)
         
-        # Percent dried (column 6) should reach > 99.0 
-        final_dried = output[-1, 6]
-        assert final_dried > 99, f"Should dry to >99%, got {final_dried:.1f}%"
+        assert_complete_drying(output)
 
 class TestOptPchEdgeCases:
     """Edge case tests for opt_Pch module."""
@@ -160,7 +156,7 @@ class TestOptPchEdgeCases:
         
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
         
-        assert output[-1,6] > 99, "Should complete drying"
+        assert_complete_drying(output)
         assert np.all(output[:, 2] <= product['T_pr_crit']), "Should respect lower T_crit"
 
         assert_physically_reasonable_output(output)
@@ -193,8 +189,9 @@ class TestOptPchEdgeCases:
 
         assert_physically_reasonable_output(output)
         
-        assert output[-1,6] >= 99.0, "Should complete drying"
+        assert_complete_drying(output)
         # Higher resistance should lead to longer drying time
+        # TODO pin this to a value from default run conditions
         assert output[-1, 0] > 1.0, "High resistance should take longer to dry"
     
     def test_multi_shelf_temperature_setpoints(self, standard_opt_pch_inputs):
@@ -209,7 +206,7 @@ class TestOptPchEdgeCases:
 
         assert_physically_reasonable_output(output)
         
-        assert output[-1, 6] > 99.0, "Should complete drying"
+        assert_complete_drying(output)
     
     def test_higher_min_pressure(self, standard_opt_pch_inputs):
         """Test with higher minimum pressure constraint (0.10 Torr)."""
@@ -224,7 +221,7 @@ class TestOptPchEdgeCases:
 
         assert_physically_reasonable_output(output)
         
-        assert output[-1, 6] > 99.0, "Should complete drying"
+        assert_complete_drying(output)
         # All pressures should be >= 100 mTorr
         assert np.all(output[:, 4] >= 100), "Pressure should respect higher min bound"
 
@@ -269,7 +266,7 @@ class TestOptPchEdgeCases:
         
         # Should run without errors and show some progress despite tighter constraint
         assert output is not None
-        assert output[-1,6] > 99.0, "Should complete drying"
+        assert_complete_drying(output)
         assert_physically_reasonable_output(output)
 
     @pytest.mark.slow

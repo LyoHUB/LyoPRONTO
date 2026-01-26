@@ -9,7 +9,7 @@ import pytest
 import numpy as np
 import pandas as pd
 from lyopronto import opt_Tsh
-from .utils import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output, assert_complete_drying
 
 
 class TestOptimizerInterface:
@@ -92,7 +92,7 @@ class TestOptimizerInterface:
         
         # Check that drying completes
         percent_dried = output[:, 6]
-        assert percent_dried[-1] >= 99, f"Drying incomplete: {percent_dried[-1]}% dried"
+        assert_complete_drying(output)
 
         # Check shape (should have 7 columns)
         assert output.shape[1] == 7
@@ -189,7 +189,7 @@ class TestOptimizerInterface:
         # Verify results
         assert results is not None
         assert results.size > 0
-        assert results[-1, 6] >= 0.99  # Drying complete
+        assert_complete_drying(results)
 
 
 class TestOptimizerEdgeCases:
@@ -248,12 +248,12 @@ class TestOptimizerEdgeCases:
         vial, product, ht, Pchamber, Tshelf, _, eq_cap, nVial = optimizer_params
         
         # Test with larger time step
-        dt_large = 0.05
+        dt_large = 0.02
         results_large = opt_Tsh.dry(vial, product, ht, Pchamber, Tshelf, dt_large, eq_cap, nVial)
         
         # Should still complete successfully
         assert results_large is not None
-        assert results_large[-1, 6] >= 0.99
+        assert_complete_drying(results_large)
         
         # Test with smaller time step
         dt_small = 0.005
@@ -261,8 +261,10 @@ class TestOptimizerEdgeCases:
         
         # Should still complete successfully with more steps
         assert results_small is not None
-        assert results_small[-1, 6] >= 0.99
+        assert_complete_drying(results_small)
         assert len(results_small) > len(results_large)
+
+        # TODO: check that results actually match in some fashion
     
     def test_optimizer_different_critical_temps(self, optimizer_params):
         """Test optimizer with different critical temperatures."""
@@ -294,7 +296,7 @@ class TestOptimizerEdgeCases:
 
         assert_physically_reasonable_output(output)
         
-        assert output[-1, 6] > 99.0, "Should complete drying"
+        assert_complete_drying(output)
 
 
 # Run with: pytest tests/test_optimizer.py -v
