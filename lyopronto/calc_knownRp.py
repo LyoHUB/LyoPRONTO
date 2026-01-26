@@ -50,8 +50,10 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     # Initial fill height
     Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
 
-    Pch_t = lambda t: Pchamber['setpt'][0] # TODO: allow ramps
-    Tsh_t = lambda t: min(Tshelf['setpt'][0], t*60*Tshelf['ramp_rate'] + Tshelf['init'])
+    def Pch_t(t):
+        return Pchamber['setpt'][0] # TODO: allow ramps
+    def Tsh_t(t):
+        return min(Tshelf['setpt'][0], t*60*Tshelf['ramp_rate'] + Tshelf['init'])
 
     config = (vial, product, ht, Pch_t, Tsh_t, dt, Lpr0)
 
@@ -59,6 +61,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     T0 = Tsh_t(0)
 
     ################ Set up dynamic equation ######################
+    # This function is defined here because it uses local variables, rather than
+    # taking them as arguments.
     def calc_dLdt(t, u):
         Lck = u[0]
         Tsh = Tsh_t(t)

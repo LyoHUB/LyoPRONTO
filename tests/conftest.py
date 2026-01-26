@@ -8,18 +8,6 @@ def standard_vial():
 
 
 @pytest.fixture
-def small_vial():
-    """Small vial configuration."""
-    return {'Av': 2.0, 'Ap': 1.5, 'Vfill': 1.0}
-
-
-@pytest.fixture
-def large_vial():
-    """Large vial configuration."""
-    return {'Av': 5.0, 'Ap': 4.0, 'Vfill': 3.0}
-
-
-@pytest.fixture
 def standard_product():
     """Standard product configuration (5% solids)."""
     return {'cSolid': 0.05, 'R0': 1.4, 'A1': 16.0, 'A2': 0.0, 'T_pr_crit': -25.0}
