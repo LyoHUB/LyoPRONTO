@@ -14,10 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from warnings import warn
 import scipy.optimize as sp
 import numpy as np
-import math
-import csv
 from . import constant
 from . import functions
 
@@ -99,7 +98,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         percent_dried = Lck/Lpr0*100   # Percent dried
 
         if len(np.where(Pchamber['t_setpt']>t)[0])==0:
-            print("Total time exceeded. Drying incomplete")    # Shelf tempertaure set point time exceeded, drying not done
+            warn("Total time exceeded. Drying incomplete")    # Shelf tempertaure set point time exceeded, drying not done
             break
         else:
             j = np.where(Pchamber['t_setpt']>t)[0][0]

@@ -1,6 +1,5 @@
 """Integration tests for primary drying calculators."""
 import pytest
-from pathlib import Path
 import numpy as np
 from lyopronto import calc_knownRp, constant
 from .utils import assert_physically_reasonable_output
@@ -311,10 +310,10 @@ class TestRegression:
         assert final_flux == pytest.approx(0.8945, abs=0.01) # Flux should still be significant
         assert final_percent >= 99.0  # Should be essentially complete
 
-    def test_match_web_output(self):
+    def test_match_web_output(self, reference_data_path):
         """Test for exact match with reference web output."""
         # This test uses the actual reference CSV
-        ref_csv = Path(__file__).parent.parent / 'test_data/reference_primary_drying.csv'
+        ref_csv = reference_data_path / 'reference_primary_drying.csv'
         if not ref_csv.exists():
             pytest.skip(f"Reference CSV not found: {ref_csv}")
 

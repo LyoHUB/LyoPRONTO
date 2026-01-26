@@ -1,5 +1,11 @@
 """Pytest configuration and shared fixtures for LyoPRONTO tests."""
 import pytest
+from pathlib import Path
+
+@pytest.fixture
+def reference_data_path():
+    """Path to reference test data directory."""
+    return Path(__file__).parent.parent / 'test_data'
 
 @pytest.fixture
 def standard_vial():
@@ -55,10 +61,3 @@ def standard_setup(standard_vial, standard_product, standard_ht,
         'Tshelf': standard_tshelf,
         'dt': 0.01
     }
-
-@pytest.fixture
-def unpack_standard_setup(standard_setup):
-    """Unpack standard setup into individual components."""
-    return (standard_setup['vial'], standard_setup['product'], 
-            standard_setup['ht'], standard_setup['Pchamber'], 
-            standard_setup['Tshelf'], standard_setup['dt'])

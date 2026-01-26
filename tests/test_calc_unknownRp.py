@@ -10,7 +10,6 @@ These tests are based on the working example in ex_unknownRp_PD.py.
 import pytest
 import numpy as np
 import scipy.optimize as sp
-from pathlib import Path
 
 from lyopronto import calc_unknownRp
 from lyopronto.functions import Lpr0_FUN, Rp_FUN
@@ -27,9 +26,9 @@ def standard_inputs_nodt(standard_vial, standard_ht, standard_pchamber, standard
     return standard_vial, product, standard_ht, standard_pchamber, standard_tshelf
 
 @pytest.fixture
-def temperature_data():
+def temperature_data(reference_data_path):
     """Load temperature data from test_data/temperature.txt."""
-    data_path = Path(__file__).parent.parent / 'test_data/temperature.txt'
+    data_path = reference_data_path / 'temperature.txt'
     if not data_path.exists():
         pytest.skip("Temperature data file not found")
     
@@ -304,32 +303,16 @@ class TestCalcUnknownRpEdgeCases:
 class TestCalcUnknownRpValidation:
     """Validation tests against known examples."""
     
-    def test_matches_example_script(self, standard_inputs_nodt):
+    def test_matches_example_script(self, standard_inputs_nodt, temperature_data):
         """Test that results match ex_unknownRp_PD.py example."""
         # Use same inputs as ex_unknownRp_PD.py
-        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
-        
-        # Load temperature data
-        data_path = Path(__file__).parent.parent / 'test_data/temperature.txt'
-        if not data_path.exists():
-            pytest.skip("Temperature data file not found")
-        
-        dat = np.loadtxt(data_path)
-        if dat.shape[1] == 2:
-            time = dat[:, 0]
-            Tbot_exp = dat[:, 1]
-        else:
-            time = dat[:, 1]
-            Tbot_exp = dat[:, 2]
         
         # Run calc_unknownRp
-        output, product_res = calc_unknownRp.dry(
-            vial, product, ht, Pchamber, Tshelf, time, Tbot_exp
-        )
+        output, product_res = calc_unknownRp.dry(*standard_inputs_nodt, *temperature_data)
         
         # Estimate parameters
         params, _ = sp.curve_fit(
-            lambda h, r, a1, a2: r + h*a1/(1 + h*a2),
+            Rp_FUN,
             product_res[:, 1],
             product_res[:, 2],
             p0=[1.0, 0.0, 0.0]
@@ -341,6 +324,7 @@ class TestCalcUnknownRpValidation:
         
         # Parameters should be physically reasonable
         # (exact values depend on experimental data, but ranges should be sensible)
+        # TODO for this reference case, have exact values. Give them here
         assert 0 < R0 < 10, f"R0 = {R0} outside expected range (0, 10)"
         assert 0 <= A1 < 50, f"A1 = {A1} outside expected range [0, 50)"
         assert 0 <= A2 < 5, f"A2 = {A2} outside expected range [0, 5)"
