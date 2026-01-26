@@ -3,9 +3,14 @@ import pytest
 from pathlib import Path
 
 @pytest.fixture
-def reference_data_path():
+def repo_root():
+    """Get repository root directory."""
+    return Path(__file__).parent.parent
+
+@pytest.fixture
+def reference_data_path(repo_root):
     """Path to reference test data directory."""
-    return Path(__file__).parent.parent / 'test_data'
+    return repo_root / 'test_data'
 
 @pytest.fixture
 def standard_vial():
