@@ -244,14 +244,27 @@ def Eq_Constraints(Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv,Lpr0,Lck,Av,Ap,Rp):
 
 ##
 
-def lumped_cap_Tpr(t,Tpr0,rho,Cp,V,h,Av,Tsh,Tsh0, Tsh_ramp):
+def lumped_cap_Tpr_abstract(t,Tpr0,V,h,Av,Tsh,Tsh0,Tsh_ramp,rho,Cpi,):
     """
     Calculates the product temperature in C. Inputs are time in hr, initial product temperature in degC, product density in g/mL, constant pressure specific heat of the product in J/kg/K, product volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, current shelf temperature in degC, initial shelf temperature in degC, shelf temperature ramping rate in degC/min
     """
 
-    F = (Tpr0 + Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 - Tsh0)*np.exp(-h*Av*constant.cm_To_m**2*t*constant.hr_To_s/rho/Cp*constant.kg_To_g/V) - Tsh_ramp/constant.min_To_s*rho*Cp/constant.kg_To_g*V/h/Av/constant.cm_To_m**2 + Tsh
+    rr = Tsh_ramp/constant.min_To_s # K/s, ramp rate
+    rhoV = rho*V  # g, mass of solution
+    Cp = Cpi/constant.kg_To_g # J/g/K, specific heat capacity
+    hA = h*Av*constant.cm_To_m**2  # W/K, heat transfer coefficient times area
+    ts = t*constant.hr_To_s # s, time
 
-    return F
+    tau = rhoV*Cp/hA  # s, time constant
+    asymp_T = (Tpr0 - Tsh0 + rr*rhoV*Cp/hA) # degC, prefactor in solution
+
+    return asymp_T*np.exp(-ts/tau) - rr*tau + Tsh
+
+def lumped_cap_Tpr_ice(*args):
+    return lumped_cap_Tpr_abstract(*args, constant.rho_ice,constant.Cp_ice)
+
+def lumped_cap_Tpr_sol(*args):
+    return lumped_cap_Tpr_abstract(*args, constant.rho_solution,constant.Cp_solution)
 
 ##
 
@@ -262,9 +275,14 @@ def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh):
     Calculates the crystallization time in hr. Inputs are fill volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, freezing temperature in degC, nucleation temperature in degC, shelf temperature in degC
     """
 
-    F = constant.rho_solution*V*(constant.dHf*constant.cal_To_J-constant.Cp_solution/constant.kg_To_g*(Tf-Tn))/h/constant.hr_To_s/Av/constant.cm_To_m**2/(Tf-Tsh)
+    # t = constant.rho_solution*V*(constant.dHf*constant.cal_To_J-constant.Cp_solution/constant.kg_To_g*(Tf-Tn))/h/constant.hr_To_s/Av/constant.cm_To_m**2/(Tf-Tsh)
+    rhoV = constant.rho_solution*V  # mass of the solution in g
+    Hf = constant.dHf*constant.cal_To_J # fusion enthalpy in J/g
+    Cp = constant.Cp_solution/constant.kg_To_g # specific heat capacity in J/g/K
+    hA = h*constant.hr_To_s * Av*constant.cm_To_m**2 # heat transfer coefficient in J/K/hr
+    t = rhoV*(Hf-Cp*(Tf-Tn))/hA/(Tf-Tsh) # time: g*(J/g- J/g/K*K)/(J/m^2/K/hr*m^2*K) = hr
 
-    return F
+    return t
 
 ##
 
