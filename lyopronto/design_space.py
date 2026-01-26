@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from warnings import warn
-import scipy.optimize as sp
+from scipy.optimize import fsolve
 import numpy as np
 import math
 import csv
@@ -81,7 +81,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     
                 Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
 
-                Tsub = sp.fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
+                Tsub = fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
                 dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
                 if dmdt<0:
                     warn(f"At t={t}hr, shelf temperature Tsh={Tsh} is too low for sublimation.")
@@ -166,7 +166,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     
             Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
     
-            Tsub = sp.fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp))[0] # Sublimation front temperature array in degC
+            Tsub = fsolve(functions.T_sub_fromTpr, product['T_pr_crit'], args = (product['T_pr_crit'],Lpr0,Lck,Pch,Rp))[0] # Sublimation front temperature array in degC
             dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
                 
             # Sublimated ice length

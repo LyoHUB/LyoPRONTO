@@ -14,10 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import scipy.optimize as sp
 import numpy as np
-import math
-import csv
 from . import constant
 from . import functions
 
