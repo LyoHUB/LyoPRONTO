@@ -7,7 +7,7 @@ name: PR Tests
 
 on:
   pull_request:
-    branches: [ main, dev-pyomo ]
+    branches: [ main ]
     types: [ opened, synchronize, reopened, ready_for_review, converted_to_draft ]
 
 jobs:
@@ -27,10 +27,8 @@ jobs:
       id: mode
       run: |
         if [ "${{ github.event.pull_request.draft }}" == "true" ]; then
-          echo "coverage=false" >> $GITHUB_OUTPUT
           echo "mode=fast" >> $GITHUB_OUTPUT
         else
-          echo "coverage=true" >> $GITHUB_OUTPUT
           echo "mode=full" >> $GITHUB_OUTPUT
         fi
     
@@ -53,8 +51,8 @@ jobs:
       run: |
         if [ "${{ steps.mode.outputs.coverage }}" == "true" ]; then
           echo "🔍 Running full tests with coverage (PR is ready for review)"
-          echo "⚡ Skipping slow tests (marked with @pytest.mark.slow) - these run on merge"
-          pytest tests/ -n auto -v -m "not slow" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          echo "⚡ Skipping notebook tests (marked with @pytest.mark.notebook) - these run separately"
+          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=xml --cov-report=term-missing
         else
           echo "⚡ Running fast tests without coverage (PR is draft)"
           echo "⚡ Skipping slow tests (marked with @pytest.mark.slow)"

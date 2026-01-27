@@ -33,9 +33,9 @@ jobs:
       - name: Deploy docs as latest
         if: ${{ github.event_name == 'release' }}
         run: mike deploy ${{ github.ref_name }} latest
-      - name: Deploy docs for PR
-        if: ${{ github.event_name == 'pull_request' }}
-        run: mike deploy pr-${{ github.event.number }}
+      # - name: Deploy docs for PR
+      #   if: ${{ github.event_name == 'pull_request' }}
+      #   run: mike deploy pr-${{ github.event.number }}
       - name: Deploy docs as dev
         if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         run: mike deploy dev

@@ -24,19 +24,22 @@ import papermill as pm
 class TestDocsNotebooks:
     """Smoke tests: run example scripts used for documentation."""
 
+    @pytest.mark.notebook
     def test_ex_knownRp_execution(self, repo_root):
         """Test that ex_knownRp_PD.py runs without error."""
         result = pm.execute_notebook(
             repo_root / 'docs/examples/knownRp_PD.ipynb',
-            repo_root / 'docs/examples/knownRp_PD.ipynb',
+            repo_root / 'docs/examples/knownRp_PD_output.ipynb',
         )
         # Will error if execution fails
 
+    @pytest.mark.notebook
     def test_ex_unknownRp_execution(self, repo_root):
         """Test that ex_knownRp_PD.py runs without error."""
         result = pm.execute_notebook(
             repo_root / 'docs/examples/unknownRp_PD.ipynb',
-            repo_root / 'docs/examples/unknownRp_PD.ipynb',
+            repo_root / 'docs/examples/unknownRp_PD_output.ipynb',
+            parameters=dict(data_path=str(repo_root / 'docs' /'examples')+'/'),
         )
         # Will error if execution fails
 

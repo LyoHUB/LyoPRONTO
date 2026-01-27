@@ -48,6 +48,12 @@ dev = [
     "mypy>=1.4.0",
     "pandas>=2.0",
 ]
+docs = [
+    "papermill>2.6.0",
+    "ipykernel>=6.15.0",
+    "ruamel.yaml>=0.18.0",
+]
+
 
 [project.urls]
 Homepage = "http://lyopronto.geddes.rcac.purdue.edu"
@@ -80,6 +86,7 @@ markers = [
     "slow: Tests that take a long time to run",
     "parametric: Parametric tests across multiple scenarios",
     "fast: Quick tests that run in under 1 second",
+    "notebook: Tests that execute Jupyter notebooks for documentation",
 ]
 
 [tool.mypy]
