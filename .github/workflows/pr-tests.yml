@@ -47,7 +47,7 @@ jobs:
         pip install .[dev]
         pip install -e . --no-build-isolation
     
-    - name: Run tests (draft = fast, ready = coverage)
+    - name: Run tests
     # Currently this conditional branching doesn't actually do anything,
     # since pyproject.toml adds these coverage arguments to the testing anyway
       run: |
@@ -68,14 +68,3 @@ jobs:
         name: pr-coverage
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
-    
-    - name: Test Summary
-      if: always()
-      run: |
-        if [ "${{ steps.mode.outputs.coverage }}" == "true" ]; then
-          echo "✅ Full tests with coverage completed"
-          echo "📊 PR is ready for review with coverage verified"
-        else
-          echo "⚡ Fast tests completed (PR is draft)"
-          echo "� Mark PR as 'Ready for Review' to run coverage tests"
-        fi
