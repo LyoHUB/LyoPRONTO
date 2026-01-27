@@ -48,10 +48,16 @@ dev = [
     "mypy>=1.4.0",
     "pandas>=2.0",
 ]
-docs = [
+notebooks = [
     "papermill>=2.6.0",
     "ipykernel>=6.15.0",
     "ruamel.yaml>=0.18.0",
+]
+docs = [
+    "mkdocstrings-python>=2",
+    "mkdocs-material>=9.1.0",
+    "mike>=2.1",
+    "mkdocs-ipynb>=0.1.1",
 ]
 
 

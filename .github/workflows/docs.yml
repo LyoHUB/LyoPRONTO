@@ -27,7 +27,8 @@ jobs:
         # Could fetch it later on but this seems simpler and less finicky
         with:
           fetch-depth: 0
-      - run: pip install mkdocstrings-python mkdocs-material mike mkdocs-ipynb
+      - run: pip install .
+      - run: pip install .[docs]
       - run: echo ${{ github.event_name}} ${{ github.ref_name }}
       # Deploy docs according to type of event
       - name: Deploy docs as latest
