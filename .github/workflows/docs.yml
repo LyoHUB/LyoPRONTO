@@ -10,6 +10,8 @@ on:
 # On releasing a new version, rebuild docs with new version number and push as "latest"
   release:
     types: [published, edited]
+permissions:
+  pages: write
     
 jobs:
   docdeploy:
@@ -34,13 +36,14 @@ jobs:
       - name: Deploy docs as latest
         if: ${{ github.event_name == 'release' }}
         run: mike deploy ${{ github.ref_name }} latest
-      # - name: Deploy docs for PR
-      #   if: ${{ github.event_name == 'pull_request' }}
-      #   run: mike deploy pr-${{ github.event.number }}
+      - name: Deploy docs for PR
+        if: ${{ github.event_name == 'pull_request' }}
+        run: mike deploy pr-${{ github.event.number }}
       - name: Deploy docs as dev
         if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         run: mike deploy dev
       - name: Get docs into GitHub Pages
+        # if: ${{ github.event_name != 'pull_request' }}
         run: |
           git switch gh-pages
           git push origin gh-pages
