@@ -15,7 +15,10 @@ Coverage Impact:
 """
 
 import pytest
-import papermill as pm
+## The papermill dependency is only needed for these tests,
+## and importing it inside the functions means that pytest can
+## exclude these tests for dev environments where notebooks aren't being run
+# import papermill as pm
 
 
 
@@ -25,6 +28,7 @@ class TestDocsNotebooks:
     @pytest.mark.notebook
     def test_knownRp_notebook_execution(self, repo_root):
         """Test that ex_knownRp_PD.py runs without error."""
+        import papermill as pm
         result = pm.execute_notebook(
             repo_root / 'docs/examples/knownRp_PD.ipynb',
             repo_root / 'docs/examples/knownRp_PD_output.ipynb',
@@ -34,6 +38,7 @@ class TestDocsNotebooks:
     @pytest.mark.notebook
     def test_unknownRp_notebook_execution(self, repo_root):
         """Test that ex_knownRp_PD.py runs without error."""
+        import papermill as pm
         result = pm.execute_notebook(
             repo_root / 'docs/examples/unknownRp_PD.ipynb',
             repo_root / 'docs/examples/unknownRp_PD_output.ipynb',
