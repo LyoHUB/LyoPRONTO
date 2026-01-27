@@ -13,9 +13,6 @@ on:
     
 jobs:
   docdeploy:
-    permissions:
-      contents: write
-      pages: write
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GIT_COMMITTER_NAME: ${{ github.actor }}
@@ -34,17 +31,17 @@ jobs:
       - run: pip install .[docs]
       - run: echo ${{ github.event_name}} ${{ github.ref_name }}
       # Deploy docs according to type of event
-      - name: Deploy docs as latest
+      - name: Build docs as latest
         if: ${{ github.event_name == 'release' }}
         run: mike deploy ${{ github.ref_name }} latest
-      - name: Deploy docs for PR
+      - name: Build docs for PR
         if: ${{ github.event_name == 'pull_request' }}
         run: mike deploy pr-${{ github.event.number }}
-      - name: Deploy docs as dev
+      - name: Build docs as dev
         if: ${{ github.event_name == 'push' && github.ref_name == 'main' }}
         run: mike deploy dev
-      - name: Get docs into GitHub Pages
-        # if: ${{ github.event_name != 'pull_request' }}
+      - name: Deploy docs to GitHub Pages
+        if: ${{ github.event_name != 'pull_request' }}
         run: |
           git switch gh-pages
           git push origin gh-pages
