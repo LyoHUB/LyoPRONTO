@@ -1,7 +1,12 @@
 [
   {
-    "version": "pr-6",
-    "title": "pr-6",
+    "version": "pr-8",
+    "title": "pr-8",
+    "aliases": []
+  },
+  {
+    "version": "pr-4",
+    "title": "pr-4",
     "aliases": []
   },
   {
@@ -13,5 +18,12 @@
     "version": "dev",
     "title": "dev",
     "aliases": []
+  },
+  {
+    "version": "v1.1alpha",
+    "title": "v1.1alpha",
+    "aliases": [
+      "latest"
+    ]
   }
 ]
