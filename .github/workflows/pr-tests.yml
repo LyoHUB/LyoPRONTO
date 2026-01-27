@@ -26,7 +26,7 @@ jobs:
     - name: Determine test mode
       id: mode
       run: |
-        if [ "${{ github.event.pull_request.draft }}" == "true" ]; then
+        if [ "${{ github.event.pull_request.draft }}" ]; then
           echo "mode=fast" >> $GITHUB_OUTPUT
         else
           echo "mode=full" >> $GITHUB_OUTPUT
@@ -48,15 +48,15 @@ jobs:
         pip install -e . --no-build-isolation
     
     - name: Run tests (draft = fast, ready = coverage)
+    # Currently this conditional branching doesn't actually do anything,
+    # since pyproject.toml adds these coverage arguments to the testing anyway
       run: |
-        if [ "${{ steps.mode.outputs.coverage }}" == "true" ]; then
-          echo "🔍 Running full tests with coverage (PR is ready for review)"
+        if [ "${{ steps.mode.outputs.mode }}" == "fast" ]; then
           echo "⚡ Skipping notebook tests (marked with @pytest.mark.notebook) - these run separately"
-          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=term-missing
         else
-          echo "⚡ Running fast tests without coverage (PR is draft)"
-          echo "⚡ Skipping slow tests (marked with @pytest.mark.slow)"
-          pytest tests/ -n auto -v -m "not slow"
+          echo "⚡ Skipping notebook tests (marked with @pytest.mark.slow), not running coverage"
+          pytest tests/ -n auto -v -m "not notebook"
         fi
     
     - name: Upload coverage (if run)

@@ -14,8 +14,6 @@ Coverage Impact:
     - Validates validation module code paths work in real-world scenarios
 """
 
-import subprocess
-import sys
 import pytest
 import papermill as pm
 
@@ -25,7 +23,7 @@ class TestDocsNotebooks:
     """Smoke tests: run example scripts used for documentation."""
 
     @pytest.mark.notebook
-    def test_ex_knownRp_execution(self, repo_root):
+    def test_knownRp_notebook_execution(self, repo_root):
         """Test that ex_knownRp_PD.py runs without error."""
         result = pm.execute_notebook(
             repo_root / 'docs/examples/knownRp_PD.ipynb',
@@ -34,7 +32,7 @@ class TestDocsNotebooks:
         # Will error if execution fails
 
     @pytest.mark.notebook
-    def test_ex_unknownRp_execution(self, repo_root):
+    def test_unknownRp_notebook_execution(self, repo_root):
         """Test that ex_knownRp_PD.py runs without error."""
         result = pm.execute_notebook(
             repo_root / 'docs/examples/unknownRp_PD.ipynb',
