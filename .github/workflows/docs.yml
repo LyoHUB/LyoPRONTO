@@ -10,12 +10,12 @@ on:
 # On releasing a new version, rebuild docs with new version number and push as "latest"
   release:
     types: [published, edited]
-permissions:
-  contents: write
-  pages: write
     
 jobs:
   docdeploy:
+    permissions:
+      contents: write
+      pages: write
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GIT_COMMITTER_NAME: ${{ github.actor }}
