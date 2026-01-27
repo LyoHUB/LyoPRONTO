@@ -12,6 +12,7 @@ on:
     types: [published, edited]
 permissions:
   contents: write
+  pages: write
     
 jobs:
   docdeploy:
