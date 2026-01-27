@@ -49,7 +49,7 @@ dev = [
     "pandas>=2.0",
 ]
 docs = [
-    "papermill>2.6.0",
+    "papermill>=2.6.0",
     "ipykernel>=6.15.0",
     "ruamel.yaml>=0.18.0",
 ]
