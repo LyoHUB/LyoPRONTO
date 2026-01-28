@@ -280,7 +280,15 @@ class TestOptPchEdgeCases:
         np.testing.assert_array_almost_equal(output1, output2, decimal=DECIMAL_PRECISION)
 
 class TestOptPchReference:
-    @pytest.mark.skip(reason="Reference test not yet implemented")
-    def test_opt_pch_reference(self):
-        # TODO test against an example case in test_data, to be created
-        pass
+    # This test SHOULD NOT be treated as binding, since the reference case has some questionable behavior.
+    def test_opt_pch_reference(self, repo_root, standard_opt_pch_inputs):
+        """Test opt_Pch results against reference data from web interface optimizer."""
+        ref_csv = repo_root / 'test_data' / 'reference_opt_Pch.csv'
+        if not ref_csv.exists():
+            pytest.skip(f"Reference CSV not found: {ref_csv}")
+        output_ref = np.loadtxt(ref_csv, delimiter=';', skiprows=1)
+        output = opt_Pch.dry(*standard_opt_pch_inputs)
+
+        assert np.isclose(output, output_ref[:-1,:], atol=1e-4).all(), \
+            "opt_Pch output should match reference data, but reference data is known to " \
+            + "be odd, so (with maintainer approval) the reference data may be updated."
