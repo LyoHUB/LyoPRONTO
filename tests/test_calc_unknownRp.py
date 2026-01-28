@@ -185,7 +185,7 @@ class TestCalcUnknownRpEdgeCases:
         Tbot_exp = np.array([-30.0, -38.0, -32.0, -25.0])
         
         with pytest.warns(UserWarning, match="No sublimation"):
-            output, product_res = calc_unknownRp.dry(*standard_inputs_nodt,
+            calc_unknownRp.dry(*standard_inputs_nodt,
                 time, Tbot_exp
             )
 
@@ -193,7 +193,7 @@ class TestCalcUnknownRpEdgeCases:
         Tbot_exp = np.array([-40.0, -25.0, -20.0, -15.0])
 
         with pytest.warns(UserWarning, match="No sublimation"):
-            output, product_res = calc_unknownRp.dry(*standard_inputs_nodt,
+            calc_unknownRp.dry(*standard_inputs_nodt,
                 time, Tbot_exp
             )
 

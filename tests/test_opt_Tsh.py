@@ -89,7 +89,6 @@ class TestOptTsh:
         assert output.size > 0
         
         # Check that drying completes
-        percent_dried = output[:, 6]
         assert_complete_drying(output)
 
         # Check shape (should have 7 columns)

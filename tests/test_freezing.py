@@ -151,7 +151,7 @@ class TestFreezingEdgeCases:
         }
         dt = 0.01
         
-        results = freeze(vial, product, h_freezing, Tshelf, dt)
+        freeze(vial, product, h_freezing, Tshelf, dt)
 
 class TestFreezingReference:
 

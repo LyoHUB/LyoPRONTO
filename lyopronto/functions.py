@@ -17,7 +17,7 @@
 
 from scipy.optimize import fsolve, brentq
 from scipy.integrate import quad
-from scipy.interpolate import PchipInterpolator, make_interp_spline
+from scipy.interpolate import PchipInterpolator
 import numpy as np
 from . import constant
 
@@ -245,7 +245,7 @@ def Eq_Constraints(Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv,Lpr0,Lck,Av,Ap,Rp):
 
 ##
 
-def lumped_cap_Tpr_abstract(t,Tpr0,V,h,Av,Tsh,Tsh0,Tsh_ramp,rho,Cpi,):
+def lumped_cap_Tpr_abstract(t,Tpr0,V,h,Av,Tsh,Tsh0,Tsh_ramp,rho,Cpi):
     """
     Calculates the product temperature in C. Inputs are time in hr, initial product temperature in degC, product density in g/mL, constant pressure specific heat of the product in J/kg/K, product volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, current shelf temperature in degC, initial shelf temperature in degC, shelf temperature ramping rate in degC/min
     """
@@ -358,14 +358,11 @@ def fill_output(sol, config):
         return interp_points
     else:
         out_t = np.arange(0, sol.t[-1], dt)   
-    fullout = np.zeros((len(out_t), len(calc_step(0, 0, config))))
-    interp_points = np.zeros((len(sol.t), 7))
-    for i,(t, y) in enumerate(zip(sol.t, sol.y[0])):
-        interp_points[i,:] = calc_step(t, y, config)
     interp_func = PchipInterpolator(sol.t, interp_points, axis=0)
-    # interp_func = make_interp_spline(sol.t, interp_points, axis=0, k=3)
+    fullout = np.zeros((len(out_t), 7))
     for i, t in enumerate(out_t):
         if np.any(sol.t == t):
             fullout[i,:] = interp_points[sol.t == t, :]
-        fullout[i,:] = interp_func(t)
+        else:
+            fullout[i,:] = interp_func(t)
     return fullout

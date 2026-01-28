@@ -1,5 +1,4 @@
 """Unit tests for core physics functions in lyopronto.functions."""
-import pytest
 import numpy as np
 from lyopronto import functions, constant
 

@@ -117,7 +117,6 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
         else:
             i = np.argmax(t_tr>t) # Get first index where time trigger exceeds current time
             if not(i == i_prev):
-                Tpr0 = Tpr
                 i_prev = i
             # Evaluate shelf temperature at current time point 
             Tsh = Tsh_t(t)    # degC
