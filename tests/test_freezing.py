@@ -154,7 +154,34 @@ class TestFreezingEdgeCases:
         results = freeze(vial, product, h_freezing, Tshelf, dt)
 
 class TestFreezingReference:
-    @pytest.mark.skip(reason="Reference test not yet implemented")
-    def test_freezing_reference(self):
-        # TODO test against case in test_data
-        pass
+
+    @pytest.fixture
+    def freezing_params_ref(self):
+        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
+        product = {'Tpr0': 15.8, 'Tf': -1.54, 'Tn': -5.84, 'cSolid': 0.05}
+        h_freezing = 38.0 # W/m²/K
+        Tshelf = {
+            'init': 10.0,
+            'setpt': np.array([-40.0]),
+            'dt_setpt': np.array([180]),
+            'ramp_rate': 1.0
+        }
+        dt = 0.01
+        return vial, product, h_freezing, Tshelf, dt
+
+    def test_freezing_reference(self, repo_root, freezing_params_ref):
+        # NOTE: The original version of LyoPRONTO, and therefore the online interface,
+        # had several correctness bugs in the freezing implementation. Therefore, reference 
+        # data was generated directly from this code, unlike other regression tests. 
+        ref_csv = repo_root / 'test_data' / 'reference_freezing.csv'
+        if not ref_csv.exists():
+            pytest.skip(f"Reference CSV not found: {ref_csv}")
+        output_ref = np.loadtxt(ref_csv, delimiter=',', skiprows=1)
+
+        output = freeze(*freezing_params_ref)
+
+
+        array_compare = np.isclose(output, output_ref, rtol=1e-2)
+        print(output[~array_compare], output_ref[~array_compare])
+        assert array_compare.all(), \
+            f"Freezing output does not match reference data, at {np.where(array_compare==False)}"
