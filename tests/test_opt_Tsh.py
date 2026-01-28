@@ -12,7 +12,7 @@ from lyopronto import opt_Tsh
 from .utils import assert_physically_reasonable_output, assert_complete_drying, assert_incomplete_drying
 
 
-class TestOptimizerInterface:
+class TestOptTsh:
     """Test optimizer functionality matching web interface examples."""
     
     @pytest.fixture
@@ -52,8 +52,6 @@ class TestOptimizerInterface:
             'min': -45.0,                   # Minimum shelf temperature
             'max': 120.0,                   # Maximum shelf temperature
             'init': -35.0,                  # Initial shelf temperature
-            'setpt': np.array([120.0]),     # Target set point
-            'dt_setpt': np.array([1800]),   # Hold time [min]
             'ramp_rate': 1.0                # Ramp rate [degC/min]
         }
         
@@ -70,7 +68,7 @@ class TestOptimizerInterface:
     @pytest.fixture
     def reference_results(self, reference_data_path):
         """Load reference results from web interface optimizer output."""
-        csv_path = reference_data_path / 'reference_optimizer.csv'
+        csv_path = reference_data_path / 'reference_opt_Tsh.csv'
         df = pd.read_csv(csv_path, sep=';')
         return df
     
