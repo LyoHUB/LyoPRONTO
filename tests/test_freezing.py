@@ -29,7 +29,9 @@ def freezing_params():
 class TestFreezingFuncs:
     def test_crystallization_time(self, freezing_params):
         vial, product, h_freezing, Tshelf, dt = freezing_params
-        t_cryst = crystallization_time_FUN(vial['Vfill'], h_freezing, vial['Av'], product['Tf'], product['Tn'], Tshelf['setpt'][0])
+        def Tshelf_t(t):
+            return Tshelf['setpt'][0]
+        t_cryst = crystallization_time_FUN(vial['Vfill'], h_freezing, vial['Av'], product['Tf'], product['Tn'], Tshelf_t, 0.0)
         assert t_cryst > 0
         assert t_cryst < 10
 
@@ -184,4 +186,4 @@ class TestFreezingReference:
         array_compare = np.isclose(output, output_ref, rtol=1e-2)
         print(output[~array_compare], output_ref[~array_compare])
         assert array_compare.all(), \
-            f"Freezing output does not match reference data, at {np.where(array_compare==False)}"
+            f"Freezing output does not match reference data, at {np.where(~array_compare)}"

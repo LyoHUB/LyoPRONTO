@@ -59,7 +59,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
     
         # Quantities solved for: x = [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv]
-        fun = lambda x: (x[0]-x[4])    # Objective function to be minimized to maximize sublimation rate
+        def fun(x): 
+            return (x[0]-x[4])    # Objective function to be minimized to maximize sublimation rate
         x0 = [Pch,0.0,T0,T0,Pch,T0,3.0e-4]    # Initial values
         # Constraints
         cons = ({'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[0]},  # sublimation front pressure in Torr

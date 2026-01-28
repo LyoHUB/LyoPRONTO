@@ -52,7 +52,7 @@ def Lpr0_FUN(Vfill,Ap,cSolid):
     return Vfill/(Ap*constant.rho_ice)*dens_fac  # Fill height in cm
 
 ##
-def Rp_FUN(l,R0,A1,A2):
+def Rp_FUN(L,R0,A1,A2):
     """Calculates product resistance in cm^2-hr-Torr/g.
 
     Args:
@@ -65,7 +65,7 @@ def Rp_FUN(l,R0,A1,A2):
         (float): product resistance in cm^2-hr-Torr/g
     """
 
-    return R0 + A1*l/(1+A2*l) # Product resistance in cm^2-hr-Torr/g
+    return R0 + A1*L/(1+A2*L) # Product resistance in cm^2-hr-Torr/g
 
 ##
 def Kv_FUN(KC,KP,KD,Pch):

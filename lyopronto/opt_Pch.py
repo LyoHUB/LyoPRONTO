@@ -18,8 +18,6 @@
 
 import scipy.optimize as sp
 import numpy as np
-import math
-import csv
 import warnings
 from . import constant
 from . import functions
@@ -96,6 +94,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                           f"Pch={Pch:.1f}, dmdt={dmdt:.2e}, Tbot={Tbot:.1f}, Tsh={Tsh:.1f}, Psub={Psub:.1f}, Tsub={Tsub:.1f}, Kv={Kv:.2e}")
             failures += 1
             if failures >= 10:
+                # warnings.warn(f"Maximum consecutive optimization failures ({failures}) reached. Terminating drying simulation.")
                 break
             else:
                 continue

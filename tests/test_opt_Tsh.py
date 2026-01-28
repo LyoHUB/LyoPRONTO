@@ -171,23 +171,11 @@ class TestOptTsh:
         assert abs(max_T_bot - ref_max_T_bot) < 0.5, \
             f"Max product temp mismatch: got {max_T_bot:.2f}°C, expected {ref_max_T_bot:.2f}°C"
     
-    
-    @pytest.mark.skip(reason="Example script not yet implemented")
+    @pytest.mark.skip(reason="Example notebook not yet implemented")
     def test_optimizer_example_script_runs(self):
         """Test that the optimizer example script runs successfully."""
         # Import and run the example
-        import sys
-        sys.path.insert(0, 'examples')
-        
-        from example_optimizer import run_optimizer_example
-        
-        results = run_optimizer_example()
-        
-        # Verify results
-        assert results is not None
-        assert results.size > 0
-        assert_complete_drying(results)
-
+        pass
 
 class TestOptimizerEdgeCases:
     """Test edge cases and error handling for optimizer."""

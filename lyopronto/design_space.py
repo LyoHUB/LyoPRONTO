@@ -17,8 +17,6 @@
 from warnings import warn
 from scipy.optimize import fsolve
 import numpy as np
-import math
-import csv
 from . import constant
 from . import functions
 
