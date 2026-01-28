@@ -306,7 +306,7 @@ class TestOptPchReference:
         vial = {"Av": 3.8, "Ap": 3.14, "Vfill": 2.0}
         # Product properties
         product = {
-            "T_pr_crit": -25.0,  # Critical product temperature [degC]
+            "T_pr_crit": -5.0,  # Critical product temperature [degC]
             "cSolid": 0.05,  # Solid content [g/mL]
             "R0": 1.4,  # Product resistance coefficient R0 [cm**2-hr-Torr/g]
             "A1": 16.0,  # Product resistance coefficient A1 [1/cm]
@@ -317,13 +317,13 @@ class TestOptPchReference:
         # Chamber pressure optimization settings
         Pchamber = {
             "min": 0.05,  # Minimum chamber pressure [Torr]
-            "max": 1.0,  # Maximum chamber pressure [Torr]
+            "max": 1000.0,  # Maximum chamber pressure [Torr]
         }
         # Shelf temperature settings (FIXED for opt_Pch)
         Tshelf = {
             "init": -35.0,  # Initial shelf temperature [degC]
-            "setpt": np.array([-10.0]),  # Set points [degC]
-            "dt_setpt": np.array([3600]),  # Hold times [min]
+            "setpt": np.array([20.0]),  # Set points [degC]
+            "dt_setpt": np.array([1800]),  # Hold times [min]
             "ramp_rate": 1.0,  # Ramp rate [degC/min]
         }
         # Equipment capability
@@ -335,16 +335,16 @@ class TestOptPchReference:
         dt = 0.01  # Time step [hr]
         return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
 
-    # This test SHOULD NOT be treated as binding, since the reference case has some questionable behavior.
-    def test_opt_pch_reference(self, repo_root, standard_opt_pch_inputs):
+    # This test may need updating since the reference case can be questionable.
+    def test_opt_pch_reference(self, repo_root, opt_pch_reference_inputs):
         """Test opt_Pch results against reference data from web interface optimizer."""
         ref_csv = repo_root / "test_data" / "reference_opt_Pch.csv"
         if not ref_csv.exists():
             pytest.skip(f"Reference CSV not found: {ref_csv}")
-        output_ref = np.loadtxt(ref_csv, delimiter=";", skiprows=1)
-        output = opt_Pch.dry(*standard_opt_pch_inputs)
+        output_ref = np.loadtxt(ref_csv, delimiter=",", skiprows=1)
+        output = opt_Pch.dry(*opt_pch_reference_inputs)
 
-        assert np.isclose(output, output_ref[:-1, :], atol=1e-4).all(), (
+        assert np.isclose(output, output_ref, atol=1e-4).all(), (
             "opt_Pch output should match reference data, but reference data is known to "
             + "be odd, so (with maintainer approval) the reference data may be updated."
         )
