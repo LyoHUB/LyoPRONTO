@@ -280,6 +280,40 @@ class TestOptPchEdgeCases:
         np.testing.assert_array_almost_equal(output1, output2, decimal=DECIMAL_PRECISION)
 
 class TestOptPchReference:
+    @pytest.fixture
+    def opt_pch_reference_inputs(self):
+        vial = {'Av': 3.8, 'Ap': 3.14, 'Vfill': 2.0}
+        # Product properties
+        product = {
+            'T_pr_crit': -25.0,   # Critical product temperature [degC]
+            'cSolid': 0.05,      # Solid content [g/mL]
+            'R0': 1.4,           # Product resistance coefficient R0 [cm**2-hr-Torr/g]
+            'A1': 16.0,          # Product resistance coefficient A1 [1/cm]
+            'A2': 0.0            # Product resistance coefficient A2 [1/cm**2]
+        }
+        # Vial heat transfer coefficients
+        ht = {'KC': 0.000275, 'KP': 0.000893, 'KD': 0.46}
+        # Chamber pressure optimization settings
+        Pchamber = {
+            'min': 0.05,  # Minimum chamber pressure [Torr]
+            'max': 1.0,  # Maximum chamber pressure [Torr]
+        }
+        # Shelf temperature settings (FIXED for opt_Pch)
+        Tshelf = {
+            'init': -35.0,  # Initial shelf temperature [degC]
+            'setpt': np.array([-10.0]),    # Set points [degC]
+            'dt_setpt': np.array([3600]),    # Hold times [min]
+            'ramp_rate': 1.0                      # Ramp rate [degC/min]
+        }
+        # Equipment capability
+        eq_cap = {
+            'a': -0.182,   # Equipment capability coefficient a [kg]/hr
+            'b': 11.7      # Equipment capability coefficient b [kg/hr/Torr]
+        }
+        nVial = 398
+        dt = 0.01   # Time step [hr]
+        return vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+
     # This test SHOULD NOT be treated as binding, since the reference case has some questionable behavior.
     def test_opt_pch_reference(self, repo_root, standard_opt_pch_inputs):
         """Test opt_Pch results against reference data from web interface optimizer."""
