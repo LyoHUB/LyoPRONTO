@@ -60,6 +60,8 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             j = j+1
         else:
             t_tr = np.append(t_tr,t_tr[-1]+(Tsh_tr[i+1]-T)/r[i+1]/constant.hr_To_min)    # hr
+    def Tsh_t(t):
+        return np.interp(t, t_tr, Tsh_tr)
 
     # Initial product temperature
     Tpr = product['Tpr0']    # degC
@@ -86,7 +88,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
                 Tpr0 = Tpr
                 i_prev = i
             # Evaluate shelf temperature at current time point
-            Tsh = np.interp(t, t_tr, Tsh_tr)
+            Tsh = Tsh_t(t)
             # Product temperature
             Tpr = functions.lumped_cap_Tpr_sol(t-t_tr[i-1],Tpr0,vial['Vfill'],h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])    # degC
 
@@ -104,7 +106,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     ################ Crystallization ######################
 
     tn = t    # Nucleation onset time in hr
-    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tsh)    # Crystallization time in hr
+    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tsh_t, tn)    # Crystallization time in hr
     ts = tn + dt_crystallization    # Solidification onset time in hr
 
     while(t<ts):
@@ -118,7 +120,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
                 Tpr0 = Tpr
                 i_prev = i
             # Evaluate shelf temperature at current time point 
-            Tsh = np.interp(t, t_tr, Tsh_tr)    # degC
+            Tsh = Tsh_t(t)    # degC
             # Product temperature stays at freezing temperature
             Tpr = product['Tf']    # degC
 
@@ -132,18 +134,21 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
 
     ################ Solidification ######################
 
+    t_last = ts
+    Tpr0 = Tpr    # degC
     while(t<t_tr[-1]):
 
         i = np.argmax(t_tr>t) # Get first index where time trigger exceeds current time
         if not(i == i_prev):
-            Tpr0 = Tpr
             i_prev = i
+            t_last = t_tr[i-1]
+            Tpr0 = Tpr
 
         # Evaluate shelf temperature at current time point 
-        Tsh = np.interp(t, t_tr, Tsh_tr)    # degC
+        Tsh = Tsh_t(t)    # degC
 
         # Product temperature
-        Tpr = functions.lumped_cap_Tpr_ice(t-t_tr[i-1],Tpr0,V_frozen,h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])
+        Tpr = functions.lumped_cap_Tpr_ice(t-t_last,Tpr0,V_frozen,h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])
         # Update record as functions of the cycle time
         freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
 

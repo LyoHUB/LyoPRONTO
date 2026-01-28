@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from scipy.optimize import fsolve
+from scipy.optimize import fsolve, brentq
+from scipy.integrate import quad
 from scipy.interpolate import PchipInterpolator, make_interp_spline
 import numpy as np
 from . import constant
@@ -270,7 +271,7 @@ def lumped_cap_Tpr_sol(*args):
 
 ##
 
-def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh):
+def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh_func,t0):
     """
     Calculates the crystallization time in hr. Inputs are fill volume in mL, heat transfer coefficient in W/m^2/K, vial area in cm^2, freezing temperature in degC, nucleation temperature in degC, shelf temperature in degC
     """
@@ -280,7 +281,15 @@ def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh):
     Hf = constant.dHf*constant.cal_To_J # fusion enthalpy in J/g
     Cp = constant.Cp_solution/constant.kg_To_g # specific heat capacity in J/g/K
     hA = h*constant.hr_To_s * Av*constant.cm_To_m**2 # heat transfer coefficient in J/K/hr
-    t = rhoV*(Hf-Cp*(Tf-Tn))/hA/(Tf-Tsh) # time: g*(J/g- J/g/K*K)/(J/m^2/K/hr*m^2*K) = hr
+    # t = rhoV*(Hf-Cp*(Tf-Tn))/hA/(Tf-Tsh) # time: g*(J/g- J/g/K*K)/(J/m^2/K/hr*m^2*K) = hr
+    lhs = rhoV*(Hf-Cp*(Tf-Tn))/hA
+    def integrand(t):
+        return Tf - Tsh_func(t+t0)
+    def resid(t):
+        integral, _ = quad(integrand, 0, t)
+        return integral - lhs
+    t = brentq(resid, t0, t0+100.0)
+
 
     return t
 
