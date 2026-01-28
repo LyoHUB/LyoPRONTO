@@ -279,25 +279,6 @@ class TestOptPchEdgeCases:
         # Results should be identical (deterministic optimization)
         np.testing.assert_array_almost_equal(output1, output2, decimal=DECIMAL_PRECISION)
 
-    #TODO: check whether this is actually expected. If so, merge with basic test above to avoid rerunning unnecessarily
-    @pytest.mark.skip(reason="TODO: check that this is expected, and if so why")
-    def test_pressure_decreases_with_progress(self, standard_opt_pch_inputs):
-        """Test that optimized pressure generally increases as drying progresses.
-        
-        Reason: TODO check this
-        """
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
-        
-        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        
-        # Compare early vs late pressure
-        early_Pch = output[:len(output)//4, 4].mean()  # First quarter
-        late_Pch = output[3*len(output)//4:, 4].mean()  # Last quarter
-        
-        # Late pressure should generally be higher
-        assert late_Pch >= early_Pch, \
-            f"Late pressure ({late_Pch:.1f}) should be >= early ({early_Pch:.1f})"
-    
 class TestOptPchReference:
     @pytest.mark.skip(reason="Reference test not yet implemented")
     def test_opt_pch_reference(self):
