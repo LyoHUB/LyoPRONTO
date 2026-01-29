@@ -269,6 +269,29 @@ def lumped_cap_Tpr_sol(*args):
 
 ##
 
+class RampInterpolator:
+    """Class to handle ramped setpoint interpolation."""
+
+    def __init__(self, rampspec):
+        self.dt_setpt = np.array(rampspec["dt_setpt"])
+        self.ramp_rate = rampspec["ramp_rate"]
+        if "init" in rampspec:
+            self.setpt = np.concatenate(([rampspec["init"]], rampspec["setpt"]))
+            self.values = np.concatenate(([self.setpt[0]], np.repeat(self.setpt[1:], 2)))
+            times = np.array([0.0])
+        else:
+            self.setpt = np.array(rampspec["setpt"])
+            self.values = np.repeat(self.setpt, 2)
+            times = np.array([0.0, self.dt_setpt[0] / constant.hr_To_min])
+        for i,v in enumerate(self.setpt[1:], start=1):
+            ramptime = abs((v - self.values[i-1]) / self.ramp_rate) / constant.hr_To_min
+            holdtime = self.dt_setpt[min(len(self.dt_setpt)-1, i-1)] / constant.hr_To_min
+            times = np.append(times, [ramptime, holdtime])
+        self.times = np.cumsum(times)
+        
+    def __call__(self, t):
+        return np.interp(t, self.times, self.values)
+
 ##
 
 def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh_func,t0):

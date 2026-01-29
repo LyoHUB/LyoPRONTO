@@ -7,15 +7,14 @@ from lyopronto.functions import (
     crystallization_time_FUN,
     lumped_cap_Tpr_ice,
     lumped_cap_Tpr_sol,
+    RampInterpolator
 )
 from lyopronto import constant
 
 
-def calc_shelfT_time(Tshelf):
-    max_time = Tshelf["dt_setpt"].sum() / constant.hr_To_min  # Convert minutes to hours
-    setpt_changes = np.diff(np.concatenate(([Tshelf["init"]], Tshelf["setpt"])))
-    max_time += np.sum(np.abs(setpt_changes)) / Tshelf["ramp_rate"] / constant.hr_To_min
-    return max_time
+def check_max_time(output, Tshelf, dt):
+    ramp = RampInterpolator(Tshelf)
+    assert output[-1, 0] == pytest.approx(ramp.times[-1], abs=dt)
 
 
 @pytest.fixture
@@ -105,9 +104,8 @@ class TestFreezing:
         assert results[0, 1] == pytest.approx(Tshelf["init"])
         assert results[0, 2] == pytest.approx(product["Tpr0"])
 
-        max_time = calc_shelfT_time(Tshelf)
 
-        assert results[-1, 0] == pytest.approx(max_time, abs=dt)
+        check_max_time(results, Tshelf, dt)
         assert results[-1, 1] == pytest.approx(Tshelf["setpt"][-1])
         # Since default setup has long hold, product should approach shelf
         assert results[-1, 2] == pytest.approx(results[-1, 2], abs=0.1)
@@ -125,11 +123,10 @@ class TestFreezingEdgeCases:
             "ramp_rate": 1.0,
         }
 
-        max_time = calc_shelfT_time(Tshelf)
 
         results = freeze(vial, product, h_freezing, Tshelf, dt)
 
-        assert results[-1, 0] == pytest.approx(max_time, abs=dt)
+        check_max_time(results, Tshelf, dt)
         assert results[-1, 1] == pytest.approx(Tshelf["setpt"][-1])
         # Since setup has long hold, product should approach shelf
         assert results[-1, 2] == pytest.approx(Tshelf["setpt"][-1], abs=0.1)
@@ -143,11 +140,10 @@ class TestFreezingEdgeCases:
             "ramp_rate": 1.0,
         }
 
-        max_time = calc_shelfT_time(Tshelf)
-
         results = freeze(vial, product, h_freezing, Tshelf, dt)
 
-        assert results[-1, 0] == pytest.approx(max_time, abs=dt)
+        check_max_time(results, Tshelf, dt)
+
         assert results[-1, 1] == pytest.approx(Tshelf["setpt"][-1])
         # Since setup has long hold, product should approach shelf
         assert results[-1, 2] == pytest.approx(Tshelf["setpt"][-1], abs=0.1)
@@ -161,7 +157,8 @@ class TestFreezingEdgeCases:
             results = freeze(vial, product, h_freezing, Tshelf, dt)
 
         # Should warn and return output ending before nucleation
-        assert results[-1, 2] == Tshelf["setpt"][-1]
+        assert results[-1, 2] == pytest.approx(Tshelf["setpt"][-1], abs=0.1)
+        check_max_time(results, Tshelf, dt)
 
     def test_incomplete_solidification(self, freezing_params):
         """Test behavior when nucleation temperature is reached, but crystallization is not finished."""
@@ -172,9 +169,11 @@ class TestFreezingEdgeCases:
 
         with pytest.warns(UserWarning, match="crystallized"):
             results = freeze(vial, product, h_freezing, Tshelf, dt)
+        check_max_time(results, Tshelf, dt)
 
         # Should warn and return output ending before nucleation
         assert results[-1, 2] > product["Tn"]
+        assert results[-1, 2] == pytest.approx(product["Tf"], abs=0.1)
 
     def test_freezing_below_nucleation(
         self,

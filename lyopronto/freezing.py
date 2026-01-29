@@ -16,8 +16,8 @@
 
 from warnings import warn
 import numpy as np
-from . import constant
 from . import functions
+from .functions import RampInterpolator
 
 
 ################# Freezing ###############
@@ -40,10 +40,9 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     Tsh = Tshelf['init']        # degC
     
     # Shelf temperature and time triggers, ramping rates
-    Tsh_tr = np.array([Tshelf['init']])    # degC
-    for T in Tshelf['setpt']:
-        Tsh_tr = np.append(Tsh_tr,T)    # degC
-        Tsh_tr = np.append(Tsh_tr,T)    # degC
+    Tshr = RampInterpolator(Tshelf)
+    Tsh_tr = Tshr.values
+    t_tr = Tshr.times
     r = np.array([[0.0]])    # degC/min
     for i,T in enumerate(Tsh_tr[:-1]):
         if Tsh_tr[i+1]>T:
@@ -52,16 +51,6 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             r = np.append(r,-Tshelf['ramp_rate'])    # degC/min
         else:
             r = np.append(r,0.0)    # degC/min
-    t_tr = np.array([[0.0]])    # hr
-    j = 0
-    for i,T in enumerate(Tsh_tr[:-1]):
-        if Tsh_tr[i+1]==T:
-            t_tr = np.append(t_tr,t_tr[-1]+Tshelf['dt_setpt'][j]/constant.hr_To_min)
-            j = j+1
-        else:
-            t_tr = np.append(t_tr,t_tr[-1]+(Tsh_tr[i+1]-T)/r[i+1]/constant.hr_To_min)    # hr
-    def Tsh_t(t):
-        return np.interp(t, t_tr, Tsh_tr)
 
     # Initial product temperature
     Tpr = product['Tpr0']    # degC
@@ -88,7 +77,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
                 Tpr0 = Tpr
                 i_prev = i
             # Evaluate shelf temperature at current time point
-            Tsh = Tsh_t(t)
+            Tsh = Tshr(t)
             # Product temperature
             Tpr = functions.lumped_cap_Tpr_sol(t-t_tr[i-1],Tpr0,vial['Vfill'],h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])    # degC
 
@@ -106,7 +95,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     ################ Crystallization ######################
 
     tn = t    # Nucleation onset time in hr
-    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tsh_t, tn)    # Crystallization time in hr
+    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tshr, tn)    # Crystallization time in hr
     ts = tn + dt_crystallization    # Solidification onset time in hr
 
     while(t<ts):
@@ -119,7 +108,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             if not(i == i_prev):
                 i_prev = i
             # Evaluate shelf temperature at current time point 
-            Tsh = Tsh_t(t)    # degC
+            Tsh = Tshr(t)    # degC
             # Product temperature stays at freezing temperature
             Tpr = product['Tf']    # degC
 
@@ -144,7 +133,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             Tpr0 = Tpr
 
         # Evaluate shelf temperature at current time point 
-        Tsh = Tsh_t(t)    # degC
+        Tsh = Tshr(t)    # degC
 
         # Product temperature
         Tpr = functions.lumped_cap_Tpr_ice(t-t_last,Tpr0,V_frozen,h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])
