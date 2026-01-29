@@ -344,7 +344,9 @@ class TestOptPchReference:
         output_ref = np.loadtxt(ref_csv, delimiter=",", skiprows=1)
         output = opt_Pch.dry(*opt_pch_reference_inputs)
 
-        assert np.isclose(output, output_ref, atol=1e-3).all(), (
+        array_compare = np.isclose(output, output_ref, atol=1e-3)
+        assert array_compare.all(), (
             "opt_Pch output should match reference data, but reference data is known to "
             + "be odd, so (with maintainer approval) the reference data may be updated."
+            + f"Not matching at positions:\n {np.where(~array_compare)}"
         )
