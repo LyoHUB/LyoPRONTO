@@ -34,18 +34,8 @@ def opt_pch_consistency(output, setup):
         f"Initial Tsh should be ~{Tshelf['init']}°C"
     )
 
-    # With time, shelf temperature should follow setpoints
-    # ramptime
-    # if output[-1, 0] > Tshelf[
-    # assert 
     Tsh_values = output[:, 3]
     Tsh_check = functions.RampInterpolator(Tshelf)(output[:, 0])
-    locs = np.where(~np.isclose(Tsh_values, Tsh_check, atol=0.1, rtol=0))
-    print(locs)
-    print(functions.RampInterpolator(Tshelf).times)
-    print(output[:, 0][locs])
-    print(Tsh_values[locs])
-    print(Tsh_check[locs])
     np.testing.assert_allclose(Tsh_values, Tsh_check, atol=0.1, rtol=0)
 
     # Pressure (column 4) should vary
@@ -80,6 +70,7 @@ def opt_pch_consistency(output, setup):
     assert np.all(violations <= 0), (
         f"Equipment capability exceeded by {np.max(violations):.3e} kg/hr"
     )
+
 
 @pytest.fixture
 def standard_opt_pch_inputs():
@@ -160,8 +151,11 @@ class TestOptPchBasic:
         # Remove max pressure constraint
         del Pchamber["max"]
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        )
         assert_complete_drying(output)
+
 
 class TestOptPchEdgeCases:
     """Edge case tests for opt_Pch module."""
@@ -179,7 +173,9 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        )
         assert_complete_drying(output)
 
     def test_insufficient_time(self, standard_opt_pch_inputs):
@@ -190,7 +186,9 @@ class TestOptPchEdgeCases:
 
         with pytest.warns(UserWarning, match="Drying incomplete"):
             output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        )
         assert_incomplete_drying(output)
 
     def test_high_resistance_product(self, standard_opt_pch_inputs):
@@ -205,7 +203,9 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        )
 
         assert_complete_drying(output)
         # Higher resistance should lead to longer drying time
@@ -222,7 +222,9 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        )
 
         assert_complete_drying(output)
 
@@ -237,7 +239,9 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
+        )
 
         assert_complete_drying(output)
         # All pressures should be >= 100 mTorr
@@ -268,7 +272,9 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, new_Pch, Tshelf, dt, eq_cap, nVial)
 
-        opt_pch_consistency(output, (vial, product, ht, new_Pch, Tshelf, dt, eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, new_Pch, Tshelf, dt, eq_cap, nVial)
+        )
 
     def test_tight_equipment_constraint(self, standard_opt_pch_inputs):
         """Test with tighter equipment capability constraint."""
@@ -284,7 +290,9 @@ class TestOptPchEdgeCases:
         )
 
         # Should run without errors and show some progress despite tighter constraint
-        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, tight_eq_cap, nVial))
+        opt_pch_consistency(
+            output, (vial, product, ht, Pchamber, Tshelf, dt, tight_eq_cap, nVial)
+        )
         assert_complete_drying(output)
 
     @pytest.mark.slow
@@ -295,7 +303,7 @@ class TestOptPchEdgeCases:
         output2 = opt_Pch.dry(*standard_opt_pch_inputs)
 
         # Results should be identical (deterministic optimization)
-        np.testing.assert_array_almost_equal( output1, output2, decimal=6)
+        np.testing.assert_array_almost_equal(output1, output2, decimal=6)
 
 
 class TestOptPchReference:

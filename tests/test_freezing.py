@@ -7,7 +7,7 @@ from lyopronto.functions import (
     crystallization_time_FUN,
     lumped_cap_Tpr_ice,
     lumped_cap_Tpr_sol,
-    RampInterpolator
+    RampInterpolator,
 )
 from lyopronto import constant
 
@@ -104,7 +104,6 @@ class TestFreezing:
         assert results[0, 1] == pytest.approx(Tshelf["init"])
         assert results[0, 2] == pytest.approx(product["Tpr0"])
 
-
         check_max_time(results, Tshelf, dt)
         assert results[-1, 1] == pytest.approx(Tshelf["setpt"][-1])
         # Since default setup has long hold, product should approach shelf
@@ -122,7 +121,6 @@ class TestFreezingEdgeCases:
             "dt_setpt": np.array([60, 60, 600]),
             "ramp_rate": 1.0,
         }
-
 
         results = freeze(vial, product, h_freezing, Tshelf, dt)
 

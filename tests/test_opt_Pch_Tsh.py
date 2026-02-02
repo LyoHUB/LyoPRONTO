@@ -99,7 +99,7 @@ def opt_both_consistency(output, setup):
     assert np.std(Tsh_values) > 0, "Shelf temperature should vary (be optimized)"
 
     # Both should respect bounds
-    np.all(Pch_values >= Pchamber["min"] * constant.Torr_to_mTorr), (
+    assert np.all(Pch_values >= Pchamber["min"] * constant.Torr_to_mTorr), (
         "Pressure should be >= min bound"
     )
     if hasattr(Pchamber, "max"):

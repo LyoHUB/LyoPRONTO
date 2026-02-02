@@ -135,8 +135,6 @@ class TestCalcUnknownRpBasic:
         # Check covariance is reasonable (not infinite/NaN)
         assert np.all(np.isfinite(params_covariance)), "Covariance should be finite"
 
-
-
         assert_incomplete_drying(output)
         # Calculate initial product height
         Lpr0 = Lpr0_FUN(vial["Vfill"], vial["Ap"], product["cSolid"])

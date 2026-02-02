@@ -15,6 +15,7 @@ from .utils import (
     assert_incomplete_drying,
 )
 
+
 def opt_tsh_consistency(output, setup):
     vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = setup
 
@@ -28,7 +29,6 @@ def opt_tsh_consistency(output, setup):
     assert output.shape[0] > 1, "Should have multiple time points"
 
     assert_physically_reasonable_output(output)
-
 
     # Chamber pressure should start at first setpoint
     # Note: May not reach final setpoint if drying completes first
@@ -73,6 +73,7 @@ def opt_tsh_consistency(output, setup):
     assert np.all(violations <= 0), (
         f"Equipment capability exceeded by {np.max(violations):.3e} kg/hr"
     )
+
 
 class TestOptTsh:
     """Test optimizer functionality matching web interface examples."""

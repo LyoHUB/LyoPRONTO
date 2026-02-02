@@ -62,7 +62,7 @@ def assert_physically_reasonable_output(output, Tmax=60):
     # Chamber pressure should be positive (in mTorr, so typically 50-500)
     assert np.all(output[:, 4] > 0), "Chamber pressure should be positive"
     assert np.all(output[:, 4] < 2000), (
-        "Chamber pressure unreasonably high (check units)"                                  
+        "Chamber pressure unreasonably high (check units)"
     )
 
     # Percent dried should be between 0 and 100

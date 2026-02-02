@@ -436,7 +436,20 @@ class TestRampInterpolatorSeparateDt:
         ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=False)
 
         np.testing.assert_allclose(
-            ramp.times, np.array([0, 1/3, 2+1/3, 2+2/3, 4+2/3, 4+5/6, 5+5/6, 6+1/3, 16+1/3])
+            ramp.times,
+            np.array(
+                [
+                    0,
+                    1 / 3,
+                    2 + 1 / 3,
+                    2 + 2 / 3,
+                    4 + 2 / 3,
+                    4 + 5 / 6,
+                    5 + 5 / 6,
+                    6 + 1 / 3,
+                    16 + 1 / 3,
+                ]
+            ),
         )  # in hours
         np.testing.assert_allclose(
             ramp.values, np.array([-40, -20.0, -20.0, 0, 0, -10.0, -10.0, 20.0, 20.0])
@@ -481,7 +494,7 @@ class TestRampInterpolatorSeparateDt:
         Pchamber = {
             "setpt": [0.1, 0.5],
             "dt_setpt": [60],
-            "ramp_rate": 0.4/60,
+            "ramp_rate": 0.4 / 60,
         }
         ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=False)
 
@@ -491,7 +504,9 @@ class TestRampInterpolatorSeparateDt:
 
         assert ramp(0.0) == Pchamber["setpt"][0]
         assert ramp(1.0) == Pchamber["setpt"][0]
-        assert ramp(1.5) == pytest.approx((Pchamber["setpt"][0] + Pchamber["setpt"][1]) / 2)
+        assert ramp(1.5) == pytest.approx(
+            (Pchamber["setpt"][0] + Pchamber["setpt"][1]) / 2
+        )
         assert ramp(2.0) == Pchamber["setpt"][1]
         assert ramp(3.0) == Pchamber["setpt"][1]
 
@@ -514,6 +529,7 @@ class TestRampInterpolatorSeparateDt:
 
         # After end
         assert ramp(1000) == -40.0
+
 
 class TestRampInterpolatorCombinedDt:
     """Tests for the RampInterpolator class, with ramp time counted against dt_setpt."""
@@ -552,7 +568,7 @@ class TestRampInterpolatorCombinedDt:
         ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=True)
 
         np.testing.assert_allclose(
-            ramp.times, np.array([0, 1/3, 2, 2+1/3, 4, 4+1/6, 5, 5.5, 15])
+            ramp.times, np.array([0, 1 / 3, 2, 2 + 1 / 3, 4, 4 + 1 / 6, 5, 5.5, 15])
         )  # in hours
         np.testing.assert_allclose(
             ramp.values, np.array([-40, -20.0, -20.0, 0, 0, -10.0, -10.0, 20.0, 20.0])
@@ -597,7 +613,7 @@ class TestRampInterpolatorCombinedDt:
         Pchamber = {
             "setpt": [0.1, 0.5],
             "dt_setpt": [60],
-            "ramp_rate": 0.4/30,
+            "ramp_rate": 0.4 / 30,
         }
         ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=True)
 
@@ -606,7 +622,9 @@ class TestRampInterpolatorCombinedDt:
 
         assert ramp(0.0) == Pchamber["setpt"][0]
         assert ramp(1.0) == Pchamber["setpt"][0]
-        assert ramp(1.25) == pytest.approx((Pchamber["setpt"][0] + Pchamber["setpt"][1]) / 2)
+        assert ramp(1.25) == pytest.approx(
+            (Pchamber["setpt"][0] + Pchamber["setpt"][1]) / 2
+        )
         assert ramp(1.5) == Pchamber["setpt"][1]
         assert ramp(2.0) == Pchamber["setpt"][1]
 
