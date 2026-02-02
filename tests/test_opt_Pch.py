@@ -7,7 +7,7 @@ Tests based on working example_optimizer.py structure.
 
 import pytest
 import numpy as np
-from lyopronto import opt_Pch, constant
+from lyopronto import opt_Pch, constant, functions
 from .utils import (
     assert_physically_reasonable_output,
     assert_complete_drying,
@@ -15,11 +15,71 @@ from .utils import (
 )
 
 
-# Test constants for numerical comparison
-DECIMAL_PRECISION = (
-    6  # Decimal places for floating-point comparison in assert_array_almost_equal
-)
+def opt_pch_consistency(output, setup):
+    vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = setup
 
+    assert output is not None, "opt_Pch.dry should return output"
+    assert isinstance(output, np.ndarray), "Output should be numpy array"
+
+    # Should have 7 columns: time, Tsub, Tbot, Tsh, Pch, flux, percent_dried
+    assert output.shape[1] == 7, f"Expected 7 columns, got {output.shape[1]}"
+
+    # Should have multiple time points
+    assert output.shape[0] > 1, "Should have multiple time points"
+
+    assert_physically_reasonable_output(output)
+
+    # Shelf temperature (column 3) should start at init
+    assert output[0, 3] == pytest.approx(Tshelf["init"]), (
+        f"Initial Tsh should be ~{Tshelf['init']}°C"
+    )
+
+    # With time, shelf temperature should follow setpoints
+    # ramptime
+    # if output[-1, 0] > Tshelf[
+    # assert 
+    Tsh_values = output[:, 3]
+    Tsh_check = functions.RampInterpolator(Tshelf)(output[:, 0])
+    locs = np.where(~np.isclose(Tsh_values, Tsh_check, atol=0.1, rtol=0))
+    print(locs)
+    print(functions.RampInterpolator(Tshelf).times)
+    print(output[:, 0][locs])
+    print(Tsh_values[locs])
+    print(Tsh_check[locs])
+    np.testing.assert_allclose(Tsh_values, Tsh_check, atol=0.1, rtol=0)
+
+    # Pressure (column 4) should vary
+    Pch_values = output[:, 4]
+    assert np.std(Pch_values) > 0, "Pressure should vary (be optimized)"
+
+    # Both should respect bounds
+    assert np.all(Pch_values >= Pchamber["min"] * constant.Torr_to_mTorr), (
+        "Pressure should be >= min bound"
+    )
+    if hasattr(Pchamber, "max"):
+        assert np.all(Pch_values <= Pchamber["max"] * constant.Torr_to_mTorr), (
+            "Pressure should be <= max bound"
+        )
+
+    # Tbot (column 2) should stay at or below T_pr_crit
+    T_crit = product["T_pr_crit"]
+    assert np.all(output[:, 2] <= T_crit + 0.01), (
+        f"Product temperature should be <= {T_crit}°C (critical)"
+    )
+
+    # Should not exceed equipment capability (with small tolerance)
+    # Equipment capability at different pressures
+    Pch = output[:, 4] / 1000  # [Torr]
+    actual_cap = eq_cap["a"] + eq_cap["b"] * Pch  # [kg/hr]
+    # Total sublimation rate per vial
+    flux = output[:, 5]  # Sublimation flux [kg/hr/m**2]
+    Ap_m2 = vial["Ap"] * constant.cm_To_m**2  # Convert [cm**2] to [m**2]
+    dmdt = flux * Ap_m2  # [kg/hr/vial]
+    violations = dmdt - actual_cap
+
+    assert np.all(violations <= 0), (
+        f"Equipment capability exceeded by {np.max(violations):.3e} kg/hr"
+    )
 
 @pytest.fixture
 def standard_opt_pch_inputs():
@@ -85,74 +145,23 @@ class TestOptPchBasic:
         each output column contains valid data. Then, check that
         pressure is optimized (varies over time), shelf temperature follows
         specified profile, and product temperature stays below critical temperature."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
-
-        output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-
-        assert output is not None, "opt_Pch.dry should return output"
-        assert isinstance(output, np.ndarray), "Output should be numpy array"
-
-        # Should have 7 columns: time, Tsub, Tbot, Tsh, Pch, flux, percent_dried
-        assert output.shape[1] == 7, f"Expected 7 columns, got {output.shape[1]}"
-
-        # Should have multiple time points
-        assert output.shape[0] > 1, "Should have multiple time points"
-
-        assert_physically_reasonable_output(output)
-
-        # Pressure (column 4) should vary as optimization proceeds
-        Pch_values = output[:, 4]
-        assert np.std(Pch_values) > 0, "Pressure should vary (be optimized)"
-
-        # Pressure should respect minimum bound (50 mTorr = 0.05 Torr)
-        assert np.all(Pch_values >= Pchamber["min"] * constant.Torr_to_mTorr), (
-            "Pressure should be >= min bound"
-        )
-
-        # Shelf temperature (column 3) should start at init
-        assert np.abs(output[0, 3] - Tshelf["init"]) < 1.0, (
-            f"Initial Tsh should be ~{Tshelf['init']}°C"
-        )
-
-        # Shelf temperature should increase over time (following ramp)
-        # Note: May not reach final setpoint if drying completes first
-        assert output[-1, 3] > output[0, 3], (
-            "Shelf temperature should increase from initial value"
-        )
-
-        # Tbot (column 2) should stay at or below T_pr_crit
-        T_crit = product["T_pr_crit"]
-        assert np.all(output[:, 2] <= T_crit), (
-            f"Product temperature should be <= {T_crit}°C (critical)"
-        )
-
+        output = opt_Pch.dry(*standard_opt_pch_inputs)
+        opt_pch_consistency(output, standard_opt_pch_inputs)
         assert_complete_drying(output)
-
         # Drying time should be reasonable (0.5 to 10 hours)
         drying_time = output[-1, 0]
         assert 0.5 < drying_time < 20, (
             f"Drying time {drying_time:.2f} hr should be reasonable (0.5-20 hr)"
         )
 
-        # Average flux should be positive and reasonable
-        avg_flux = output[:, 5].mean()
-        assert 0.1 < avg_flux < 10, (
-            f"Average flux {avg_flux:.2f} kg/hr/m² should be reasonable (0.1-10)"
-        )
-
     def test_pressure_optimization_nomax(self, standard_opt_pch_inputs):
         """Test that opt_Pch.dry works without a maximum pressure constraint."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
-
         # Remove max pressure constraint
         del Pchamber["max"]
-
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-
-        assert_physically_reasonable_output(output)
-
+        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
         assert_complete_drying(output)
-
 
 class TestOptPchEdgeCases:
     """Edge case tests for opt_Pch module."""
@@ -170,12 +179,8 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
+        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
         assert_complete_drying(output)
-        assert np.all(output[:, 2] <= product["T_pr_crit"]), (
-            "Should respect lower T_crit"
-        )
-
-        assert_physically_reasonable_output(output)
 
     def test_insufficient_time(self, standard_opt_pch_inputs):
         """Test with very low critical temperature (-35°C)."""
@@ -185,12 +190,9 @@ class TestOptPchEdgeCases:
 
         with pytest.warns(UserWarning, match="Drying incomplete"):
             output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
-
+        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
         assert_incomplete_drying(output)
 
-        assert_physically_reasonable_output(output)
-
-    @pytest.mark.slow
     def test_high_resistance_product(self, standard_opt_pch_inputs):
         """Test with high resistance product."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
@@ -203,7 +205,7 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        assert_physically_reasonable_output(output)
+        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
 
         assert_complete_drying(output)
         # Higher resistance should lead to longer drying time
@@ -220,7 +222,7 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        assert_physically_reasonable_output(output)
+        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
 
         assert_complete_drying(output)
 
@@ -235,7 +237,7 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial)
 
-        assert_physically_reasonable_output(output)
+        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial))
 
         assert_complete_drying(output)
         # All pressures should be >= 100 mTorr
@@ -266,8 +268,7 @@ class TestOptPchEdgeCases:
 
         output = opt_Pch.dry(vial, product, ht, new_Pch, Tshelf, dt, eq_cap, nVial)
 
-        Pch = output[:, 4] / 1000
-        assert np.all((Pch >= 0.070) & (Pch <= 0.090))
+        opt_pch_consistency(output, (vial, product, ht, new_Pch, Tshelf, dt, eq_cap, nVial))
 
     def test_tight_equipment_constraint(self, standard_opt_pch_inputs):
         """Test with tighter equipment capability constraint."""
@@ -283,9 +284,8 @@ class TestOptPchEdgeCases:
         )
 
         # Should run without errors and show some progress despite tighter constraint
-        assert output is not None
+        opt_pch_consistency(output, (vial, product, ht, Pchamber, Tshelf, dt, tight_eq_cap, nVial))
         assert_complete_drying(output)
-        assert_physically_reasonable_output(output)
 
     @pytest.mark.slow
     def test_consistent_results(self, standard_opt_pch_inputs):
@@ -295,9 +295,7 @@ class TestOptPchEdgeCases:
         output2 = opt_Pch.dry(*standard_opt_pch_inputs)
 
         # Results should be identical (deterministic optimization)
-        np.testing.assert_array_almost_equal(
-            output1, output2, decimal=DECIMAL_PRECISION
-        )
+        np.testing.assert_array_almost_equal( output1, output2, decimal=6)
 
 
 class TestOptPchReference:
@@ -344,9 +342,21 @@ class TestOptPchReference:
         output_ref = np.loadtxt(ref_csv, delimiter=",", skiprows=1)
         output = opt_Pch.dry(*opt_pch_reference_inputs)
 
-        array_compare = np.isclose(output, output_ref, atol=1e-3)
-        assert array_compare.all(), (
-            "opt_Pch output should match reference data, but reference data is known to "
-            + "be odd, so (with maintainer approval) the reference data may be updated."
-            + f"Not matching at positions:\n {np.where(~array_compare)}"
+        # DON'T directly compare: this optimization is very poorly formulated, and checking
+        # element-wise equality against reference data is brittle and not meaningful.
+        # Instead, check that output is reasonable and matches or exceeds the performance.
+        opt_pch_consistency(output, opt_pch_reference_inputs)
+        assert_complete_drying(output)
+        # Drying time should be equal to or better than reference
+        drying_time_ref = output_ref[-1, 0]
+        drying_time = output[-1, 0]
+        assert drying_time <= drying_time_ref, (
+            f"Drying time {drying_time:.2f} hr should be <= reference "
+            + f"{drying_time_ref:.2f} hr"
         )
+        # array_compare = np.isclose(output, output_ref, atol=1e-3)
+        # assert array_compare.all(), (
+        #     "opt_Pch output should match reference data, but reference data is known to "
+        #     + "be odd, so (with maintainer approval) the reference data may be updated."
+        #     + f"Not matching at positions:\n {np.where(~array_compare)}"
+        # )

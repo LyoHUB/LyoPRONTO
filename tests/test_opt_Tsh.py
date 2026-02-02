@@ -8,13 +8,71 @@ optimizer functionality with fixed chamber pressure and shelf temperature optimi
 import pytest
 import numpy as np
 import pandas as pd
-from lyopronto import opt_Tsh
+from lyopronto import opt_Tsh, constant, functions
 from .utils import (
     assert_physically_reasonable_output,
     assert_complete_drying,
     assert_incomplete_drying,
 )
 
+def opt_tsh_consistency(output, setup):
+    vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = setup
+
+    assert output is not None, "opt_Tsh.dry should return output"
+    assert isinstance(output, np.ndarray), "Output should be numpy array"
+
+    # Should have 7 columns: time, Tsub, Tbot, Tsh, Pch, flux, percent_dried
+    assert output.shape[1] == 7, f"Expected 7 columns, got {output.shape[1]}"
+
+    # Should have multiple time points
+    assert output.shape[0] > 1, "Should have multiple time points"
+
+    assert_physically_reasonable_output(output)
+
+
+    # Chamber pressure should start at first setpoint
+    # Note: May not reach final setpoint if drying completes first
+    Pch_values = output[:, 4]
+    Pch_check = functions.RampInterpolator(Pchamber)(output[:, 0])
+    np.testing.assert_allclose(Pch_values, Pch_check, atol=0.1)
+
+    # Shelf temperature (column 3) should start at init
+    assert output[0, 3] == pytest.approx(Tshelf["init"]), (
+        f"Initial Tsh should be ~{Tshelf['init']}°C"
+    )
+
+    # Temperature (column 4) should vary
+    Tsh_values = output[:, 3]
+    assert np.std(Tsh_values) > 0, "Shelf temperature should vary (be optimized)"
+
+    # Both should respect bounds
+    assert np.all(Tsh_values >= Tshelf["min"]), (
+        "Shelf temperature should be >= min bound"
+    )
+    if hasattr(Tshelf, "max"):
+        assert np.all(Tsh_values <= Tshelf["max"]), (
+            "Shelf temperature should be <= max bound"
+        )
+
+    # Tbot (column 2) should stay at or below T_pr_crit
+    T_crit = product["T_pr_crit"]
+    assert np.all(output[:, 2] <= T_crit + 0.01), (
+        f"Product temperature should be <= {T_crit}°C (critical)"
+    )
+
+    # Should not exceed equipment capability (with small tolerance)
+    # Equipment capability at different pressures
+    Pch = output[:, 4] / 1000  # [Torr]
+    actual_cap = eq_cap["a"] + eq_cap["b"] * Pch  # [kg/hr]
+    # Total sublimation rate per vial
+    flux = output[:, 5]  # Sublimation flux [kg/hr/m**2]
+    Ap_m2 = vial["Ap"] * constant.cm_To_m**2  # Convert [cm**2] to [m**2]
+    dmdt = flux * Ap_m2  # [kg/hr/vial]
+    violations = dmdt - actual_cap
+
+    assert np.all(violations <= 0), (
+        f"Equipment capability exceeded by {np.max(violations):.3e} kg/hr"
+    )
 
 class TestOptTsh:
     """Test optimizer functionality matching web interface examples."""
