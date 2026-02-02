@@ -83,7 +83,7 @@ def opt_both_consistency(output, setup):
     # Should have multiple time points
     assert output.shape[0] > 1, "Should have multiple time points"
 
-    assert_physically_reasonable_output(output, Tmax=120)
+    assert_physically_reasonable_output(output, Tmax=Tshelf["max"])
 
     # Pch should be >= min pressure (0.05 Torr = 50 mTorr)
     assert np.all(output[:, 4] >= Pchamber["min"] * constant.Torr_to_mTorr), (
