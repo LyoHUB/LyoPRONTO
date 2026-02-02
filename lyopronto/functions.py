@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from warnings import warn
 from scipy.optimize import fsolve, brentq
 from scipy.integrate import quad
 from scipy.interpolate import PchipInterpolator
@@ -272,7 +273,8 @@ def lumped_cap_Tpr_sol(*args):
 class RampInterpolator:
     """Class to handle ramped setpoint interpolation."""
 
-    def __init__(self, rampspec):
+    def __init__(self, rampspec, count_ramp_against_dt=True):
+        self.ramp_sep = count_ramp_against_dt
         self.dt_setpt = np.array(rampspec["dt_setpt"])
         self.ramp_rate = rampspec["ramp_rate"]
         if "init" in rampspec:
@@ -283,10 +285,24 @@ class RampInterpolator:
             self.setpt = np.array(rampspec["setpt"])
             self.values = np.repeat(self.setpt, 2)
             times = np.array([0.0, self.dt_setpt[0] / constant.hr_To_min])
-        for i,v in enumerate(self.setpt[1:], start=1):
-            ramptime = abs((v - self.values[i-1]) / self.ramp_rate) / constant.hr_To_min
-            holdtime = self.dt_setpt[min(len(self.dt_setpt)-1, i-1)] / constant.hr_To_min
-            times = np.append(times, [ramptime, holdtime])
+        # Older logic: setpoint_dt includes the ramp time.
+        # Kept for backward compatibility, but add a check if insufficient time allowed for ramp
+        if count_ramp_against_dt: 
+            for i in range(1, len(self.setpt)):
+                # If less dt_setpt than setpt provided, repeat the last dt
+                totaltime = self.dt_setpt[min(len(self.dt_setpt)-1, i-1)] / constant.hr_To_min
+                ramptime = abs((self.setpt[i] - self.setpt[i-1]) / self.ramp_rate) / constant.hr_To_min
+                holdtime = totaltime - ramptime
+                if ramptime > holdtime:
+                    warn(f"Ramp time from {self.setpt[i-1]:.2e} to {self.setpt[i]:.2e} exceeds total time for setpoint change, {totaltime}.")
+                times = np.append(times, [ramptime, holdtime])
+        else:
+        # Newer logic: setpoint_dt applies *after* the ramp is complete.
+            for i,v in enumerate(self.setpt[1:], start=1):
+                ramptime = abs((v - self.setpt[i-1]) / self.ramp_rate) / constant.hr_To_min
+                # If less dt_setpt than setpt provided, repeat the last dt
+                holdtime = self.dt_setpt[min(len(self.dt_setpt)-1, i-1)] / constant.hr_To_min
+                times = np.append(times, [ramptime, holdtime])
         self.times = np.cumsum(times)
         
     def __call__(self, t):

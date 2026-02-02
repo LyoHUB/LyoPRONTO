@@ -381,27 +381,26 @@ class TestIneqConstraints:
         assert isinstance(result[1], (int, float))
 
 
-def calc_max_time(ramp_dict):
+def calc_max_time(ramp_dict, ramp_sep=False):
     # max_time = Tshelf["dt_setpt"].sum() / constant.hr_To_min  # Convert minutes to hours
     max_time = 0.0
-    for i, sp in enumerate(ramp_dict["setpt"]):
+    for i in range(len(ramp_dict["setpt"])):
         max_time += (
             ramp_dict["dt_setpt"][min(len(ramp_dict["dt_setpt"]) - 1, i)]
             / constant.hr_To_min
         )
-    if "init" in ramp_dict:
-        setpts = np.concatenate(([ramp_dict["init"]], ramp_dict["setpt"]))
-    else:
-        setpts = ramp_dict["setpt"]
-    setpt_changes = np.diff(setpts)
-    max_time += (
-        np.sum(np.abs(setpt_changes)) / ramp_dict["ramp_rate"] / constant.hr_To_min
-    )
+    if ramp_sep:
+        if "init" in ramp_dict:
+            setpts = np.concatenate(([ramp_dict["init"]], ramp_dict["setpt"]))
+        else:
+            setpts = ramp_dict["setpt"]
+        setpt_changes = np.abs(np.diff(setpts))
+        max_time += np.sum(setpt_changes) / ramp_dict["ramp_rate"] / constant.hr_To_min
     return max_time
 
 
-class TestRampInterpolator:
-    """Tests for the RampInterpolator class."""
+class TestRampInterpolatorSeparateDt:
+    """Tests for the RampInterpolator class, with dt_setpt counted separately from ramp time."""
 
     def test_ramp_interpolator_basic(self):
         """Test basic functionality of RampInterpolator."""
@@ -411,7 +410,7 @@ class TestRampInterpolator:
             "dt_setpt": np.array([60, 600]),
             "ramp_rate": 1.0,
         }
-        ramp = functions.RampInterpolator(Tshelf)
+        ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=False)
 
         np.testing.assert_allclose(
             ramp.times, np.array([0.0, 0.5, 1.5, 2, 12])
@@ -424,6 +423,142 @@ class TestRampInterpolator:
         # Initial condition
         assert ramp(0.0) == 20.0
 
+        assert calc_max_time(Tshelf, ramp_sep=True) == pytest.approx(ramp.times[-1])
+
+    def test_ramp_interpolator_multisetpt(self):
+        """Test RampInterpolator with several setpoints."""
+        Tshelf = {
+            "init": -40.0,
+            "setpt": [-20.0, 0, -10.0, 20.0],
+            "dt_setpt": np.array([120, 120, 60, 600]),
+            "ramp_rate": 1,
+        }
+        ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=False)
+
+        np.testing.assert_allclose(
+            ramp.times, np.array([0, 1/3, 2+1/3, 2+2/3, 4+2/3, 4+5/6, 5+5/6, 6+1/3, 16+1/3])
+        )  # in hours
+        np.testing.assert_allclose(
+            ramp.values, np.array([-40, -20.0, -20.0, 0, 0, -10.0, -10.0, 20.0, 20.0])
+        )
+        assert len(ramp.times) == 2 * len(Tshelf["setpt"]) + 1
+
+        assert calc_max_time(Tshelf, ramp_sep=True) == pytest.approx(ramp.times[-1])
+
+    def test_ramp_interpolator_noinit(self):
+        """Test basic functionality of RampInterpolator."""
+        Pchamber = {
+            "setpt": [0.1],
+            "dt_setpt": [60],
+            "ramp_rate": 1.0,
+        }
+        ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=False)
+        assert len(ramp.times) == 2 * len(Pchamber["setpt"])
+
+        assert ramp(0.0) == Pchamber["setpt"][0]
+        assert ramp(-100.0) == Pchamber["setpt"][0]
+        assert ramp(100.0) == Pchamber["setpt"][0]
+        assert calc_max_time(Pchamber, ramp_sep=True) == pytest.approx(ramp.times[-1])
+
+    def test_ramp_interpolator_samesetpt(self):
+        """Test basic functionality of RampInterpolator."""
+        Pchamber = {
+            "setpt": [0.1, 0.1],
+            "dt_setpt": [60],
+            "ramp_rate": 1.0,
+        }
+        ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=False)
+        assert len(ramp.times) == 2 * len(Pchamber["setpt"])
+
+        # Return constant value for all time
+        assert ramp(0.0) == Pchamber["setpt"][0]
+        assert ramp(-100.0) == Pchamber["setpt"][0]
+        assert ramp(100.0) == Pchamber["setpt"][0]
+        assert calc_max_time(Pchamber, ramp_sep=True) == pytest.approx(ramp.times[-1])
+
+    def test_ramp_interpolator_twosetptnoinit(self):
+        """Test basic functionality of RampInterpolator."""
+        Pchamber = {
+            "setpt": [0.1, 0.5],
+            "dt_setpt": [60],
+            "ramp_rate": 0.4/60,
+        }
+        ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=False)
+
+        assert len(ramp.times) == 2 * len(Pchamber["setpt"])
+        print(ramp.times)
+        assert np.isclose(np.diff(ramp.times)[0::2], 1.0).all()
+
+        assert ramp(0.0) == Pchamber["setpt"][0]
+        assert ramp(1.0) == Pchamber["setpt"][0]
+        assert ramp(1.5) == pytest.approx((Pchamber["setpt"][0] + Pchamber["setpt"][1]) / 2)
+        assert ramp(2.0) == Pchamber["setpt"][1]
+        assert ramp(3.0) == Pchamber["setpt"][1]
+
+        assert ramp(-100.0) == Pchamber["setpt"][0]
+        assert ramp(100.0) == Pchamber["setpt"][-1]
+        assert calc_max_time(Pchamber, ramp_sep=True) == pytest.approx(ramp.times[-1])
+
+    def test_ramp_interpolator_out_of_bounds(self):
+        """Test RampInterpolator behavior outside defined time range."""
+        Tshelf = {
+            "init": 5.0,
+            "setpt": np.array([-5.0, -40.0]),
+            "dt_setpt": np.array([60, 600]),
+            "ramp_rate": 1.0,
+        }
+        ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=False)
+
+        # Before start
+        assert ramp(-10.0) == 5.0
+
+        # After end
+        assert ramp(1000) == -40.0
+
+class TestRampInterpolatorCombinedDt:
+    """Tests for the RampInterpolator class, with ramp time counted against dt_setpt."""
+
+    def test_ramp_interpolator_basic(self):
+        """Test basic functionality of RampInterpolator."""
+        Tshelf = {
+            "init": 20.0,
+            "setpt": np.array([-10.0, -40.0]),
+            "dt_setpt": np.array([60, 600]),
+            "ramp_rate": 1.0,
+        }
+        ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=True)
+
+        np.testing.assert_allclose(
+            ramp.times, np.array([0.0, 0.5, 1.0, 1.5, 11])
+        )  # in hours
+        np.testing.assert_allclose(
+            ramp.values, np.array([20.0, -10.0, -10.0, -40.0, -40.0])
+        )
+        assert len(ramp.times) == 2 * len(Tshelf["setpt"]) + 1
+
+        # Initial condition
+        assert ramp(0.0) == 20.0
+
+        assert calc_max_time(Tshelf) == pytest.approx(ramp.times[-1])
+
+    def test_ramp_interpolator_multisetpt(self):
+        """Test RampInterpolator with several setpoints."""
+        Tshelf = {
+            "init": -40.0,
+            "setpt": [-20.0, 0, -10.0, 20.0],
+            "dt_setpt": np.array([120, 120, 60, 600]),
+            "ramp_rate": 1,
+        }
+        ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=True)
+
+        np.testing.assert_allclose(
+            ramp.times, np.array([0, 1/3, 2, 2+1/3, 4, 4+1/6, 5, 5.5, 15])
+        )  # in hours
+        np.testing.assert_allclose(
+            ramp.values, np.array([-40, -20.0, -20.0, 0, 0, -10.0, -10.0, 20.0, 20.0])
+        )
+        assert len(ramp.times) == 2 * len(Tshelf["setpt"]) + 1
+
         assert calc_max_time(Tshelf) == pytest.approx(ramp.times[-1])
 
     def test_ramp_interpolator_noinit(self):
@@ -433,7 +568,7 @@ class TestRampInterpolator:
             "dt_setpt": [60],
             "ramp_rate": 1.0,
         }
-        ramp = functions.RampInterpolator(Pchamber)
+        ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=True)
         assert len(ramp.times) == 2 * len(Pchamber["setpt"])
 
         assert ramp(0.0) == Pchamber["setpt"][0]
@@ -448,7 +583,7 @@ class TestRampInterpolator:
             "dt_setpt": [60],
             "ramp_rate": 1.0,
         }
-        ramp = functions.RampInterpolator(Pchamber)
+        ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=True)
         assert len(ramp.times) == 2 * len(Pchamber["setpt"])
 
         # Return constant value for all time
@@ -462,23 +597,33 @@ class TestRampInterpolator:
         Pchamber = {
             "setpt": [0.1, 0.5],
             "dt_setpt": [60],
-            "ramp_rate": 0.4/60,
+            "ramp_rate": 0.4/30,
         }
-        ramp = functions.RampInterpolator(Pchamber)
+        ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=True)
 
         assert len(ramp.times) == 2 * len(Pchamber["setpt"])
-        print(ramp.times)
-        assert np.isclose(np.diff(ramp.times)[0::2], 1.0).all()
+        np.testing.assert_allclose(np.diff(ramp.times)[0::2], [1.0, 0.5])
 
         assert ramp(0.0) == Pchamber["setpt"][0]
         assert ramp(1.0) == Pchamber["setpt"][0]
-        assert ramp(1.5) == pytest.approx((Pchamber["setpt"][0] + Pchamber["setpt"][1]) / 2)
+        assert ramp(1.25) == pytest.approx((Pchamber["setpt"][0] + Pchamber["setpt"][1]) / 2)
+        assert ramp(1.5) == Pchamber["setpt"][1]
         assert ramp(2.0) == Pchamber["setpt"][1]
-        assert ramp(3.0) == Pchamber["setpt"][1]
 
         assert ramp(-100.0) == Pchamber["setpt"][0]
         assert ramp(100.0) == Pchamber["setpt"][-1]
         assert calc_max_time(Pchamber) == pytest.approx(ramp.times[-1])
+
+    def test_ramp_interpolator_insufficient_dt(self):
+        """Test RampInterpolator raises error if dt_setpt too small for ramp_rate."""
+        Tshelf = {
+            "init": 20.0,
+            "setpt": np.array([-10.0, -40.0]),
+            "dt_setpt": np.array([10, 10]),  # Too small for ramp_rate=1.0
+            "ramp_rate": 0.01,
+        }
+        with pytest.warns(UserWarning, match="Ramp"):
+            functions.RampInterpolator(Tshelf, count_ramp_against_dt=True)
 
     def test_ramp_interpolator_out_of_bounds(self):
         """Test RampInterpolator behavior outside defined time range."""
