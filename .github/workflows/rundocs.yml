@@ -10,24 +10,54 @@ on:
     
 jobs:
   doctests:
-    # env:
-    #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   GIT_COMMITTER_NAME: ${{ github.actor }}
-    #   GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
-    name: Notebook
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./docs/examples
-    strategy:
-      matrix:
-        notebook: 
-         - knownRp_PD.ipynb
-         - unknownRp_PD.ipynb
+    
     steps:
-      - uses: actions/checkout@v5
-      - name: Set up Python
-        uses: actions/setup-python@v4
-      - run: pip install ruamel.yaml scipy numpy matplotlib papermill ipykernel
-      - name: Run notebooks
-        run: papermill ${{ matrix.notebook }} ${{ matrix.notebook }} -k python
+    - uses: actions/checkout@v4
+    
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.versions.outputs.result }}
+        cache: 'pip'
+        cache-dependency-path: |
+          pyproject.toml
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install .
+        pip install .[dev]
+        pip install -e . --no-build-isolation
+    
+    - name: Run tests (draft = fast, ready = coverage)
+      run: pytest tests/ -n auto -v -m "notebook" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+# jobs:
+#   doctests:
+#     # env:
+#     #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#     #   GIT_COMMITTER_NAME: ${{ github.actor }}
+#     #   GIT_COMMITTER_EMAIL: ${{ github.actor }}@users.noreply.github.com
+#     name: Notebook
+#     runs-on: ubuntu-latest
+#     defaults:
+#       run:
+#         working-directory: ./docs/examples
+#     strategy:
+#       matrix:
+#         notebook: 
+#          - knownRp_PD.ipynb
+#          - unknownRp_PD.ipynb
+#     steps:
+#       - uses: actions/checkout@v5
+#       - name: Set up Python
+#         uses: actions/setup-python@v4
+#       - run: pip install ruamel.yaml scipy numpy matplotlib papermill ipykernel
+#       - name: Run notebooks
+#         run: papermill ${{ matrix.notebook }} ${{ matrix.notebook }} -k python

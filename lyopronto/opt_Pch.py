@@ -18,8 +18,7 @@
 
 import scipy.optimize as sp
 import numpy as np
-import math
-import csv
+import warnings
 from . import constant
 from . import functions
 
@@ -41,8 +40,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     Lck = 0.0    # Cake length in cm
     percent_dried = Lck/Lpr0*100.0        # Percent dried
 
-    # Initial chamber pressure
-    P0 = 0.1    # Initial guess for chamber pressure in Torr
+    # Initial chamber pressure: middle of range, or 2*min if only min given
+    P0 = (Pchamber['min'] + Pchamber.get('max', Pchamber['min']*3))/2.0    
 
     # Initial shelf temperature
     Tsh = Tshelf['init']        # degC
@@ -54,19 +53,24 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         Tshelf['t_setpt'] = np.append(Tshelf['t_setpt'],Tshelf['t_setpt'][-1]+dt_i/constant.hr_To_min)
        
     # Initial product and shelf temperatures
-    T0=product['T_pr_crit']   # degC
+    Tb0 = product['T_pr_crit'] -0.1   # degC
+    Ts0 = Tb0 - 0.1   # degC
+    Tsh0 = Tb0 +0.1   # degC
 
     ######################################################
 
     ################ Primary drying ######################
+    # Objective function to be minimized to maximize sublimation rate
+    def objfun(x):
+        return (x[0]-x[4])
+    # Quantities solved for: x = [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv]
+    x0 = np.array([P0,0.0,Tb0,Tsh0,P0*1.1,Ts0,3.0e-4])    # Initial values
+    failures = 0
 
     while(Lck<=Lpr0): # Dry the entire frozen product
 
         Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
     
-        # Quantities solved for: x = [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv]
-        fun = lambda x: (x[0]-x[4])    # Objective function to be minimized to maximize sublimation rate
-        x0 = [P0,0.0,T0,T0,P0,T0,3.0e-4]    # Initial values
         # Constraints
         cons = ({'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[0]},  # sublimation front pressure in Torr
             {'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[1]},    # sublimation rate in kg/hr
@@ -77,17 +81,30 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
             {'type':'ineq','fun':lambda x: functions.Ineq_Constraints(x[0],x[1],product['T_pr_crit'],x[2],eq_cap['a'],eq_cap['b'],nVial)[0]},  # equipment capability inequlity
             {'type':'ineq','fun':lambda x: functions.Ineq_Constraints(x[0],x[1],product['T_pr_crit'],x[2],eq_cap['a'],eq_cap['b'],nVial)[1]})  # maximum product temperature inequality
         # Bounds for the unknowns
-        bnds = ((Pchamber['min'],None),(None,None),(None,None),(None,None),(None,None),(None,None),(None,None))
+        bnds = ((Pchamber['min'],Pchamber.get('max', None)),(0,None),(None,None),(None,None),(0,None),(None,None),(0,None))
         # Minimize the objective function i.e. maximize the sublimation rate
-        res = sp.minimize(fun,x0,bounds = bnds, constraints = cons)
+        res = sp.minimize(objfun,x0,bounds = bnds, constraints = cons)
         [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv] = res['x']    # Results in Torr, kg/hr, degC, degC, Torr, degC, cal/s/K/cm^2
+        # # Use the results as a guess for the next iteration
+        # TODO: decide on appropriate error handling for unsuccessful iterations
+        # Should check some simple conditions probably and see if inputs have any feasible solutions
+        if not res['success']:
+            warnings.warn(f"Optimization failed at {t} hr, {percent_dried:.1f}% dried.\n"+\
+                          f"Message: {res['message']}\n"+\
+                          f"Pch={Pch:.1f}, dmdt={dmdt:.2e}, Tbot={Tbot:.1f}, Tsh={Tsh:.1f}, Psub={Psub:.1f}, Tsub={Tsub:.1f}, Kv={Kv:.2e}")
+            failures += 1
+            if failures >= 10:
+                # warnings.warn(f"Maximum consecutive optimization failures ({failures}) reached. Terminating drying simulation.")
+                break
+            else:
+                continue
 
         # Sublimated ice length
         dL = (dmdt*constant.kg_To_g)*dt/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
 
         # Update record as functions of the cycle time
         if (iStep==0):
-            output_saved =np.array([[t, float(Tsub), float(Tbot), Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]])
+            output_saved = np.array([[t, float(Tsub), float(Tbot), Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]])
         else:
             output_saved = np.append(output_saved, [[t, float(Tsub), float(Tbot), Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), percent_dried]],axis=0)
     
@@ -104,7 +121,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         percent_dried = Lck/Lpr0*100   # Percent dried
 
         if len(np.where(Tshelf['t_setpt']>t)[0])==0:
-            print("Total time exceeded. Drying incomplete")    # Shelf temperature set point time exceeded, drying not done
+            warnings.warn("Total time exceeded. Drying incomplete")    # Shelf temperature set point time exceeded, drying not done
             break
         else:
             i = np.where(Tshelf['t_setpt']>t)[0][0]

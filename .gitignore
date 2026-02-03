@@ -6,6 +6,11 @@
 *.csv
 
 docs/build
+
+# for conda environment install, converted from pyproject.toml
+environment.yml 
+# for local settings
+.vscode/
 ################################################################################
 #                               Jupyter Notebook                               #
 ################################################################################

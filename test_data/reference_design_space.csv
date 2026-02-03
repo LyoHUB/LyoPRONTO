@@ -1,0 +1,8 @@
+Chamber Pressure [mTorr];Maximum Product Temperature [C];Drying Time [hr];Average Sublimation Flux [kg/hr/m^2];Maximum/Minimum Sublimation Flux [kg/hr/m^2];Final Sublimation Flux [kg/hr/m^2];
+Shelf Temperature = 20
+150;1.3248356015264804;0.01;0;0;0
+Product Temperature = -5
+150;-5;1.98;3.106941632276091;2.2940169159986503;2.2940169159986503
+150;-5;1.98;3.106941632276091;2.2940169159986503;2.2940169159986503
+Equipment Capability
+150;4.1214726160383925;0.48917143462598;12.58681944755625;12.58681944755625;12.58681944755625

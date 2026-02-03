@@ -1,0 +1,70 @@
+name: PR Tests
+
+# Smart CI workflow:
+# - Draft PRs: Fast tests only (no coverage) for rapid iteration
+# - Ready for Review: Full tests with coverage for quality assurance
+# - All subsequent commits: Continue with full coverage
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [ opened, synchronize, reopened, ready_for_review, converted_to_draft ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+
+    - name: Determine test mode
+      id: mode
+      run: |
+        if [ "${{ github.event.pull_request.draft }}" ]; then
+          echo "mode=fast" >> $GITHUB_OUTPUT
+        else
+          echo "mode=full" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.versions.outputs.result }}
+        cache: 'pip'
+        cache-dependency-path: |
+          pyproject.toml
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install .
+        pip install .[dev]
+        pip install -e . --no-build-isolation
+    
+    - name: Run tests
+    # Currently this conditional branching doesn't actually do anything,
+    # since pyproject.toml adds these coverage arguments to the testing anyway
+      run: |
+        if [ "${{ steps.mode.outputs.mode }}" == "fast" ]; then
+          echo "⚡ Skipping notebook tests (marked with @pytest.mark.notebook) - these run separately"
+          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=term-missing
+        else
+          echo "⚡ Skipping notebook tests (marked with @pytest.mark.slow), not running coverage"
+          pytest tests/ -n auto -v -m "not notebook"
+        fi
+    
+    - name: Upload coverage (if run)
+      if: steps.mode.outputs.coverage == 'true'
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: pr-tests
+        name: pr-coverage
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}

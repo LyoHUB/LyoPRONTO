@@ -14,6 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from warnings import warn
 from scipy.optimize import fsolve
 from scipy.integrate import solve_ivp
 import numpy as np
@@ -42,7 +43,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
             3. Shelf temperature [°C],
             4. Chamber pressure [mTorr],
             5. Sublimation flux [kg/hr/m²],
-            6. Drying fraction [-]
+            6. Drying percent [%]
     """
 
     ##################  Initialization ################
@@ -50,8 +51,19 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     # Initial fill height
     Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
 
-    Pch_t = lambda t: Pchamber['setpt'][0] # TODO: allow ramps
-    Tsh_t = lambda t: min(Tshelf['setpt'][0], t*60*Tshelf['ramp_rate'] + Tshelf['init'])
+    # Time-dependent functions for Pchamber and Tshelf, take time in hours
+    Pch_t = functions.RampInterpolator(Pchamber)
+    Tsh_t = functions.RampInterpolator(Tshelf)
+
+    # Get maximum simulation time based on shelf and chamber setpoints
+    # This may not really be necessary, but is part of legacy behavior
+    # Could remove in a future release
+    max_t = max(Pch_t.max_time(), Tsh_t.max_time())   # hr, add buffer
+
+    if Pch_t.max_setpt() > functions.Vapor_pressure(Tsh_t.max_setpt()):
+        warn("Chamber pressure setpoint exceeds vapor pressure at shelf temperature " +\
+        "setpoint(s). Drying cannot proceed.")
+        return np.array([[0.0, Tsh_t(0), Tsh_t(0), Tsh_t(0), Pch_t(0), 0.0, 0.0]])
 
     config = (vial, product, ht, Pch_t, Tsh_t, dt, Lpr0)
 
@@ -59,8 +71,11 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     T0 = Tsh_t(0)
 
     ################ Set up dynamic equation ######################
+    # This function is defined here because it uses local variables, rather than
+    # taking them as arguments.
     def calc_dLdt(t, u):
-        Lck = u[0]
+        # Time in hours
+        Lck = u[0] # cm
         Tsh = Tsh_t(t)
         Pch = Pch_t(t)
         Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
@@ -74,7 +89,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
             return [dLdt]
         # Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
 
-        dLdt = (dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm
+        dLdt = (dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm/hr
         return [dLdt]
 
     ### ------ Condition for ending simulation: completed drying
@@ -84,8 +99,10 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     
 
     # ------- Solve the equations
-    sol = solve_ivp(calc_dLdt, (0, 24*3600*14), Lck0, events=finish, 
+    sol = solve_ivp(calc_dLdt, (0, max_t), Lck0, events=finish, 
                     vectorized=False, dense_output=True, method="BDF")
+    if sol.t[-1] == max_t:# and Lpr0 > sol.y[0, -1]:
+        warn("Maximum simulation time (specified by Pchamber and Tshelf) reached before drying completion.")
 
     output = functions.fill_output(sol, config)
 

@@ -37,4 +37,5 @@ nav:
         - examples/unknownRp_PD.ipynb
     - explanation.md
     - reference.md
+    - dev.md
 

@@ -44,10 +44,20 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-xdist>=3.3.0",
     "hypothesis>=6.82.0",
-    "black>=23.7.0",
-    "flake8>=6.1.0",
+    "ruff>=0.12.0",
     "mypy>=1.4.0",
+    "pandas>=2.0",
+    "papermill>=2.6.0",
+    "ipykernel>=6.15.0",
+    "ruamel.yaml>=0.18.0",
 ]
+docs = [
+    "mkdocstrings-python>=2",
+    "mkdocs-material>=9.1.0",
+    "mike>=2.1",
+    "mkdocs-ipynb>=0.1.1",
+]
+
 
 [project.urls]
 Homepage = "http://lyopronto.geddes.rcac.purdue.edu"
@@ -59,6 +69,7 @@ Documentation = "https://lyohub.github.io/LyoPRONTO/"
 include = ["lyopronto*"]
 
 [tool.pytest.ini_options]
+pythonpath = "."
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
@@ -67,11 +78,12 @@ addopts = [
     "-v",
     "--strict-markers",
     "--tb=short",
+    "--maxfail=5",
+    "--cov=lyopronto",
+    "--cov-report=term-missing",
 ]
-
-[tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-ignore_missing_imports = true
+markers = [
+    "slow: Tests that take a long time to run",
+    "fast: Quick tests that run in under 1 second",
+    "notebook: Tests that execute Jupyter notebooks for documentation",
+]

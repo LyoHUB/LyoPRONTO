@@ -14,10 +14,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from warnings import warn
 import scipy.optimize as sp
 import numpy as np
-import math
-import csv
 from . import constant
 from . import functions
 
@@ -60,7 +59,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
     
         # Quantities solved for: x = [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv]
-        fun = lambda x: (x[0]-x[4])    # Objective function to be minimized to maximize sublimation rate
+        def fun(x): 
+            return (x[0]-x[4])    # Objective function to be minimized to maximize sublimation rate
         x0 = [Pch,0.0,T0,T0,Pch,T0,3.0e-4]    # Initial values
         # Constraints
         cons = ({'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[0]},  # sublimation front pressure in Torr
@@ -99,15 +99,16 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         percent_dried = Lck/Lpr0*100   # Percent dried
 
         if len(np.where(Pchamber['t_setpt']>t)[0])==0:
-            print("Total time exceeded. Drying incomplete")    # Shelf tempertaure set point time exceeded, drying not done
+            warn("Total time exceeded. Drying incomplete")    # Shelf tempertaure set point time exceeded, drying not done
             break
         else:
             j = np.where(Pchamber['t_setpt']>t)[0][0]
             # Ramp shelf temperature till next set point is reached and then maintain at set point
+            ramp_rate = Pchamber.get('ramp_rate', 0.0)  # Default to no ramp if not specified
             if Pchamber['setpt'][j] >= Pchamber['setpt'][j-1]:
-                Pch = min(Pchamber['setpt'][j-1] + Pchamber['ramp_rate']*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
+                Pch = min(Pchamber['setpt'][j-1] + ramp_rate*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
             else:
-                Pch = max(Pchamber['setpt'][j-1] - Pchamber['ramp_rate']*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
+                Pch = max(Pchamber['setpt'][j-1] - ramp_rate*constant.hr_To_min*(t-Pchamber['t_setpt'][j-1]),Pchamber['setpt'][j])
           
         iStep = iStep + 1 # Time iteration number
 
