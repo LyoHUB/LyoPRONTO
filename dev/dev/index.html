@@ -9,10 +9,8 @@
       
       
       
-        <link rel="prev" href="../examples/unknownRp_PD/">
+        <link rel="prev" href="../reference/">
       
-      
-        <link rel="next" href="../reference/">
       
       
         
@@ -23,7 +21,7 @@
     
     
       
-        <title>Explanations - LyoPRONTO Documentation</title>
+        <title>Contributor Documentation - LyoPRONTO Documentation</title>
       
     
     
@@ -66,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#explanations" class="md-skip">
+        <a href="#contributor-documentation" class="md-skip">
           Skip to content
         </a>
       
@@ -106,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Explanations
+              Contributor Documentation
             
           </span>
         </div>
@@ -350,19 +348,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../explanation/" class="md-nav__link">
         
   
   
@@ -378,7 +367,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -414,10 +402,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../dev/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributor Documentation
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -433,6 +448,76 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helpful-references-for-how-to-get-documentation-generated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helpful references for how to get documentation generated
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linting-and-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linting and formatting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -457,6 +542,64 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helpful-references-for-how-to-get-documentation-generated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helpful references for how to get documentation generated
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linting-and-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Linting and formatting
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -472,10 +615,48 @@
 
 
 
-<h1 id="explanations">Explanations</h1>
-<p>Note: temperature hold times, set with the <code>"dt_setpt"</code> key in <code>Tshelf</code> or <code>Pchamber</code> dictionaries, <em>includes</em> ramp time.</p>
-<p>Under construction. But in the meantime, see 
-<a href="https://link.springer.com/article/10.1208/s12249-019-1532-7">the original publication</a>.</p>
+<h1 id="contributor-documentation">Contributor Documentation</h1>
+<h2 id="testing">Testing</h2>
+<p>To install test dependencies, run
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip install .[dev]
+</span></code></pre></div>
+inside the LyoPRONTO directory (next to <code>pyproject.toml</code>).</p>
+<p>Execute 
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pytest ./tests
+</span></code></pre></div>
+to run all the tests; some that use <code>papermill</code> to generate documentation notebooks are marked, and you can exclude those with
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pytest ./tests -m &quot;not notebook&quot;
+</span></code></pre></div></p>
+<h2 id="documentation">Documentation</h2>
+<p>Documentation build has different dependencies, installable by
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip install .[docs]
+</span></code></pre></div></p>
+<p>Run
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mike deploy [name]
+</span></code></pre></div>
+to deploy a docs version with ID <code>[name]</code>, which could be e.g. <code>v1.1.0</code> or <code>pr-10</code>, etc. Preview locally by navigating to <code>LyoPRONTO_folder/site</code>, then running
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python -m http.server --bind localhost
+</span></code></pre></div>
+to spin up a local HTTP server on your own machine. </p>
+<p>On pushing to master, GitHub actions will run
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mike deploy dev
+</span></code></pre></div>
+and on each tagged release will <code>mike deploy</code> the version number.</p>
+<p>On the off chance that the documentation gets really broken, you can do the following to deploy a new version of it to GitHub Pages:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git fetch
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>git switch [branch with desired docs]
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>mike delete [broken docs version] # if necessary
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>mike deploy [new docs version] # if necessary
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>git switch gh-pages
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>git push origin gh-pages
+</span></code></pre></div>
+<h3 id="helpful-references-for-how-to-get-documentation-generated">Helpful references for how to get documentation generated</h3>
+<p>https://realpython.com/python-project-documentation-with-mkdocs/ for a tutorial on MkDocs</p>
+<p>https://entangled.github.io/mkdocs-plugin/setup/ because it would be nice to use for examples &amp; tests</p>
+<p>https://github.com/jimporter/mike?tab=readme-ov-file for versioning the docs</p>
+<h2 id="linting-and-formatting">Linting and formatting</h2>
+<p>The test suite is linted and formatted with Ruff, on default settings.</p>
+<p>The main code base should also get the same treatment, but at present (2026-02-02) am waiting to do so: some of the code will be ugly upon formatting and should be rewritten to be less ugly.</p>
 
 
 
