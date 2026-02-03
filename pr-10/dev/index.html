@@ -418,9 +418,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes-on-contributing-maintenance" class="md-nav__link">
+  <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
-      Notes on contributing &amp; maintenance
+      Documentation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helpful-references-for-how-to-get-documentation-generated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Helpful references for how to get documentation generated
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linting-and-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linting and formatting
     </span>
   </a>
   
@@ -470,9 +494,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#notes-on-contributing-maintenance" class="md-nav__link">
+  <a href="#documentation" class="md-nav__link">
     <span class="md-ellipsis">
-      Notes on contributing &amp; maintenance
+      Documentation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helpful-references-for-how-to-get-documentation-generated" class="md-nav__link">
+    <span class="md-ellipsis">
+      Helpful references for how to get documentation generated
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#linting-and-formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Linting and formatting
     </span>
   </a>
   
@@ -506,16 +554,36 @@ inside the LyoPRONTO directory (next to <code>pyproject.toml</code>).</p>
 to run all the tests; some that use <code>papermill</code> to generate documentation notebooks are marked, and you can exclude those with
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>pytest ./tests -m &quot;not notebook&quot;
 </span></code></pre></div></p>
-<h2 id="notes-on-contributing-maintenance">Notes on contributing &amp; maintenance</h2>
-<p>There is a GitHub Action on this repo which will automatically build the documentation (which uses Material for MkDocs with <code>mike</code> for versioning). This action triggers on push to main (which creates a <code>dev</code> section of the docs) and on publishing a release (which creates a numbered version of the docs).</p>
-<p>To clear out versions of the docs
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>git fetch 
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>mike delete pr-### # replace with correct PR number
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>git switch gh-pages
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>git push origin gh-pages
+<h2 id="documentation">Documentation</h2>
+<p>Documentation build has different dependencies, installable by
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>pip install .[docs]
+</span></code></pre></div></p>
+<p>Run
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mike deploy [name]
 </span></code></pre></div>
-Fo
-This could theoretically be automated but I decided against this for now. In the long run, it may be worth not generating PR versions of the docs if this is burdensome.</p>
+to deploy a docs version with ID <code>[name]</code>, which could be e.g. <code>v1.1.0</code> or <code>pr-10</code>, etc. Preview locally by navigating to <code>LyoPRONTO_folder/site</code>, then running
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python -m http.server --bind localhost
+</span></code></pre></div>
+to spin up a local HTTP server on your own machine. </p>
+<p>On pushing to master, GitHub actions will run
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mike deploy dev
+</span></code></pre></div>
+and on each tagged release will <code>mike deploy</code> the version number.</p>
+<p>On the off chance that the documentation gets really broken, you can do the following to deploy a new version of it to GitHub Pages:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git fetch
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>git switch [branch with desired docs]
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>mike delete [broken docs version] # if necessary
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>mike deploy [new docs version] # if necessary
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>git switch gh-pages
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>git push origin gh-pages
+</span></code></pre></div>
+<h3 id="helpful-references-for-how-to-get-documentation-generated">Helpful references for how to get documentation generated</h3>
+<p>https://realpython.com/python-project-documentation-with-mkdocs/ for a tutorial on MkDocs</p>
+<p>https://entangled.github.io/mkdocs-plugin/setup/ because it would be nice to use for examples &amp; tests</p>
+<p>https://github.com/jimporter/mike?tab=readme-ov-file for versioning the docs</p>
+<h2 id="linting-and-formatting">Linting and formatting</h2>
+<p>The test suite is linted and formatted with Ruff, on default settings.</p>
+<p>The main code base should also get the same treatment, but at present (2026-02-02) am waiting to do so: some of the code will be ugly upon formatting and should be rewritten to be less ugly.</p>
 
 
 
