@@ -57,7 +57,7 @@ def Rp_FUN(L,R0,A1,A2):
     """Calculates product resistance in cm^2-hr-Torr/g.
 
     Args:
-        l (float): cake length in cm
+        L (float): cake length in cm
         R0 (float): base product resistance in cm^2-hr-Torr/g
         A1 (float): product resistance parameter in cm-hr-Torr/g
         A2 (float): product resistance parameter in 1/cm
