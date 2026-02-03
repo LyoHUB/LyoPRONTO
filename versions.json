@@ -5,6 +5,11 @@
     "aliases": []
   },
   {
+    "version": "mathtest",
+    "title": "mathtest",
+    "aliases": []
+  },
+  {
     "version": "dev",
     "title": "dev",
     "aliases": []
