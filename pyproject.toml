@@ -80,22 +80,10 @@ addopts = [
     "--tb=short",
     "--maxfail=5",
     "--cov=lyopronto",
-    "--cov-report=xml",
     "--cov-report=term-missing",
 ]
 markers = [
-    "unit: Unit tests for individual functions",
-    "integration: Integration tests for calculators",
-    "regression: Regression tests against known results",
     "slow: Tests that take a long time to run",
-    "parametric: Parametric tests across multiple scenarios",
     "fast: Quick tests that run in under 1 second",
     "notebook: Tests that execute Jupyter notebooks for documentation",
 ]
-
-[tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-ignore_missing_imports = true
