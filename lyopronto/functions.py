@@ -307,6 +307,12 @@ class RampInterpolator:
         
     def __call__(self, t):
         return np.interp(t, self.times, self.values)
+    
+    def max_time(self):
+        return self.times[-1]
+    
+    def max_setpt(self):
+        return np.max(self.values)
 
 ##
 

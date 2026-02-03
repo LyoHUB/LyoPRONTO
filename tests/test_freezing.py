@@ -14,7 +14,7 @@ from lyopronto import constant
 
 def check_max_time(output, Tshelf, dt):
     ramp = RampInterpolator(Tshelf)
-    assert output[-1, 0] == pytest.approx(ramp.times[-1], abs=dt)
+    assert output[-1, 0] == pytest.approx(ramp.max_time(), abs=dt)
 
 
 @pytest.fixture
