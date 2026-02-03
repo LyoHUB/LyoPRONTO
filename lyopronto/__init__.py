@@ -119,18 +119,14 @@ def _optimize_kv_parameter(config):
 def _optimize_rp_parameter(config):
     """Helper to determine Rp from experimental product temperature."""
     
-    exp_data = np.loadtxt(config['product_temp_file'])
-    time_data = exp_data[:, 0]
-    temp_data = exp_data[:, 1]
-    
     output, product_res = calc_unknownRp.dry(
         config['vial'],
         config['product'],
         config['ht'],
         config['Pchamber'],
         config['Tshelf'],
-        time_data,
-        temp_data
+        config['time_data'],
+        config['temp_data']
     )
     
     params, _ = sp.curve_fit(
@@ -425,7 +421,7 @@ def _plot_design_space(data, config, props, timestamp):
     ax = fig.add_subplot(1,1,1)
     plt.axes(ax)
     ax.plot([P*constant.Torr_to_mTorr for P in Pchamber['setpt']],ds_eq_cap[1,:],'-o',color='k',linewidth=lineWidth, label = "Equipment Capability")
-    ax.plot([Pchamber['setpt'][0]*constant.Torr_to_mTorr,Pchamber['setpt'][-1]*constant.Torr_to_mTorr],ds_pr[1,:],'-o',color='r',linewidth=lineWidth, label = ("T$_{pr}$ = "+str(product['T_pr_crit'])+" C"))
+    ax.plot([Pchamber['setpt'][0]*constant.Torr_to_mTorr,Pchamber['setpt'][-1]*constant.Torr_to_mTorr],ds_pr[1,:],'-o',color='r',linewidth=lineWidth, label = ("T$_{pr}$ = "+str(config['product']['T_pr_crit'])+" C"))
     for i in range(np.size(Tshelf['setpt'])):
         ax.plot([P*constant.Torr_to_mTorr for P in Pchamber['setpt']],ds_shelf[1,i,:],'--',color=str(color_list[i]),linewidth=lineWidth, label = ("T$_{sh}$ = "+str(Tshelf['setpt'][i])+" C"))
     plot_styling.axis_style_ds_percdried(ax)
@@ -458,7 +454,7 @@ def _plot_design_space(data, config, props, timestamp):
     ax = fig.add_subplot(1,1,1)
     plt.axes(ax)
     ax.plot([P*constant.Torr_to_mTorr for P in Pchamber['setpt']],ds_eq_cap[0,:],'-o',color='k',linewidth=lineWidth, label = "Equipment Capability")
-    ax.plot([Pchamber['setpt'][0]*constant.Torr_to_mTorr,Pchamber['setpt'][-1]*constant.Torr_to_mTorr],ds_pr[0,:],'-o',color='r',linewidth=lineWidth, label = ("T$_{pr}$ = "+str(product['T_pr_crit'])+" C"))
+    ax.plot([Pchamber['setpt'][0]*constant.Torr_to_mTorr,Pchamber['setpt'][-1]*constant.Torr_to_mTorr],ds_pr[0,:],'-o',color='r',linewidth=lineWidth, label = ("T$_{pr}$ = "+str(config['product']['T_pr_crit'])+" C"))
     for i in range(np.size(Tshelf['setpt'])):
         ax.plot([P*constant.Torr_to_mTorr for P in Pchamber['setpt']],ds_shelf[0,i,:],'--',color=str(color_list[i]),linewidth=lineWidth, label = ("T$_{sh}$ = "+str(Tshelf['setpt'][i])+" C"))
     plot_styling.axis_style_ds_temperature(ax)

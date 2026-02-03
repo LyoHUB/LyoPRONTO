@@ -17,10 +17,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import sys
-import scipy.optimize as sp
 import numpy as np
-import math
-import csv
 
 from lyopronto import *
 # from . import constant
@@ -82,8 +79,13 @@ elif not(sim['tool'] == 'Primary Drying Calculator' and sim['Rp_known'] == 'N'):
     product = {'cSolid': 0.05, 'R0': 1.4, 'A1': 16.0, 'A2': 0.0}
 else:
     product = {'cSolid': 0.05}
-    # Experimental product temperature measurements: format - t(hr), Tp(C)
+
     product_temp_filename = './temperature.dat'
+    exp_data = np.loadtxt(product_temp_filename)
+    # Assumed: time in first column, temperature in second column
+    # Change as necessary to match data file, but keep these names
+    time_data = exp_data[:, 0]
+    temp_data = exp_data[:, 1]
 # Critical product temperature
 # At least 2 to 3 deg C below collapse or glass transition temperature
 product['T_pr_crit'] = -5        # in degC
@@ -149,7 +151,7 @@ nVial = 398    # Number of vials
 config = {}
 loc = locals()
 for key in ['sim', 'vial', 'product', 'ht', 'Pchamber', 'Tshelf', 'dt', 'eq_cap', 'nVial', 
-            'h_freezing', 't_dry_exp', 'Kv_range', 'product_temp_filename']:
+            'h_freezing', 't_dry_exp', 'Kv_range', 'time_data', 'temp_data']:
     if key in loc:
         config[key] = loc[key]
 
