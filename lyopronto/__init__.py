@@ -90,30 +90,43 @@ def execute_simulation(config):
 # TODO: bisection search, rather than iteration over a range?
 def _optimize_kv_parameter(config):
     """Helper to determine Kv based on experimental drying time."""
-    Kv_range = config['Kv_range']
-    best_Kv = Kv_range[0]
-    min_deviation = float('inf')
-    best_output = None
-    
-    for Kc in Kv_range:
+    Kv_range = inputs.get("Kv_range", (1e-6, 1e-2))
+
+    def obj(Kc):
         output = calc_knownRp.dry(
-            config['vial'],
-            config['product'],
-            {'KC': Kc, 'KP': 0.0, 'KD': 0.0},
-            config['Pchamber'],
-            config['Tshelf'],
-            config['dt']
+            inputs["vial"],
+            inputs["product"],
+            {"KC": Kc, "KP": 0.0, "KD": 0.0},
+            inputs["Pchamber"],
+            inputs["Tshelf"],
+            inputs["dt"],
         )
         simulated_time = output[-1, 0]
-        deviation = abs(config['t_dry_exp'] - simulated_time) / config['t_dry_exp'] * 100
-        
-        if deviation < min_deviation:
-            min_deviation = deviation
-            best_Kv = Kc
-            best_output = output
-    
-    print(f"Optimal Kv: {best_Kv}, Deviation: {min_deviation}%")
-    return best_output
+        return simulated_time - inputs["t_dry_exp"]
+
+    if obj(Kv_range[0]) * obj(Kv_range[-1]) > 0:
+        warn(
+            "Given Kv bounds do not bracket the most likely value. Choosing either min or max."
+        )
+        if abs(obj(Kv_range[0])) < abs(obj(Kv_range[-1])):
+            best_Kv = Kv_range[0]
+        else:
+            best_Kv = Kv_range[-1]
+    else:
+        best_Kv = brentq(obj, Kv_range[0], Kv_range[-1])
+
+    deviation = obj(best_Kv)
+    output = calc_knownRp.dry(
+        inputs["vial"],
+        inputs["product"],
+        {"KC": best_Kv, "KP": 0.0, "KD": 0.0},
+        inputs["Pchamber"],
+        inputs["Tshelf"],
+        inputs["dt"],
+    )
+
+    print(f"Optimal Kv: {best_Kv}, Deviation: {deviation}%")
+    return output
 
 
 def _optimize_rp_parameter(config):
