@@ -101,16 +101,14 @@ elif not sim["Kv_known"]:
     Kv_range = np.array([5.0, 20.0]) * 1e-4  # cal/s/K/cm^2, lower & upper bounds
     # Primary drying time
     t_dry_exp = 12.62  # in hr
-else:
-    print("Kv_known: Input not recognized")
-    sys.exit(1)
 
 # Chamber Pressure
 if sim["tool"] == "Freezing Calculator":
     0
 elif sim["tool"] == "Design Space Generator":
     # Array of chamber pressure set points in Torr
-    Pchamber = {"setpt": [0.1, 0.4, 0.7, 1.5]}
+    Pchamber = {"setpt": [0.02, 0.05, 0.1, 0.15]}
+    # Pchamber = {"setpt": [0.02, 0.03]}
 elif not (sim["tool"] == "Optimizer" and sim["Variable_Pch"]):
     # setpt = Chamber pressure set points in Torr
     # dt_setpt = Time for which chamber pressure set points are held in min
@@ -124,7 +122,7 @@ else:
 if sim["tool"] == "Design Space Generator":
     # Array of shelf temperature set points in C
     # ramp_rate = Shelf temperature ramping rate in C/min
-    Tshelf = {"init": -5.0, "setpt": [-5, 0, 2, 5], "ramp_rate": 1.0}
+    Tshelf = {"init": -5.0, "setpt": [-15, 0, 30, 90], "ramp_rate": 1.0}
 elif not (sim["tool"] == "Optimizer" and sim["Variable_Tsh"]):
     # init = Intial shelf temperature in C
     # setpt = Shelf temperature set points in C
