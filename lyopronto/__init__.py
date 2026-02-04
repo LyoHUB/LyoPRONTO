@@ -585,8 +585,6 @@ def _plot_design_space(data, inputs, props, timestamp):
     plt.axes(ax)
     # Plot boundary lines
     # Equipment capability line
-    # Fill the feasible region
-    ax.fill_between(x, y, color=[1.0, 1.0, 0.6])
 
     ax.plot(
         # x: pressure in mTorr
@@ -636,10 +634,10 @@ def _plot_design_space(data, inputs, props, timestamp):
         # Adjust upper limit to be 1/4 of first two pr limited min flux values
         ul = (ds_pr[3, 0] + ds_pr[3, 1]) / 4
     ll = max(0, ll)
+    # Fill the feasible region
+    ax.fill_between(x, y, ll, color=[1.0, 1.0, 0.6])
     # ul = np.max(y) * 1.2 # Consider: focus on feasible region
     ax.set_ylim([ll, ul])
-    # y part of bounding box: top of feasible region, then lower limit
-    # Use lower limit for lower box bound
     plt.tight_layout()
     figure_name = f"lyo_DesignSpace_SublimationFlux_{timestamp}.pdf"
     plt.savefig(figure_name)
@@ -655,13 +653,14 @@ def _plot_design_space(data, inputs, props, timestamp):
     y1 = np.interp(x, Pchamber, ds_eq_cap[1, :])
     # Line 2: drying time limited by product temperature
     y2 = np.interp(x, Pchamber[[0, -1]], ds_pr[1, :])
-    x = x * constant.Torr_to_mTorr  # convert pressure range to mTorr
     # get pointwise maximum of y1 and y2
     y = np.maximum(y1, y2)
+    x = x * constant.Torr_to_mTorr  # convert pressure range to mTorr
 
     fig = plt.figure(0, figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plt.axes(ax)
+    # Drying time boundary for eq cap
     ax.plot(
         Pchamber * constant.Torr_to_mTorr,
         ds_eq_cap[1, :],
@@ -670,6 +669,7 @@ def _plot_design_space(data, inputs, props, timestamp):
         linewidth=lineWidth,
         label="Equipment Capability",
     )
+    # Drying time boundary for product temperature
     ax.plot(
         Pchamber[[0, -1]] * constant.Torr_to_mTorr,
         ds_pr[1, :],
@@ -678,6 +678,7 @@ def _plot_design_space(data, inputs, props, timestamp):
         linewidth=lineWidth,
         label=("T$_{pr}$ = " + str(inputs["product"]["T_pr_crit"]) + " C"),
     )
+    # Shelf temperature isotherms
     for i in range(Tshelf.size):
         ax.plot(
             Pchamber * constant.Torr_to_mTorr,
@@ -689,7 +690,6 @@ def _plot_design_space(data, inputs, props, timestamp):
         )
     plot_styling.axis_style_designspace(ax, ylabel="Drying Time [hr]")
     plt.legend(prop={"size": 40})
-    # The following seems incorrect: done for all three y axes, regardless of units
     ll, ul = ax.get_ylim()
     ll = max(0, ll)
     ax.set_ylim([ll, ul])
@@ -708,9 +708,10 @@ def _plot_design_space(data, inputs, props, timestamp):
     y1 = np.interp(x, Pchamber, ds_eq_cap[0, :])  # equipment capability limiting product temperature in degC
     # Curve 2: horizontal line at product temperature limit
     y2 = np.full_like(y1, T_pr_crit)  # horizontal line at product temperature limit
+    y = np.minimum(y1, y2)
+
     x = x * constant.Torr_to_mTorr  # Convert pressure range to mTorr
     # Pointwise minimum of y1 and y2
-    y = np.minimum(y1, y2)
 
     fig = plt.figure(0, figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
