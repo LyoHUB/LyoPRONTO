@@ -22,7 +22,38 @@ from . import functions
 
 ################# Primary drying at fixed set points ###############
 
+# TODO: docuemnt this properly
 def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
+    """Compute quantities necessary for constructing a graphical design space. 
+
+    Args:
+        vial (dict): _description_
+        product (dict): _description_
+        ht (dict): _description_
+        Pchamber (dict): _description_
+        Tshelf (dict): _description_
+        dt (float): _description_
+        eq_cap (dict): _description_
+        nVial (int): _description_
+
+    Returns:
+        ndarray: table of results for shelf isotherms
+        ndarray: table of results for product isotherms
+        ndarray: table of results for equipment capability curve
+    
+    Each of the returns has 5 rows corresponding to:
+        - Maximum product temperature in degC
+        - Primary drying time in hr
+        - Average sublimation flux in kg/hr/m^2
+        - Maximum/minimum sublimation flux in kg/hr/m^2
+        - Sublimation flux at the end of primary drying in kg/hr/m^2
+    (noting that for equipment capability, average, maximum, and end sublimation fluxes are identical)
+    With nT setpoints in Tshelf['setpt'] and nP setpoints in Pchamber['setpt'], the returned arrays have the following shapes:
+        - Shelf isotherms: (5, nT, nP) array
+        - Product isotherms: (5, 2) array (for the lowest and highest Pchamber setpoints)
+        - Equipment capability curve: (3, nP) array
+
+    """
 
     T_max = np.zeros([np.size(Tshelf['setpt']),np.size(Pchamber['setpt'])])
     drying_time = np.zeros([np.size(Tshelf['setpt']),np.size(Pchamber['setpt'])])
