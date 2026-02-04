@@ -70,25 +70,11 @@ def axis_style_temperature(ax, **kwargs):
     ax.set_ylabel("Product Temperature [°C]",fontsize=gcafontSize,color=color,**default_font_spec)
     axis_tick_styling(ax, **kwargs)
 
-def axis_style_designspace(ax,**kwargs):  
+def axis_style_designspace(ax, ylabel, **kwargs):  
     """ Function to set styling for axes, with pressure on x and sublimation flux on y """
     gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Chamber Pressure [mTorr]",fontsize=gcafontSize,**default_font_spec)
-    ax.set_ylabel("Sublimation Flux [kg/hr/m$^2$]",fontsize=gcafontSize,**default_font_spec)
-    axis_tick_styling(ax, **kwargs)
-
-def axis_style_ds_percdried(ax,**kwargs):  
-    """ Function to set styling for axes, with chamber pressure on x and fraction dried on y """
-    gcafontSize = kwargs.get('gcafontSize',60)
-    ax.set_xlabel("Chamber Pressure [mTorr]",fontsize=gcafontSize,**default_font_spec)
-    ax.set_ylabel("Fraction Dried",fontsize=gcafontSize,**default_font_spec)
-    axis_tick_styling(ax, **kwargs)
-
-def axis_style_ds_temperature(ax,**kwargs):  
-    """ Function to set styling for axes, with chamber pressure on x and product temperature on y """
-    gcafontSize = kwargs.get('gcafontSize',60)
-    ax.set_xlabel("Chamber Pressure [mTorr]",fontsize=gcafontSize,**default_font_spec)
-    ax.set_ylabel("Product Temperature [°C]",fontsize=gcafontSize,**default_font_spec)
+    ax.set_ylabel(ylabel,fontsize=gcafontSize,**default_font_spec)
     axis_tick_styling(ax, **kwargs)
     
 def axis_style_rp(ax, **kwargs):
@@ -96,7 +82,7 @@ def axis_style_rp(ax, **kwargs):
     color = kwargs.get('color','k')
     gcafontSize = kwargs.get('gcafontSize',60)  
     ax.set_xlabel("Dry Layer Height [cm]",fontsize=gcafontSize,**default_font_spec)
-    ax.set_ylabel('Product Resistance [cm$^2$ hr Torr/g]',fontsize=gcafontSize,color=color,**default_font_spec)
+    ax.set_ylabel("Product Resistance [cm$^2$ hr Torr/g]",fontsize=gcafontSize,color=color,**default_font_spec)
     axis_tick_styling(ax, **kwargs)
 
 

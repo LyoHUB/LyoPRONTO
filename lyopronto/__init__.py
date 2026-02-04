@@ -77,7 +77,7 @@ def execute_simulation(inputs):
                 "With the current implementation, either Kv or Rp must be specified."
             )
 
-    elif sim_type == "Design-Space-Generator":
+    elif sim_type == "Design Space Generator":
         output_data = design_space.dry(
             inputs["vial"],
             inputs["product"],
@@ -230,7 +230,7 @@ def save_inputs_legacy(inputs, timestamp):
 
         if sim["tool"] == "Freezing Calculator":
             0
-        elif sim["tool"] == "Design-Space-Generator":
+        elif sim["tool"] == "Design Space Generator":
             writer.writerow(
                 ["Chamber pressure set points [Torr]:", inputs["Pchamber"]["setpt"][:]]
             )
@@ -259,7 +259,7 @@ def save_inputs_legacy(inputs, timestamp):
             )
         writer.writerow([""])
 
-        if sim["tool"] == "Design-Space-Generator":
+        if sim["tool"] == "Design Space Generator":
             writer.writerow(["Intial shelf temperature [C]:", inputs["Tshelf"]["init"]])
             writer.writerow(
                 ["Shelf temperature set points [C]:", inputs["Tshelf"]["setpt"][:]]
@@ -327,78 +327,8 @@ def save_csv(output_data, inputs, timestamp):
         assert output_data.shape[1] == 3
         header = "Time [hr], Shelf Temp [°C], Product Temp [°C]"
         np.savetxt(filename, output_data, delimiter=", ", header=header)
-    elif sim["tool"] == "Design-Space-Generator":
-        assert output_data.shape[1] == 6
-        header = "Chamber Pressure [mTorr], Max Product Temperature [°C], Drying Time [hr], Avg Sublimation Flux [kg/hr/m²], Max/Min Sublimation Flux [kg/hr/m²], Final Sublimation Flux [kg/hr/m²]"
-        ds_shelf, ds_pr, ds_eq_cap = output_data
-        Tshelf = inputs["Tshelf"]
-        Pchamber = inputs["Pchamber"]
-
-        # TODO: This CSV has a weird format. Consider revising, or at least redoing as a few tables.
-        try:
-            csvfile = open(filename, "w")
-            writer = csv.writer(csvfile)
-            writer.writerow(
-                [
-                    "Chamber Pressure [mTorr]",
-                    "Maximum Product Temperature [C]",
-                    "Drying Time [hr]",
-                    "Average Sublimation Flux [kg/hr/m^2]",
-                    "Maximum/Minimum Sublimation Flux [kg/hr/m^2]",
-                    "Final Sublimation Flux [kg/hr/m^2]",
-                ]
-            )
-            for i in range(np.size(Tshelf["setpt"])):
-                writer.writerow(["Shelf Temperature = ", str(Tshelf["setpt"][i])])
-                for j in range(np.size(Pchamber["setpt"])):
-                    writer.writerow(
-                        [
-                            Pchamber["setpt"][j] * constant.Torr_to_mTorr,
-                            ds_shelf[0, i, j],
-                            ds_shelf[1, i, j],
-                            ds_shelf[2, i, j],
-                            ds_shelf[3, i, j],
-                            ds_shelf[4, i, j],
-                        ]
-                    )
-                writer.writerow(
-                    ["Product Temperature = ", str(inputs["product"]["T_pr_crit"])]
-                )
-                writer.writerow(
-                    [
-                        Pchamber["setpt"][0] * constant.Torr_to_mTorr,
-                        ds_pr[0, 0],
-                        ds_pr[1, 0],
-                        ds_pr[2, 0],
-                        ds_pr[3, 0],
-                        ds_pr[4, 0],
-                    ]
-                )
-                writer.writerow(
-                    [
-                        Pchamber["setpt"][-1] * constant.Torr_to_mTorr,
-                        ds_pr[0, 1],
-                        ds_pr[1, 1],
-                        ds_pr[2, 1],
-                        ds_pr[3, 1],
-                        ds_pr[4, 1],
-                    ]
-                )
-                writer.writerow(["Equipment Capability"])
-            for k in range(np.size(Pchamber["setpt"])):
-                writer.writerow(
-                    [
-                        Pchamber["setpt"][k] * constant.Torr_to_mTorr,
-                        ds_eq_cap[0, k],
-                        ds_eq_cap[1, k],
-                        ds_eq_cap[2, k],
-                        ds_eq_cap[2, k],
-                        ds_eq_cap[2, k],
-                    ]
-                )
-        finally:
-            csvfile.close()
-
+    elif sim["tool"] == "Design Space Generator":
+        _write_design_space_csv(output_data, inputs, filename)
     else:
         header = ",".join(
             [
@@ -412,6 +342,67 @@ def save_csv(output_data, inputs, timestamp):
             ]
         )
         np.savetxt(filename, output_data, delimiter=", ", header=header)
+
+
+def _write_design_space_csv(data, inputs, filename):
+    ds_shelf, ds_pr, ds_eq_cap = data
+    Tshelf = inputs["Tshelf"]
+    Pchamber = inputs["Pchamber"]
+
+    try:
+        csvfile = open(filename, "w", newline="")
+        writer = csv.writer(csvfile)
+        writer.writerow(
+            [
+                "Chamber Pressure [mTorr]",
+                "Maximum Product Temperature [C]",
+                "Drying Time [hr]",
+                "Average Sublimation Flux [kg/hr/m^2]",
+                "Maximum/Minimum Sublimation Flux [kg/hr/m^2]",
+                "Final Sublimation Flux [kg/hr/m^2]",
+            ]
+        )
+        for i in range(np.size(Tshelf["setpt"])):
+            writer.writerow(["Shelf Temperature = ", str(Tshelf["setpt"][i])])
+            for j in range(np.size(Pchamber["setpt"])):
+                writer.writerow(
+                    [
+                        Pchamber["setpt"][j] * constant.Torr_to_mTorr,
+                        *ds_shelf[:, i, j],
+                    ]
+                )
+            writer.writerow(
+                ["Product Temperature = ", str(inputs["product"]["T_pr_crit"])]
+            )
+            writer.writerow(
+                [Pchamber["setpt"][0] * constant.Torr_to_mTorr, *ds_pr[:, 0]]
+            )
+            writer.writerow(
+                [Pchamber["setpt"][-1] * constant.Torr_to_mTorr, *ds_pr[:, 1]]
+            )
+            writer.writerow(["Equipment Capability"])
+        for k in range(np.size(Pchamber["setpt"])):
+            writer.writerow(
+                [
+                    Pchamber["setpt"][k] * constant.Torr_to_mTorr,
+                    *ds_eq_cap[:, k],
+                    ds_eq_cap[-1, k],
+                    ds_eq_cap[-1, k],
+                ]
+            )
+    finally:
+        csvfile.close()
+
+
+# TODO: implement this after redesigning design space output API
+# def _write_design_space_yaml(data, inputs, filename):
+#     ds_shelf, ds_pr, ds_eq_cap = data
+#     # ds_shelf: 5 x nTsh x nPch
+#     # ds_pr: 5 x 2
+#     # ds_eq_cap: 3 x nPch
+
+# def _read_design_space_yaml(filename):
+#     """Read design space data from a YAML file."""
 
 
 # TODO: add more kwargs, proper documentation, possibly refactor to make
@@ -435,7 +426,7 @@ def generate_visualizations(output_data, inputs, timestamp):
         _plot_freezing_results(output_data, figure_props, timestamp)
     elif inputs["sim"]["tool"] in ["Primary Drying Calculator", "Optimizer"]:
         _plot_drying_results(output_data, figure_props, timestamp)
-    elif inputs["sim"]["tool"] == "Design-Space-Generator":
+    elif inputs["sim"]["tool"] == "Design Space Generator":
         _plot_design_space(output_data, inputs, figure_props, timestamp)
 
 
@@ -554,106 +545,125 @@ def _plot_design_space(data, inputs, props, timestamp):
     # Implementation for design space plotting
 
     ds_shelf, ds_pr, ds_eq_cap = data
-    Tshelf = inputs["Tshelf"]
-    Pchamber = inputs["Pchamber"]
+    Tshelf = np.array(inputs["Tshelf"]["setpt"])
+    Pchamber = np.array(inputs["Pchamber"]["setpt"])
+    T_pr_crit = inputs["product"]["T_pr_crit"]
     figwidth = props["figwidth"]
     figheight = props["figheight"]
     lineWidth = props["linewidth"]
     color_list = ["b", "m", "g", "c", "r", "y", "k"]  # Line colors
 
+    assert np.all(np.diff(Pchamber) >= 0), "Plotting assumes Pchamber set points are sorted."
     # Design space: sublimation flux vs pressures
 
-    x = np.linspace(
-        np.min(Pchamber["setpt"]), np.max(Pchamber["setpt"]), 1000
-    )  # pressure range in Torr
+    # Range in pressure space, min to max, Torr
+    x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000)
+    # Line 1: equipment capability sub flux, kg/hr/m^2
+    # Indices (2,-1) is average sub flux at last Pch setpt,
+    #         (2,0) is average sub flux at first Pch setpt
+    # Slope: (delta sub flux)/(delta pressure)
+    # Intercept: sub flux at first pressure
     y1 = (
         (ds_eq_cap[2, -1] - ds_eq_cap[2, 0])
-        / (Pchamber["setpt"][-1] - Pchamber["setpt"][0])
-    ) * (x - Pchamber["setpt"][0]) + ds_eq_cap[
-        2, 0
-    ]  # equipment capability sublimation flux in kg/hr/m^2
+        / (Pchamber[-1] - Pchamber[0])
+    ) * (x - Pchamber[0]) + ds_eq_cap[2, 0]
+    # Line 2: product temperature limited sub flux, kg/hr/m^2
+    # Indices (3, -1) is minimum sub flux at last setpt,
+    #          (3,0) is minimum sub flux at first setpt
+    # Slope: (delta sub flux)/(delta pressure)
+    # Intercept: sub flux at first pressure
     y2 = (
-        (ds_pr[3, -1] - ds_pr[3, 0]) / (Pchamber["setpt"][-1] - Pchamber["setpt"][0])
-    ) * (x - Pchamber["setpt"][0]) + ds_pr[
-        3, 0
-    ]  # product temperature limited sublimation flux in kg/hr/m^2
-    x = x * constant.Torr_to_mTorr  # pressure range in mTorr
-    i = np.where(y1 >= y2)[0][0]
-    y = np.append(y1[:i], y2[i:])
-    x1 = np.append(x, x[::-1])
+        (ds_pr[3, -1] - ds_pr[3, 0]) / (Pchamber[-1] - Pchamber[0])
+    ) * (x - Pchamber[0]) + ds_pr[3, 0]
+    # Convert to mTorr for plotting
+    x = x * constant.Torr_to_mTorr
+    # Get whichever sub flux is lower at each x value
+    y = np.minimum(y1, y2)
 
     fig = plt.figure(0, figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plt.axes(ax)
+    # Plot boundary lines
+    # Equipment capability line
+    # Fill the feasible region
+    ax.fill_between(x, y, color=[1.0, 1.0, 0.6])
+
     ax.plot(
-        [P * constant.Torr_to_mTorr for P in Pchamber["setpt"]],
+        # x: pressure in mTorr
+        Pchamber * constant.Torr_to_mTorr,
+        # y: equipment capability average sub flux, for all Pch
         ds_eq_cap[2, :],
         "-o",
         color="k",
         linewidth=lineWidth,
         label="Equipment Capability",
     )
+    # Product temperature isotherm
+    # Straight line: endpoints only enough
     ax.plot(
-        [
-            Pchamber["setpt"][0] * constant.Torr_to_mTorr,
-            Pchamber["setpt"][-1] * constant.Torr_to_mTorr,
-        ],
+        # x: pressure in mTorr
+        Pchamber[[0, -1]] * constant.Torr_to_mTorr,
+        # y: product temperature limited minimum sub flux, for all first and last Pch
         ds_pr[3, :],
         "-o",
         color="r",
         linewidth=lineWidth,
         label=("T$_{pr}$ = " + str(inputs["product"]["T_pr_crit"]) + "°C"),
     )
-    for i in range(np.size(Tshelf["setpt"])):
+    # Shelf temperature isotherms
+    for i in range(Tshelf.size):
         ax.plot(
-            [P * constant.Torr_to_mTorr for P in Pchamber["setpt"]],
+            # x: pressure in mTorr
+            Pchamber * constant.Torr_to_mTorr,
+            # y: 3 for maximum sub flux, i shelf temp , for all Pch
             ds_shelf[3, i, :],
             "--",
             color=str(color_list[i]),
             linewidth=lineWidth,
-            label=("T$_{sh}$ = " + str(Tshelf["setpt"][i]) + " C"),
+            label=("T$_{sh}$ = " + str(Tshelf[i]) + " C"),
         )
-    plot_styling.axis_style_designspace(ax)
+    plot_styling.axis_style_designspace(ax, ylabel="Sublimation Flux [kg/hr/m$^2$]")
     plt.legend(prop={"size": 40})
     ll, ul = ax.get_ylim()
+    # Adjust axis limits
+    # TODO: this logic seems questionable. What does it achieve?
+    # If minimum of eq cap average flux > maximum of pr limited min flux
     if np.min(ds_eq_cap[2, :]) > np.max(ds_pr[3, :]):
+        # Adjust upper limit to be 1/3 of first two eq cap average flux values
         ul = (ds_eq_cap[2, 0] + ds_eq_cap[2, 1]) / 3
+    # If instead minimum of pr limited min flux > maximum of eq cap average flux
     elif np.min(ds_pr[3, :]) > np.max(ds_eq_cap[2, :]):
+        # Adjust upper limit to be 1/4 of first two pr limited min flux values
         ul = (ds_pr[3, 0] + ds_pr[3, 1]) / 4
+    ll = max(0, ll)
+    # ul = np.max(y) * 1.2 # Consider: focus on feasible region
     ax.set_ylim([ll, ul])
-    x2 = np.append(y, ll * x / x)
-    ax.fill(x1, x2, color=[1.0, 1.0, 0.6])
+    # y part of bounding box: top of feasible region, then lower limit
+    # Use lower limit for lower box bound
     plt.tight_layout()
     figure_name = f"lyo_DesignSpace_SublimationFlux_{timestamp}.pdf"
     plt.savefig(figure_name)
     plt.close()
 
-    # Drying progress vs pressures
+    # Drying time vs pressures
 
-    x = np.linspace(
-        np.min(Pchamber["setpt"]), np.max(Pchamber["setpt"]), 1000
-    )  # pressure range in Torr
-    y1 = (
-        (ds_eq_cap[1, -1] - ds_eq_cap[1, 0])
-        / (Pchamber["setpt"][-1] - Pchamber["setpt"][0])
-    ) * (x - Pchamber["setpt"][0]) + ds_eq_cap[
-        1, 0
-    ]  # equipment capability drying time in hr
-    y2 = (
-        (ds_pr[1, -1] - ds_pr[1, 0]) / (Pchamber["setpt"][-1] - Pchamber["setpt"][0])
-    ) * (x - Pchamber["setpt"][0]) + ds_pr[
-        1, 0
-    ]  # product temperature limited drying time in hr
-    x = x * constant.Torr_to_mTorr  # pressure range in mTorr
-    i = np.where(y1 < y2)[0][0]
-    y = np.append(y1[:i], y2[i:])
-    x1 = np.append(x, x[::-1])
+    #### First, filled area above constraints
+    # TODO: this is wrong: doesn't actually match constraints
+    # Pressure range in Torr
+    x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000) 
+    # Line 1: drying time limited by equipment capability
+    y1 = np.interp(x, Pchamber, ds_eq_cap[1, :])
+    # Line 2: drying time limited by product temperature
+    y2 = np.interp(x, Pchamber[[0, -1]], ds_pr[1, :])
+    x = x * constant.Torr_to_mTorr  # convert pressure range to mTorr
+    # get pointwise maximum of y1 and y2
+    y = np.maximum(y1, y2)
 
     fig = plt.figure(0, figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plt.axes(ax)
     ax.plot(
-        [P * constant.Torr_to_mTorr for P in Pchamber["setpt"]],
+        Pchamber * constant.Torr_to_mTorr,
         ds_eq_cap[1, :],
         "-o",
         color="k",
@@ -661,36 +671,29 @@ def _plot_design_space(data, inputs, props, timestamp):
         label="Equipment Capability",
     )
     ax.plot(
-        [
-            Pchamber["setpt"][0] * constant.Torr_to_mTorr,
-            Pchamber["setpt"][-1] * constant.Torr_to_mTorr,
-        ],
+        Pchamber[[0, -1]] * constant.Torr_to_mTorr,
         ds_pr[1, :],
         "-o",
         color="r",
         linewidth=lineWidth,
         label=("T$_{pr}$ = " + str(inputs["product"]["T_pr_crit"]) + " C"),
     )
-    for i in range(np.size(Tshelf["setpt"])):
+    for i in range(Tshelf.size):
         ax.plot(
-            [P * constant.Torr_to_mTorr for P in Pchamber["setpt"]],
+            Pchamber * constant.Torr_to_mTorr,
             ds_shelf[1, i, :],
             "--",
             color=str(color_list[i]),
             linewidth=lineWidth,
-            label=("T$_{sh}$ = " + str(Tshelf["setpt"][i]) + " C"),
+            label=("T$_{sh}$ = " + str(Tshelf[i]) + " C"),
         )
-    plot_styling.axis_style_ds_percdried(ax)
+    plot_styling.axis_style_designspace(ax, ylabel="Drying Time [hr]")
     plt.legend(prop={"size": 40})
     # The following seems incorrect: done for all three y axes, regardless of units
     ll, ul = ax.get_ylim()
-    if np.min(ds_eq_cap[2, :]) > np.max(ds_pr[3, :]):
-        ul = (ds_eq_cap[2, 0] + ds_eq_cap[2, 1]) / 3
-    elif np.min(ds_pr[3, :]) > np.max(ds_eq_cap[2, :]):
-        ul = (ds_pr[3, 0] + ds_pr[3, 1]) / 4
+    ll = max(0, ll)
     ax.set_ylim([ll, ul])
-    x2 = np.append(y, ul * x / x)
-    ax.fill(x1, x2, color=[1.0, 1.0, 0.6])
+    ax.fill_between(x, y, ul, color=[1.0, 1.0, 0.6])
     figure_name = f"lyo_DesignSpace_DryingTime_{timestamp}.pdf"
     plt.tight_layout()
     plt.savefig(figure_name)
@@ -699,27 +702,21 @@ def _plot_design_space(data, inputs, props, timestamp):
     # Product temperature vs pressures
 
     x = np.linspace(
-        np.min(Pchamber["setpt"]), np.max(Pchamber["setpt"]), 1000
+        np.min(Pchamber), np.max(Pchamber), 1000
     )  # pressure range in Torr
-    y1 = (
-        (ds_eq_cap[0, -1] - ds_eq_cap[0, 0])
-        / (Pchamber["setpt"][-1] - Pchamber["setpt"][0])
-    ) * (x - Pchamber["setpt"][0]) + ds_eq_cap[
-        0, 0
-    ]  # equipment capability limiting product temperature in degC
-    y2 = (
-        (ds_pr[0, -1] - ds_pr[0, 0]) / (Pchamber["setpt"][-1] - Pchamber["setpt"][0])
-    ) * (x - Pchamber["setpt"][0]) + ds_pr[0, 0]  # product temperature limit in deg C
-    x = x * constant.Torr_to_mTorr  # pressure range in mTorr
-    i = np.where(y1 >= y2)[0][0]
-    y = np.append(y1[:i], y2[i:])
-    x1 = np.append(x, x[::-1])
+    # Curve 1: equipment capability limited product temperature
+    y1 = np.interp(x, Pchamber, ds_eq_cap[0, :])  # equipment capability limiting product temperature in degC
+    # Curve 2: horizontal line at product temperature limit
+    y2 = np.full_like(y1, T_pr_crit)  # horizontal line at product temperature limit
+    x = x * constant.Torr_to_mTorr  # Convert pressure range to mTorr
+    # Pointwise minimum of y1 and y2
+    y = np.minimum(y1, y2)
 
     fig = plt.figure(0, figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plt.axes(ax)
     ax.plot(
-        [P * constant.Torr_to_mTorr for P in Pchamber["setpt"]],
+        Pchamber * constant.Torr_to_mTorr,
         ds_eq_cap[0, :],
         "-o",
         color="k",
@@ -727,36 +724,28 @@ def _plot_design_space(data, inputs, props, timestamp):
         label="Equipment Capability",
     )
     ax.plot(
-        [
-            Pchamber["setpt"][0] * constant.Torr_to_mTorr,
-            Pchamber["setpt"][-1] * constant.Torr_to_mTorr,
-        ],
+        Pchamber[[0, -1]] * constant.Torr_to_mTorr,
         ds_pr[0, :],
         "-o",
         color="r",
         linewidth=lineWidth,
         label=("T$_{pr}$ = " + str(inputs["product"]["T_pr_crit"]) + " C"),
     )
-    for i in range(np.size(Tshelf["setpt"])):
+    for i in range(np.size(Tshelf)):
         ax.plot(
-            [P * constant.Torr_to_mTorr for P in Pchamber["setpt"]],
+            Pchamber * constant.Torr_to_mTorr,
             ds_shelf[0, i, :],
             "--",
             color=str(color_list[i]),
             linewidth=lineWidth,
-            label=("T$_{sh}$ = " + str(Tshelf["setpt"][i]) + " C"),
+            label=("T$_{sh}$ = " + str(Tshelf[i]) + " C"),
         )
-    plot_styling.axis_style_ds_temperature(ax)
+    plot_styling.axis_style_designspace(ax, ylabel="Product Temperature [°C]")
     plt.legend(prop={"size": 40})
-    # The following seems incorrect: done for all three y axes, regardless of units
     ll, ul = ax.get_ylim()
-    if np.min(ds_eq_cap[2, :]) > np.max(ds_pr[3, :]):
-        ul = (ds_eq_cap[2, 0] + ds_eq_cap[2, 1]) / 3
-    elif np.min(ds_pr[3, :]) > np.max(ds_eq_cap[2, :]):
-        ul = (ds_pr[3, 0] + ds_pr[3, 1]) / 4
+    # TODO: Possibly tinker with ll and ul
     ax.set_ylim([ll, ul])
-    x2 = np.append(y, ll * x / x)
-    ax.fill(x1, x2, color=[1.0, 1.0, 0.6])
+    ax.fill_between(x, y, ll, color=[1.0, 1.0, 0.6])
     figure_name = f"lyo_DesignSpace_ProductTemperature_{timestamp}.pdf"
     plt.tight_layout()
     plt.savefig(figure_name)
