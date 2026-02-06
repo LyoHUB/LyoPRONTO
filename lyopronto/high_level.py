@@ -269,9 +269,14 @@ def save_inputs_legacy(inputs, timestamp):
 
 def save_inputs(inputs, timestamp):
     "Save inputs to a YAML file with timestamped filename."
+    copied = inputs.copy()
+    # If the inputs include large arrays of data, strip those out
+    copied.pop("time_data", None)
+    copied.pop("temp_data", None)
+    # Then save
     try:
         yamlfile = open("lyopronto_input_" + timestamp + ".yaml", "w")
-        yaml.dump(inputs, yamlfile)
+        yaml.dump(copied, yamlfile)
     finally:
         yamlfile.close()
 
@@ -281,6 +286,10 @@ def read_inputs(filename):
     try:
         yamlfile = open(filename, "r")
         inputs = yaml.load(yamlfile)
+        if "product_temp_filename" in inputs:
+            print("Note: input specifies a product temperature data file."
+                  + "This data should be loaded separately and added to the inputs dictionary"
+                  + "as `time_data` and `temp_data`.")
         return inputs
     finally:
         yamlfile.close()

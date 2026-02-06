@@ -79,7 +79,11 @@ elif not (sim["tool"] == "Primary Drying Calculator" and not sim["Rp_known"]):
 else:
     product = {"cSolid": 0.05}
 
+    # Keep this variable's name, so that it can be recorded with inputs, but adjust the 
+    # filename as necessary to get your local data.
+    # The times and temperatures will not be recorded directly with the inputs, for sake of space
     product_temp_filename = "./temperature.dat"
+    # Load that file. As necessary, add keywords to np.loadtxt to get the correct data
     exp_data = np.loadtxt(product_temp_filename)
     # Assumed: time in first column, temperature in second column
     # Change as necessary to match data file, but keep these names
@@ -163,6 +167,7 @@ for key in [
     "h_freezing",
     "t_dry_exp",
     "Kv_range",
+    "product_temp_filename",
     "time_data",
     "temp_data",
 ]:
