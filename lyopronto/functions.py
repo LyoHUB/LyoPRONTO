@@ -328,15 +328,13 @@ def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh_func,t0):
     hA = h*constant.hr_To_s * Av*constant.cm_To_m**2 # heat transfer coefficient in J/K/hr
     # t = rhoV*(Hf-Cp*(Tf-Tn))/hA/(Tf-Tsh) # time: g*(J/g- J/g/K*K)/(J/m^2/K/hr*m^2*K) = hr
     lhs = rhoV*(Hf-Cp*(Tf-Tn))/hA
-    def integrand(t):
-        return Tf - Tsh_func(t+t0)
-    def resid(t):
-        integral, _ = quad(integrand, 0, t)
+    def integrand(dt):
+        return Tf - Tsh_func(t0+dt)
+    def resid(delta_t):
+        integral, _ = quad(integrand, 0, delta_t)
         return integral - lhs
-    t = brentq(resid, t0, t0+100.0)
-
-
-    return t
+    delta_t = brentq(resid, 0, 100.0)
+    return delta_t
 
 ##
 
