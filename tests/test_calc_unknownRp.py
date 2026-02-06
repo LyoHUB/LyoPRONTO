@@ -12,6 +12,7 @@ import numpy as np
 import scipy.optimize as sp
 
 from lyopronto import calc_unknownRp
+from lyopronto.high_level import execute_simulation
 from lyopronto.functions import Lpr0_FUN, Rp_FUN
 from .utils import assert_physically_reasonable_output, assert_incomplete_drying
 
@@ -145,6 +146,29 @@ class TestCalcUnknownRpBasic:
         # Should not exceed original, since experimental data must end before complete drying)
         assert final_Lck > 0, "Cake length should have progressed"
         assert final_Lck <= Lpr0 * 1.01, "Cake length should not exceed initial height"
+
+    @pytest.mark.main
+    def test_main_unknown_rp(self, mocker, standard_inputs_nodt, temperature_data):
+        """Test that this function is called from high-level API without errors."""
+        sim = {"tool": "Primary Drying Calculator",
+                "Kv_known": True,
+                "Rp_known": False,}
+        vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
+        time_data, temp_data = temperature_data
+        print(time_data[-1])
+
+        mocked_func = mocker.patch("lyopronto.calc_unknownRp.dry", wraps=calc_unknownRp.dry)
+        inputs = {"sim": sim,}
+        loc = locals()
+        for key in ["vial", "product", "ht", "Pchamber", "Tshelf", "time_data", "temp_data"]:
+            inputs[key] = loc[key]
+
+        output = execute_simulation(inputs)
+
+        mocked_func.assert_called_once_with(vial, product, ht, Pchamber, Tshelf, time_data, temp_data)
+
+        assert_physically_reasonable_output(output)
+        assert_incomplete_drying(output)
 
 
 class TestCalcUnknownRpEdgeCases:

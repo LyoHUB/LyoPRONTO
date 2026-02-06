@@ -41,7 +41,7 @@ current_time = time.strftime("%y%m%d_%H%M", time.localtime())
 
 # Simulation type
 # 4 Tools available: 'Freezing Calculator', 'Primary Drying Calculator', 'Design Space Generator', 'Optimizer'
-# For 'Freezing Calculator': h_freezeing, Tpr0, Tf and Tn must be provided
+# For 'Freezing Calculator': h_freezing, Tpr0, Tf and Tn must be provided
 #                 No Variable Tsh - set point must be specified
 # For 'Primary Drying Calculator': If Kv and Rp are known, drying time can be determined
 #            If drying time and Rp are known, Kv can be determined

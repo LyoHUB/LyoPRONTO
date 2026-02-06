@@ -42,6 +42,7 @@ classifiers = [
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
+    "pytest-mock>=3",
     "pytest-cov>=4.1.0",
     "pytest-xdist>=3.3.0",
     "hypothesis>=6.82.0",
@@ -86,4 +87,5 @@ markers = [
     "slow: Tests that take a long time to run",
     "fast: Quick tests that run in under 1 second",
     "notebook: Tests that execute Jupyter notebooks for documentation",
+    "main: Tests that cover functionality previously included in main.py",
 ]

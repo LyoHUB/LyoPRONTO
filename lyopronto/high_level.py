@@ -427,13 +427,10 @@ def _plot_freezing_results(data, props, timestamp):
         linewidth=props["linewidth"],
         label="Product Temperature",
     )
-    ax.set_xlabel("Time [hr]", fontsize=props["axis_fontsize"], fontweight="bold")
-    ax.set_ylabel(
-        "Temperature [°C]", fontsize=props["axis_fontsize"], fontweight="bold"
-    )
+    plot_styling.axis_style_temperature(ax)
     ax.legend(prop={"size": 40})
     plt.tight_layout()
-    plt.savefig(f"Temperatures_{timestamp}.pdf")
+    plt.savefig(f"lyo_Temperatures_{timestamp}.pdf")
     plt.close()
 
 
