@@ -37,7 +37,7 @@ class TestHighLevelAPI:
 
     @pytest.mark.main
     def test_knownRp_fullstack(self, mocker, repo_root, tmp_path):
-        input_file = repo_root / "test_data" / "example_knownRp.yaml"
+        input_file = repo_root / "test_data" / "example_knownrp.yaml"
         mocked_func = mocker.patch("lyopronto.calc_knownRp.dry", wraps=calc_knownRp.dry, autospec=True)
         with chdir(tmp_path):
             inputs = read_inputs(input_file)
@@ -60,7 +60,7 @@ class TestHighLevelAPI:
 
     @pytest.mark.main
     def test_unknownKv_fullstack(self, mocker, repo_root, tmp_path, capsys):
-        input_file = repo_root / "test_data" / "example_unknownKv.yaml"
+        input_file = repo_root / "test_data" / "example_unknownkv.yaml"
         mocked_func = mocker.patch("lyopronto.calc_knownRp.dry", wraps=calc_knownRp.dry, autospec=True)
         with chdir(tmp_path):
             inputs = read_inputs(input_file)
