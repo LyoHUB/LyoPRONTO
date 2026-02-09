@@ -291,17 +291,13 @@ def save_inputs(inputs, timestamp):
     copied.pop("time_data", None)
     copied.pop("temp_data", None)
     # Then save
-    try:
-        yamlfile = open("lyopronto_input_" + timestamp + ".yaml", "w")
+    with open(f"lyopronto_input_{timestamp}.yaml", "w") as yamlfile:
         yaml.dump(copied, yamlfile)
-    finally:
-        yamlfile.close()
 
 
 def read_inputs(filename):
     "Read inputs from a YAML file."
-    try:
-        yamlfile = open(filename, "r")
+    with open(filename, "r") as yamlfile:
         inputs = yaml.load(yamlfile)
         if "product_temp_filename" in inputs:
             print(
@@ -310,8 +306,6 @@ def read_inputs(filename):
                 + "dictionary as `time_data` and `temp_data`."
             )
         return inputs
-    finally:
-        yamlfile.close()
 
 
 def save_csv(output_data, inputs, timestamp):

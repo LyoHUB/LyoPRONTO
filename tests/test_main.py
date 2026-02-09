@@ -234,7 +234,7 @@ class TestHighLevelAPI:
 
     @pytest.mark.main
     def test_misspelled(self, repo_root):
-        input_file = repo_root / "test_data" / "example_knownRp.yaml"
+        input_file = repo_root / "test_data" / "example_knownrp.yaml"
         inputs = read_inputs(input_file)
         inputs["sim"]["tool"] = "Primery Drying Calculator" # Misspelled on purpose
         with pytest.raises(ValueError, match="Invalid simulation tool"):
