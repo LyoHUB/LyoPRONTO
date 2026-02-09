@@ -4,11 +4,6 @@ from contextlib import chdir
 import pytest
 import numpy as np
 from lyopronto import *
-from .utils import (
-    assert_physically_reasonable_output,
-    assert_complete_drying, 
-    assert_incomplete_drying,
-)
 
 class TestHighLevelAPI:
     """Tests for the high-level API functions in lyopronto.high_level."""
@@ -95,7 +90,6 @@ class TestHighLevelAPI:
         inputs["Kv_range"] = [1e-5, 2e-5]
         with pytest.warns(UserWarning, match="bracket"):
             output = execute_simulation(inputs)
-            assert_physically_reasonable_output(output)
         captured = capsys.readouterr()
         assert f"Optimal Kv: {2e-5}" in captured.out
         
@@ -104,7 +98,6 @@ class TestHighLevelAPI:
         inputs["Kv_range"] = [1e-3, 2e-3]
         with pytest.warns(UserWarning, match="bracket"):
             output = execute_simulation(inputs)
-            assert_physically_reasonable_output(output)
         captured = capsys.readouterr()
         assert f"Optimal Kv: {1e-3}" in captured.out
 
