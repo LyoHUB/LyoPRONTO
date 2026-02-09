@@ -1,4 +1,12 @@
-from . import freezing, calc_knownRp, calc_unknownRp, design_space, opt_Pch_Tsh, opt_Pch, opt_Tsh
+from . import (
+    freezing,
+    calc_knownRp,
+    calc_unknownRp,
+    design_space,
+    opt_Pch_Tsh,
+    opt_Pch,
+    opt_Tsh,
+)
 from . import functions, constant, plot_styling
 
 from warnings import warn
@@ -125,7 +133,7 @@ def _optimize_rp_parameter(inputs):
     )
 
     print(f"R0: {params[0]}, A1: {params[1]}, A2: {params[2]}")
-    return output
+    return output, product_res, params
 
 
 def _run_optimizer(inputs):
@@ -146,6 +154,8 @@ def _run_optimizer(inputs):
         return opt_Pch.dry(*args)
     elif inputs["sim"]["Variable_Tsh"]:
         return opt_Tsh.dry(*args)
+    else:
+        raise ValueError("Either Tsh or Pch needs to be variable to optimize.")
 
 
 def save_inputs_legacy(inputs, timestamp):
@@ -177,15 +187,13 @@ def save_inputs_legacy(inputs, timestamp):
             writer.writerow(["Intial product temperature [C]:", product["Tpr0"]])
             writer.writerow(["Freezing temperature [C]:", product["Tf"]])
             writer.writerow(["Nucleation temperature [C]:", product["Tn"]])
-        elif not (
-            sim["tool"] == "Primary Drying Calculator" and sim["Rp_known"] == "N"
-        ):
+        elif not (sim["tool"] == "Primary Drying Calculator" and not sim["Rp_known"]):
             writer.writerow(["R0 [cm^2-hr-Torr/g]:", product["R0"]])
             writer.writerow(["A1 [cm-hr-Torr/g]:", product["A1"]])
             writer.writerow(["A2 [1/cm]:", product["A2"]])
         if not (
             sim["tool"] == "Freezing Calculator"
-            and sim["tool"] == "Primary Drying Calculator"
+            or sim["tool"] == "Primary Drying Calculator"
         ):
             writer.writerow(["Critical product temperature [C]:", product["T_pr_crit"]])
 
@@ -205,7 +213,7 @@ def save_inputs_legacy(inputs, timestamp):
             writer.writerow(
                 ["Chamber pressure set points [Torr]:", inputs["Pchamber"]["setpt"][:]]
             )
-        elif not (sim["tool"] == "Optimizer" and sim["Variable_Pch"] == "Y"):
+        elif not (sim["tool"] == "Optimizer" and sim["Variable_Pch"]):
             for i in range(len(inputs["Pchamber"]["setpt"])):
                 writer.writerow(
                     [
@@ -241,7 +249,7 @@ def save_inputs_legacy(inputs, timestamp):
                     inputs["Tshelf"]["ramp_rate"],
                 ]
             )
-        elif not (sim["tool"] == "Optimizer" and sim["Variable_Tsh"] == "Y"):
+        elif not (sim["tool"] == "Optimizer" and sim["Variable_Tsh"]):
             for i in range(len(inputs["Tshelf"]["setpt"])):
                 writer.writerow(
                     [
@@ -287,9 +295,11 @@ def read_inputs(filename):
         yamlfile = open(filename, "r")
         inputs = yaml.load(yamlfile)
         if "product_temp_filename" in inputs:
-            print("Note: input specifies a product temperature data file."
-                  + "This data should be loaded separately and added to the inputs dictionary"
-                  + "as `time_data` and `temp_data`.")
+            print(
+                "Note: input specifies a product temperature data file."
+                + "This data should be loaded separately and added to the inputs dictionary"
+                + "as `time_data` and `temp_data`."
+            )
         return inputs
     finally:
         yamlfile.close()
@@ -310,6 +320,21 @@ def save_csv(output_data, inputs, timestamp):
     elif sim["tool"] == "Design Space Generator":
         _write_design_space_csv(output_data, inputs, filename)
     else:
+        if sim["tool"] == "Primary Drying Calculator" and not sim["Rp_known"]:
+            assert len(output_data) == 3  # output, product_res, params
+            header = ",".join(
+                [
+                    "Time [hr]",
+                    "Cake Length [cm]",
+                    "Product Resistance [cm^2-hr-Torr/g]",
+                ]
+            )
+            rpfile = f"lyo_Rp_data_{timestamp}.csv"
+            np.savetxt(rpfile, output_data[1], delimiter=", ", header=header)
+            data = output_data[0]
+        else:
+            data = output_data # for all but unknown Rp, output_data is the only return
+
         header = ",".join(
             [
                 "Time [hr]",
@@ -321,7 +346,7 @@ def save_csv(output_data, inputs, timestamp):
                 "Percent Dried",
             ]
         )
-        np.savetxt(filename, output_data, delimiter=", ", header=header)
+        np.savetxt(filename, data, delimiter=", ", header=header)
 
 
 def _write_design_space_csv(data, inputs, filename):
@@ -391,6 +416,7 @@ def generate_visualizations(output_data, inputs, timestamp):
     """
     Create and save publication-quality plots based on simulation results.
     """
+
     # TODO: move these to kwargs for the function
     figure_props = {
         "figwidth": 30,
@@ -398,15 +424,21 @@ def generate_visualizations(output_data, inputs, timestamp):
         "linewidth": 5,
         "marker_size": 20,
     }
+    tool = inputs["sim"]["tool"]
     matplotlibrc("text.latex", preamble=r"\usepackage{color}")
     matplotlibrc("text", usetex=False)
     plt.rcParams["font.family"] = "Arial"
 
-    if inputs["sim"]["tool"] == "Freezing Calculator":
+    if tool == "Freezing Calculator":
         _plot_freezing_results(output_data, figure_props, timestamp)
-    elif inputs["sim"]["tool"] in ["Primary Drying Calculator", "Optimizer"]:
-        _plot_drying_results(output_data, figure_props, timestamp)
-    elif inputs["sim"]["tool"] == "Design Space Generator":
+    elif tool in ["Primary Drying Calculator", "Optimizer"]:
+        if tool == "Primary Drying Calculator" and not inputs["sim"]["Rp_known"]:
+            _plot_rp_results(output_data, figure_props, timestamp)
+            data = output_data[0] # There are extra returns for Rp fitting
+        else:
+            data = output_data # for all but unknown Rp, output_data is the only return
+        _plot_drying_results(data, figure_props, timestamp)
+    elif tool == "Design Space Generator":
         _plot_design_space(output_data, inputs, figure_props, timestamp)
 
 
@@ -515,8 +547,37 @@ def _plot_drying_results(data, props, timestamp):
     plt.savefig(f"lyo_Temperatures_{timestamp}.pdf")
     plt.close()
 
+def _plot_rp_results(data, props, timestamp):
+    product_res = data[1]
+    params = data[2]
+    figwidth = props["figwidth"]
+    figheight = props["figheight"]
+    linewidth = props["linewidth"]
+    marker_size = props["marker_size"]
+    fig = plt.figure(0, figsize=(figwidth, figheight))
+    ax = fig.add_subplot(111)
+    plot_styling.axis_style_rp(ax)
+    ax.plot(
+        product_res[:, 1],
+        product_res[:, 2],
+        "o",
+        markevery=5,
+        markersize=marker_size,
+        label="$R_p$ from Temperature Data",
+    )
+    ax.plot(
+        product_res[:, 1],
+        params[0] + product_res[:, 1] * params[1] / (1 + product_res[:, 1] * params[2]),
+        "-",
+        linewidth=linewidth,
+        label="Fitted $R_p$",
+    )
+    ll, ul = ax.get_ylim()
+    ax.set_ylim([max(0, ll), ul])
+    plt.legend(fontsize=40, loc="best")
+    plt.savefig(f"lyo_Rp_Fit_{timestamp}.pdf")
+    plt.close()
 
-# TODO: work through this logic and see how much can be refactored out
 def _plot_design_space(data, inputs, props, timestamp):
     """Generate design space boundary visualization."""
     # Implementation for design space plotting
