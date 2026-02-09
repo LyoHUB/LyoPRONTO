@@ -89,7 +89,7 @@ class TestHighLevelAPI:
         inputs["sim"]["Rp_known"] = True
         inputs["Kv_range"] = [1e-5, 2e-5]
         with pytest.warns(UserWarning, match="bracket"):
-            output = execute_simulation(inputs)
+            execute_simulation(inputs)
         captured = capsys.readouterr()
         assert f"Optimal Kv: {2e-5}" in captured.out
         
@@ -97,7 +97,7 @@ class TestHighLevelAPI:
         inputs["sim"]["Rp_known"] = True
         inputs["Kv_range"] = [1e-3, 2e-3]
         with pytest.warns(UserWarning, match="bracket"):
-            output = execute_simulation(inputs)
+            execute_simulation(inputs)
         captured = capsys.readouterr()
         assert f"Optimal Kv: {1e-3}" in captured.out
 
