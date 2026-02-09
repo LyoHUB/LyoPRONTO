@@ -86,7 +86,7 @@ def axis_style_temperature(ax, **kwargs):
     color = kwargs.get('color','k')
     gcafontSize = kwargs.get('gcafontSize',60)  
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,**default_font_spec)
-    ax.set_ylabel("Product Temperature [°C]",fontsize=gcafontSize,color=color,**default_font_spec)
+    ax.set_ylabel("Temperature [°C]",fontsize=gcafontSize,color=color,**default_font_spec)
     axis_tick_styling(ax, **kwargs)
 
 def axis_style_designspace(ax, ylabel, **kwargs):  

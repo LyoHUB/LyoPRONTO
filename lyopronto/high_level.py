@@ -73,8 +73,8 @@ def execute_simulation(inputs):
 
     else:
         raise ValueError(
-            f"Invalid simulation tool {sim_type} selected."
-            " Valid options are: 'Freezing Calculator', 'Primary Drying Calculator', ",
+            f"Invalid simulation tool {sim_type} selected. "
+            "Valid options are: 'Freezing Calculator', 'Primary Drying Calculator', "
             "'Design Space Generator', 'Optimizer'."
         )
 
