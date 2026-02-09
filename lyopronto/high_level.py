@@ -530,7 +530,9 @@ def _plot_design_space(data, inputs, props, timestamp):
     lineWidth = props["linewidth"]
     color_list = ["b", "m", "g", "c", "r", "y", "k"]  # Line colors
 
-    assert np.all(np.diff(Pchamber) >= 0), "Plotting assumes Pchamber set points are sorted."
+    assert np.all(np.diff(Pchamber) >= 0), (
+        "Plotting assumes Pchamber set points are sorted."
+    )
     # Design space: sublimation flux vs pressures
 
     # Range in pressure space, min to max, Torr
@@ -540,18 +542,17 @@ def _plot_design_space(data, inputs, props, timestamp):
     #         (2,0) is average sub flux at first Pch setpt
     # Slope: (delta sub flux)/(delta pressure)
     # Intercept: sub flux at first pressure
-    y1 = (
-        (ds_eq_cap[2, -1] - ds_eq_cap[2, 0])
-        / (Pchamber[-1] - Pchamber[0])
-    ) * (x - Pchamber[0]) + ds_eq_cap[2, 0]
+    y1 = ((ds_eq_cap[2, -1] - ds_eq_cap[2, 0]) / (Pchamber[-1] - Pchamber[0])) * (
+        x - Pchamber[0]
+    ) + ds_eq_cap[2, 0]
     # Line 2: product temperature limited sub flux, kg/hr/m^2
     # Indices (3, -1) is minimum sub flux at last setpt,
     #          (3,0) is minimum sub flux at first setpt
     # Slope: (delta sub flux)/(delta pressure)
     # Intercept: sub flux at first pressure
-    y2 = (
-        (ds_pr[3, -1] - ds_pr[3, 0]) / (Pchamber[-1] - Pchamber[0])
-    ) * (x - Pchamber[0]) + ds_pr[3, 0]
+    y2 = ((ds_pr[3, -1] - ds_pr[3, 0]) / (Pchamber[-1] - Pchamber[0])) * (
+        x - Pchamber[0]
+    ) + ds_pr[3, 0]
     # Convert to mTorr for plotting
     x = x * constant.Torr_to_mTorr
     # Get whichever sub flux is lower at each x value
@@ -601,15 +602,17 @@ def _plot_design_space(data, inputs, props, timestamp):
     plt.legend(prop={"size": 40})
     ll, ul = ax.get_ylim()
     # Adjust axis limits
-    # TODO: this logic seems questionable. What does it achieve?
-    # If minimum of eq cap average flux > maximum of pr limited min flux
-    if np.min(ds_eq_cap[2, :]) > np.max(ds_pr[3, :]):
-        # Adjust upper limit to be 1/3 of first two eq cap average flux values
-        ul = (ds_eq_cap[2, 0] + ds_eq_cap[2, 1]) / 3
-    # If instead minimum of pr limited min flux > maximum of eq cap average flux
-    elif np.min(ds_pr[3, :]) > np.max(ds_eq_cap[2, :]):
-        # Adjust upper limit to be 1/4 of first two pr limited min flux values
-        ul = (ds_pr[3, 0] + ds_pr[3, 1]) / 4
+    # TODO: consider under what conditions y limits should be adjusted
+    # Particularly: if eq cap is much higher than product, or vice versa
+    # Former logic follows
+    # # If minimum of eq cap average flux > maximum of pr limited min flux
+    # if np.min(ds_eq_cap[2, :]) > np.max(ds_pr[3, :]):
+    #     # Adjust upper limit to be 1/3 of first two eq cap average flux values
+    #     ul = (ds_eq_cap[2, 0] + ds_eq_cap[2, 1]) / 3
+    # # If instead minimum of pr limited min flux > maximum of eq cap average flux
+    # elif np.min(ds_pr[3, :]) > np.max(ds_eq_cap[2, :]):
+    #     # Adjust upper limit to be 1/4 of the two pr limited min flux values
+    #     ul = (ds_pr[3, 0] + ds_pr[3, 1]) / 4
     ll = max(0, ll)
     # Fill the feasible region
     ax.fill_between(x, y, ll, color=[1.0, 1.0, 0.6])
@@ -623,9 +626,8 @@ def _plot_design_space(data, inputs, props, timestamp):
     # Drying time vs pressures
 
     #### First, filled area above constraints
-    # TODO: this is wrong: doesn't actually match constraints
     # Pressure range in Torr
-    x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000) 
+    x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000)
     # Line 1: drying time limited by equipment capability
     y1 = np.interp(x, Pchamber, ds_eq_cap[1, :])
     # Line 2: drying time limited by product temperature
@@ -678,11 +680,11 @@ def _plot_design_space(data, inputs, props, timestamp):
 
     # Product temperature vs pressures
 
-    x = np.linspace(
-        np.min(Pchamber), np.max(Pchamber), 1000
-    )  # pressure range in Torr
+    x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000)  # pressure range in Torr
     # Curve 1: equipment capability limited product temperature
-    y1 = np.interp(x, Pchamber, ds_eq_cap[0, :])  # equipment capability limiting product temperature in degC
+    y1 = np.interp(
+        x, Pchamber, ds_eq_cap[0, :]
+    )  # equipment capability limiting product temperature in degC
     # Curve 2: horizontal line at product temperature limit
     y2 = np.full_like(y1, T_pr_crit)  # horizontal line at product temperature limit
     y = np.minimum(y1, y2)
