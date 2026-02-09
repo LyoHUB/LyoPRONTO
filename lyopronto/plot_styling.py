@@ -27,7 +27,18 @@ def axis_tick_styling(
         minorTickLength = 20,
         labelPad = 30,
     ):
-    """ Function to set styling for matplotlib axes ticks """
+    """_summary_
+
+    Args:
+        ax (matplotlib.Axes.Axes): Axes object to style
+        color (str, optional): Axis and tick color. Defaults to 'k'.
+        gcafontSize (int, optional): Font size for tick labels (and axis labels). Defaults to 60.
+        majorTickWidth (int, optional): Width of major ticks. Defaults to 5.
+        minorTickWidth (int, optional): Width of minor ticks. Defaults to 3.
+        majorTickLength (int, optional): Length of major ticks. Defaults to 30.
+        minorTickLength (int, optional): Length of minor ticks. Defaults to 20.
+        labelPad (int, optional): padding between axes and axis labels. Defaults to 30.
+    """    
     ax.minorticks_on()
     ax.tick_params(axis='both',direction='in',pad=labelPad,width=majorTickWidth,length=majorTickLength,bottom=1,top=0)
     ax.tick_params(axis='both',which='minor',direction='in',width=minorTickWidth,length=minorTickLength)
@@ -39,7 +50,9 @@ def axis_tick_styling(
     ax.yaxis.labelpad = labelPad
 
 def axis_style_pressure(ax, **kwargs):
-    """ Function to set styling for axes, with time on x and pressure on y """
+    """ Function to set styling for axes, with time on x and pressure on y.
+    See axis_tick_styling for more usable kwargs.
+    """
     color = kwargs.get('color','b')
     gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,**default_font_spec)
@@ -47,7 +60,9 @@ def axis_style_pressure(ax, **kwargs):
     axis_tick_styling(ax, **kwargs)
     
 def axis_style_subflux(ax, **kwargs):  
-    """ Function to set styling for axes, with time on x and sublimation flux on y """
+    """ Function to set styling for axes, with time on x and sublimation flux on y.
+    See axis_tick_styling for more usable kwargs.
+    """
     color = kwargs.get('color',[0, 0.7, 0.3])
     gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,**default_font_spec)
@@ -55,7 +70,9 @@ def axis_style_subflux(ax, **kwargs):
     axis_tick_styling(ax, **kwargs)
 
 def axis_style_percdried( ax, **kwargs):  
-    """ Function to set styling for axes, with time on x and percent dried on y """
+    """ Function to set styling for axes, with time on x and percent dried on y.
+    See axis_tick_styling for more usable kwargs.
+    """
     color = kwargs.get('color','k')
     gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,**default_font_spec)
@@ -63,7 +80,9 @@ def axis_style_percdried( ax, **kwargs):
     axis_tick_styling(ax, **kwargs)
 
 def axis_style_temperature(ax, **kwargs):  
-    """ Function to set styling for axes, with time on x and temperature on y """
+    """ Function to set styling for axes, with time on x and temperature on y.
+    See axis_tick_styling for more usable kwargs.
+    """
     color = kwargs.get('color','k')
     gcafontSize = kwargs.get('gcafontSize',60)  
     ax.set_xlabel("Time [hr]",fontsize=gcafontSize,**default_font_spec)
@@ -71,14 +90,18 @@ def axis_style_temperature(ax, **kwargs):
     axis_tick_styling(ax, **kwargs)
 
 def axis_style_designspace(ax, ylabel, **kwargs):  
-    """ Function to set styling for axes, with pressure on x and sublimation flux on y """
+    """ Function to set styling for axes, with pressure on x and sublimation flux on y.
+    See axis_tick_styling for more usable kwargs.
+    """
     gcafontSize = kwargs.get('gcafontSize',60)
     ax.set_xlabel("Chamber Pressure [mTorr]",fontsize=gcafontSize,**default_font_spec)
     ax.set_ylabel(ylabel,fontsize=gcafontSize,**default_font_spec)
     axis_tick_styling(ax, **kwargs)
     
 def axis_style_rp(ax, **kwargs):
-    """ Function to set styling for axes, with dry layer height on x and product resistance on y """
+    """ Function to set styling for axes, with dry layer height on x and product resistance on y.
+    See axis_tick_styling for more usable kwargs.
+    """
     color = kwargs.get('color','k')
     gcafontSize = kwargs.get('gcafontSize',60)  
     ax.set_xlabel("Dry Layer Height [cm]",fontsize=gcafontSize,**default_font_spec)

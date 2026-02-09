@@ -22,7 +22,7 @@ from . import functions
 
 ################# Primary drying at fixed set points ###############
 
-# TODO: docuemnt this properly
+# TODO: document this properly
 def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     """Compute quantities necessary for constructing a graphical design space. 
 
