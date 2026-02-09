@@ -56,7 +56,7 @@ def execute_simulation(inputs):
                 "With the current implementation, either Kv or Rp must be specified."
             )
 
-    elif sim_type == "Design Space Generator" or sim_type == "Design-Space-Generator":
+    elif sim_type == "Design Space Generator":
         output_data = design_space.dry(
             inputs["vial"],
             inputs["product"],
