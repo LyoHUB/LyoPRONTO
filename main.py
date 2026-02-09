@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import sys
 import numpy as np
 
 
@@ -52,7 +51,7 @@ current_time = time.strftime("%y%m%d_%H%M", time.localtime())
 # For 'Optimizer': Kv and Rp must be known, Tpr_crit must be provided
 #           Can use variable Pch and/or Tsh
 sim = {
-    "tool": "Design Space Generator",
+    "tool": "Primary Drying Calculator",
     "Kv_known": True,
     "Rp_known": True,
     "Variable_Pch": False,
@@ -102,7 +101,7 @@ elif sim["Kv_known"]:
     # KC in cal/s/K/cm^2, KP in cal/s/K/cm^2/Torr, KD in 1/Torr
     ht = {"KC": 2.75e-4, "KP": 8.93e-4, "KD": 0.46}
 elif not sim["Kv_known"]:
-    Kv_range = np.array([5.0, 20.0]) * 1e-4  # cal/s/K/cm^2, lower & upper bounds
+    Kv_range = [1.0e-4, 2.0e-3]  # cal/s/K/cm^2, lower & upper bounds
     # Primary drying time
     t_dry_exp = 12.62  # in hr
 
