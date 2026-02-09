@@ -41,13 +41,14 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         ndarray: table of results for product isotherms
         ndarray: table of results for equipment capability curve
     
-    Each of the returns has 5 rows corresponding to:
+    The first two returns have 5 rows corresponding to:
         - Maximum product temperature in degC
         - Primary drying time in hr
         - Average sublimation flux in kg/hr/m^2
         - Maximum/minimum sublimation flux in kg/hr/m^2
         - Sublimation flux at the end of primary drying in kg/hr/m^2
-    (noting that for equipment capability, average, maximum, and end sublimation fluxes are identical)
+    The third return has 3 rows corresponding to the first three of that list.
+
     With nT setpoints in Tshelf['setpt'] and nP setpoints in Pchamber['setpt'], the returned arrays have the following shapes:
         - Shelf isotherms: (5, nT, nP) array
         - Product isotherms: (5, 2) array (for the lowest and highest Pchamber setpoints)

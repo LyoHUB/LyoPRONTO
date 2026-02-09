@@ -161,6 +161,7 @@ class TestHighLevelAPI:
             assert (tmp_path / "lyo_DesignSpace_SublimationFlux_testtime.pdf").exists()
             assert (tmp_path / "lyo_DesignSpace_DryingTime_testtime.pdf").exists()
     
+    @pytest.mark.main
     def test_optimizer_novariable(self, repo_root, tmp_path):
         input_file = repo_root / "test_data" / "badexample_optimizer_noopt.yaml"
         with chdir(tmp_path):
@@ -169,6 +170,7 @@ class TestHighLevelAPI:
                 execute_simulation(inputs)
     
     
+    @pytest.mark.main
     def test_opt_tsh_fullstack(self, mocker, repo_root, tmp_path, capsys):
         input_file = repo_root / "test_data" / "example_opt_tsh.yaml"
         mocked_func = mocker.patch("lyopronto.opt_Tsh.dry", wraps=opt_Tsh.dry, autospec=True)
@@ -191,6 +193,7 @@ class TestHighLevelAPI:
             assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
             assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
 
+    @pytest.mark.main
     def test_opt_pch_tsh_fullstack(self, mocker, repo_root, tmp_path, capsys):
         input_file = repo_root / "test_data" / "example_opt_pch_tsh.yaml"
         mocked_func = mocker.patch("lyopronto.opt_Pch_Tsh.dry", wraps=opt_Pch_Tsh.dry, autospec=True)
@@ -213,6 +216,7 @@ class TestHighLevelAPI:
             assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
             assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
 
+    @pytest.mark.main
     def test_opt_pch_fullstack(self, mocker, repo_root, tmp_path, capsys):
         input_file = repo_root / "test_data" / "example_opt_pch.yaml"
         mocked_func = mocker.patch("lyopronto.opt_Pch.dry", wraps=opt_Pch.dry, autospec=True)
@@ -234,3 +238,11 @@ class TestHighLevelAPI:
             assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
             assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
             assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
+
+    @pytest.mark.main
+    def test_misspelled(self, repo_root):
+        input_file = repo_root / "test_data" / "example_knownRp.yaml"
+        inputs = read_inputs(input_file)
+        inputs["sim"]["tool"] = "Primery Drying Calculator" # Misspelled on purpose
+        with pytest.raises(ValueError, match="Invalid simulation tool"):
+            execute_simulation(inputs)

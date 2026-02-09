@@ -56,7 +56,7 @@ def execute_simulation(inputs):
                 "With the current implementation, either Kv or Rp must be specified."
             )
 
-    elif sim_type == "Design Space Generator":
+    elif sim_type == "Design Space Generator" or sim_type == "Design-Space-Generator":
         output_data = design_space.dry(
             inputs["vial"],
             inputs["product"],
@@ -70,6 +70,13 @@ def execute_simulation(inputs):
 
     elif sim_type == "Optimizer":
         output_data = _run_optimizer(inputs)
+
+    else:
+        raise ValueError(
+            f"Invalid simulation tool {sim_type} selected."
+            " Valid options are: 'Freezing Calculator', 'Primary Drying Calculator', ",
+            "'Design Space Generator', 'Optimizer'."
+        )
 
     return output_data
 
@@ -90,18 +97,20 @@ def _optimize_kv_parameter(inputs):
         simulated_time = output[-1, 0]
         return simulated_time - inputs["t_dry_exp"]
 
-    if obj(Kv_range[0]) * obj(Kv_range[-1]) > 0:
+    lb_obj = obj(Kv_range[0])
+    ub_obj = obj(Kv_range[-1])
+    if lb_obj * ub_obj > 0:
         warn(
             "Given Kv bounds do not bracket the most likely value. Choosing either min or max."
         )
-        if abs(obj(Kv_range[0])) < abs(obj(Kv_range[-1])):
+        if abs(lb_obj) < abs(ub_obj):
             best_Kv = Kv_range[0]
         else:
             best_Kv = Kv_range[-1]
     else:
         best_Kv = brentq(obj, Kv_range[0], Kv_range[-1])
 
-    deviation = obj(best_Kv)
+    deviation = abs(obj(best_Kv)) / inputs["t_dry_exp"] * 100
     output = calc_knownRp.dry(
         inputs["vial"],
         inputs["product"],
@@ -296,9 +305,9 @@ def read_inputs(filename):
         inputs = yaml.load(yamlfile)
         if "product_temp_filename" in inputs:
             print(
-                "Note: input specifies a product temperature data file."
-                + "This data should be loaded separately and added to the inputs dictionary"
-                + "as `time_data` and `temp_data`."
+                "Note: input specifies a product temperature data file. "
+                + "This data should be loaded separately and added to the inputs "
+                + "dictionary as `time_data` and `temp_data`."
             )
         return inputs
     finally:
@@ -333,7 +342,7 @@ def save_csv(output_data, inputs, timestamp):
             np.savetxt(rpfile, output_data[1], delimiter=", ", header=header)
             data = output_data[0]
         else:
-            data = output_data # for all but unknown Rp, output_data is the only return
+            data = output_data  # for all but unknown Rp, output_data is the only return
 
         header = ",".join(
             [
@@ -434,9 +443,9 @@ def generate_visualizations(output_data, inputs, timestamp):
     elif tool in ["Primary Drying Calculator", "Optimizer"]:
         if tool == "Primary Drying Calculator" and not inputs["sim"]["Rp_known"]:
             _plot_rp_results(output_data, figure_props, timestamp)
-            data = output_data[0] # There are extra returns for Rp fitting
+            data = output_data[0]  # There are extra returns for Rp fitting
         else:
-            data = output_data # for all but unknown Rp, output_data is the only return
+            data = output_data  # for all but unknown Rp, output_data is the only return
         _plot_drying_results(data, figure_props, timestamp)
     elif tool == "Design Space Generator":
         _plot_design_space(output_data, inputs, figure_props, timestamp)
@@ -547,6 +556,7 @@ def _plot_drying_results(data, props, timestamp):
     plt.savefig(f"lyo_Temperatures_{timestamp}.pdf")
     plt.close()
 
+
 def _plot_rp_results(data, props, timestamp):
     product_res = data[1]
     params = data[2]
@@ -577,6 +587,7 @@ def _plot_rp_results(data, props, timestamp):
     plt.legend(fontsize=40, loc="best")
     plt.savefig(f"lyo_Rp_Fit_{timestamp}.pdf")
     plt.close()
+
 
 def _plot_design_space(data, inputs, props, timestamp):
     """Generate design space boundary visualization."""

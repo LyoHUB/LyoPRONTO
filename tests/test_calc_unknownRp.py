@@ -155,7 +155,6 @@ class TestCalcUnknownRpBasic:
                 "Rp_known": False,}
         vial, product, ht, Pchamber, Tshelf = standard_inputs_nodt
         time_data, temp_data = temperature_data
-        print(time_data[-1])
 
         mocked_func = mocker.patch("lyopronto.calc_unknownRp.dry", wraps=calc_unknownRp.dry)
         inputs = {"sim": sim,}
@@ -167,8 +166,8 @@ class TestCalcUnknownRpBasic:
 
         mocked_func.assert_called_once_with(vial, product, ht, Pchamber, Tshelf, time_data, temp_data)
 
-        assert_physically_reasonable_output(output)
-        assert_incomplete_drying(output)
+        assert_physically_reasonable_output(output[0])
+        assert_incomplete_drying(output[0])
 
 
 class TestCalcUnknownRpEdgeCases:
