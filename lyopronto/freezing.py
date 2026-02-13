@@ -124,6 +124,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
 
     t_last = ts
     Tpr0 = Tpr    # degC
+    Tsh0 = Tsh
     while(t<t_tr[-1]):
 
         i = np.argmax(t_tr>t) # Get first index where time trigger exceeds current time
@@ -131,12 +132,13 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             i_prev = i
             t_last = t_tr[i-1]
             Tpr0 = Tpr
+            Tsh0 = Tsh
 
         # Evaluate shelf temperature at current time point 
         Tsh = Tshr(t)    # degC
 
         # Product temperature
-        Tpr = functions.lumped_cap_Tpr_ice(t-t_last,Tpr0,V_frozen,h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])
+        Tpr = functions.lumped_cap_Tpr_ice(t-t_last,Tpr0,V_frozen,h_freezing,vial['Av'],Tsh,Tsh0,r[i])
         # Update record as functions of the cycle time
         freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
 

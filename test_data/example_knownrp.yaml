@@ -1,0 +1,38 @@
+sim:
+  tool: Primary Drying Calculator
+  Kv_known: true
+  Rp_known: true
+  Variable_Pch: false
+  Variable_Tsh: false
+vial:
+  Av: 3.8
+  Ap: 3.14
+  Vfill: 2.0
+product:
+  cSolid: 0.05
+  R0: 1.4
+  A1: 16.0
+  A2: 0.0
+  T_pr_crit: -5
+ht:
+  KC: 0.000275
+  KP: 0.000893
+  KD: 0.46
+Pchamber:
+  setpt:
+  - 0.15
+  dt_setpt:
+  - 1800.0
+  ramp_rate: 0.5
+Tshelf:
+  init: -35.0
+  setpt:
+  - 20.0
+  dt_setpt:
+  - 1800.0
+  ramp_rate: 1.0
+dt: 0.01
+eq_cap:
+  a: -0.182
+  b: 11.7
+nVial: 398

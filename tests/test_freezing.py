@@ -25,7 +25,7 @@ def freezing_params():
     Tshelf = {
         "init": 10.0,
         "setpt": np.array([-40.0]),
-        "dt_setpt": np.array([1800]),
+        "dt_setpt": np.array([240]),
         "ramp_rate": 1.0,
     }
     dt = 0.01
@@ -39,7 +39,7 @@ class TestFreezingFuncs:
         def Tshelf_t(t):
             return Tshelf["setpt"][0]
 
-        t_cryst = crystallization_time_FUN(
+        args = [
             vial["Vfill"],
             h_freezing,
             vial["Av"],
@@ -47,9 +47,21 @@ class TestFreezingFuncs:
             product["Tn"],
             Tshelf_t,
             0.0,
-        )
+        ]
+
+        t_cryst = crystallization_time_FUN(*args)
         assert t_cryst > 0
         assert t_cryst < 10
+
+        double_fill = args.copy()
+        double_fill[0] *= 2
+        t_cryst_double = crystallization_time_FUN(*double_fill)
+        assert t_cryst_double == pytest.approx(t_cryst * 2)
+
+        half_h = args.copy()
+        half_h[1] /= 2
+        t_cryst_half_h = crystallization_time_FUN(*half_h)
+        assert t_cryst_half_h == pytest.approx(t_cryst * 2)
 
     def test_lumped_cap(self, freezing_params):
         vial, product, h_freezing, Tshelf, dt = freezing_params
@@ -108,6 +120,33 @@ class TestFreezing:
         assert results[-1, 1] == pytest.approx(Tshelf["setpt"][-1])
         # Since default setup has long hold, product should approach shelf
         assert results[-1, 2] == pytest.approx(results[-1, 2], abs=0.1)
+
+    def test_freezing_cin(self, freezing_params):
+        """Test that freezing with imitated controlled ice nucleation is physically
+        reasonable. This also tests that if crystallization finished during a ramp,
+        the code correctly handles transition to final shelf temperature."""
+        vial, product, h_freezing, _, dt = freezing_params
+        product["Tn"] = -5.01  # Set nucleation temp just below controlled for ramp
+        Tshelf = {
+            "init": 15.0,
+            "setpt": np.array([-5.0, -50.0]),
+            "dt_setpt": np.array([60, 120]),
+            "ramp_rate": 1.0,
+        }
+        results = freeze(vial, product, h_freezing, Tshelf, dt)
+
+        # Check that nucleation occurs just after first set point ends
+        crystallization_period = results[results[:, 2] == product["Tf"], 0]
+        assert crystallization_period[0] > Tshelf["dt_setpt"][0] / constant.hr_To_min
+        assert crystallization_period[0] < Tshelf["dt_setpt"][0] / constant.hr_To_min + 0.05
+
+
+        # Check that product temp changes smoothly (less than 5 degrees per time point)
+        np.testing.assert_array_less(
+            np.abs(np.diff(results[:, 2])),
+            5.0,
+            "Product temperature should change smoothly during freezing",
+        )
 
 
 class TestFreezingEdgeCases:

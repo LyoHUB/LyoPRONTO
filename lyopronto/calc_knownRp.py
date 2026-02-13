@@ -65,7 +65,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
         "setpoint(s). Drying cannot proceed.")
         return np.array([[0.0, Tsh_t(0), Tsh_t(0), Tsh_t(0), Pch_t(0), 0.0, 0.0]])
 
-    config = (vial, product, ht, Pch_t, Tsh_t, dt, Lpr0)
+    inputs = (vial, product, ht, Pch_t, Tsh_t, dt, Lpr0)
 
     Lck0 = [0.0]
     T0 = Tsh_t(0)
@@ -104,7 +104,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     if sol.t[-1] == max_t:# and Lpr0 > sol.y[0, -1]:
         warn("Maximum simulation time (specified by Pchamber and Tshelf) reached before drying completion.")
 
-    output = functions.fill_output(sol, config)
+    output = functions.fill_output(sol, inputs)
 
     return output    
     
