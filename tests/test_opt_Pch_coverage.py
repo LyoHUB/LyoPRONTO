@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from lyopronto import opt_Pch
-from .test_helpers import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output
 
 
 class TestOptPchOnly:
@@ -192,12 +192,12 @@ class TestOptPchOnly:
             opt_pch_setup['nVial']
         )
         
-        final_fraction = output[-1, 6]
+        final_percent = output[-1, 6]
         # Optimizer should show progress, but may not reach full completion
-        assert final_fraction > 0.0, \
-            f"Should show drying progress, got {final_fraction*100:.1f}%"
-        assert final_fraction <= 1.0, \
-            f"Fraction dried should not exceed 100%, got {final_fraction*100:.1f}%"
+        assert final_percent > 0.0, \
+            f"Should show drying progress, got {final_percent:.1f}%"
+        assert final_percent <= 100.0, \
+            f"Percent dried should not exceed 100%, got {final_percent:.1f}%"
     
     def test_opt_pch_convergence(self, opt_pch_setup):
         """Test optimization converges to a solution."""
@@ -360,6 +360,6 @@ class TestOptPchEdgeCases:
         # Should run without errors and show some progress despite tight constraint
         assert output is not None
         assert output.size > 0
-        final_fraction = output[-1, 6]
-        assert final_fraction >= 0.0, "Should have non-negative drying progress"
-        assert final_fraction <= 1.0, "Fraction should not exceed 100%"
+        final_percent = output[-1, 6]
+        assert final_percent >= 0.0, "Should have non-negative drying progress"
+        assert final_percent <= 100.0, "Percent should not exceed 100%"
