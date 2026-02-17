@@ -48,19 +48,17 @@ jobs:
         pip install -e . --no-build-isolation
     
     - name: Run tests
-    # Currently this conditional branching doesn't actually do anything,
-    # since pyproject.toml adds these coverage arguments to the testing anyway
       run: |
         if [ "${{ steps.mode.outputs.mode }}" == "fast" ]; then
-          echo "⚡ Skipping notebook tests (marked with @pytest.mark.notebook) - these run separately"
-          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=term-missing
-        else
-          echo "⚡ Skipping notebook tests (marked with @pytest.mark.slow), not running coverage"
+          echo "⚡ Draft PR - fast tests only (no notebook tests)"
           pytest tests/ -n auto -v -m "not notebook"
+        else
+          echo "🔍 Full PR - running tests with coverage report"
+          pytest tests/ -n auto -v -m "not notebook" --cov-report=xml:coverage.xml
         fi
     
-    - name: Upload coverage (if run)
-      if: steps.mode.outputs.coverage == 'true'
+    - name: Upload coverage
+      if: steps.mode.outputs.mode == 'full'
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
