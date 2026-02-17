@@ -72,8 +72,7 @@ class TestOptimizerWebInterface:
         """Load reference results from web interface optimizer output."""
         csv_path = 'test_data/reference_optimizer.csv'
         df = pd.read_csv(csv_path, sep=';')
-        # Convert percent dried from percentage (0-100) to fraction (0-1) to match current output format
-        df['Percent Dried'] = df['Percent Dried'] / 100.0
+        # Reference data has 'Percent Dried' in 0-100 range, matching output format
         return df
     
     def test_optimizer_completes(self, optimizer_params):
@@ -88,7 +87,7 @@ class TestOptimizerWebInterface:
         
         # Check that drying completes (percent dried reaches ~100%)
         percent_dried = results[:, 6]
-        assert percent_dried[-1] >= 0.99, f"Drying incomplete: {percent_dried[-1]}% dried"
+        assert percent_dried[-1] >= 99.0, f"Drying incomplete: {percent_dried[-1]:.1f}% dried"
     
     def test_optimizer_output_shape(self, optimizer_params):
         """Test that optimizer output has correct shape and columns."""
@@ -174,7 +173,7 @@ class TestOptimizerWebInterface:
         assert np.all(dried_diffs >= 0), "Percent dried decreased"
         
         # Should end at approximately 100%
-        assert percent_dried[-1] >= 0.99
+        assert percent_dried[-1] >= 99.0
     
     def test_optimizer_matches_reference_timing(self, optimizer_params, reference_results):
         """Test that optimizer drying time matches reference output."""

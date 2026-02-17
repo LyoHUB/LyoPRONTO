@@ -79,9 +79,9 @@ class TestWebInterfaceExample:
         assert max_temp <= -5.0 + 0.5, \
             f"Temperature {max_temp:.2f}°C exceeds critical temp (-5°C)"
         
-        # Check drying completion
-        assert final_dried >= 0.99, \
-            f"Final dried fraction {final_dried:.2f} < 0.99"
+        # Check drying completion (output is percent 0-100)
+        assert final_dried >= 99.0, \
+            f"Final dried percent {final_dried:.2f} < 99.0"
     
     def test_compare_with_reference_csv(self, web_interface_inputs):
         """Test that output matches reference CSV from web interface."""
@@ -108,11 +108,11 @@ class TestWebInterfaceExample:
         assert abs(ref_max_temp - sim_max_temp) < 1.0, \
             f"Max temperature differs by >1°C: {sim_max_temp:.2f} vs {ref_max_temp:.2f}°C"
         
-        # Compare final drying percentage
-        ref_final_dried = df_ref['Percent Dried'].iloc[-1] / 100  # Convert to fraction
+        # Compare final drying percentage (both in percent 0-100)
+        ref_final_dried = df_ref['Percent Dried'].iloc[-1]
         sim_final_dried = output[-1, 6]
-        assert abs(ref_final_dried - sim_final_dried) < 0.05, \
-            f"Final dried fraction differs: {sim_final_dried:.2f} vs {ref_final_dried:.2f}"
+        assert abs(ref_final_dried - sim_final_dried) < 5.0, \
+            f"Final dried percent differs: {sim_final_dried:.2f} vs {ref_final_dried:.2f}"
     
     def test_temperature_profile_reasonable(self, web_interface_inputs):
         """Test that temperature profile is physically reasonable."""
@@ -220,10 +220,10 @@ class TestWebInterfaceExample:
         assert output[0, 4] == pytest.approx(150.0, abs=1.0), \
             "Pch should be [mTorr] (150, not 0.15)"
         
-        # Column 6: Dried should be fraction 0-1 (not percentage)
-        assert 0 <= output[0, 6] <= 1.0, "Dried should be fraction 0-1"
-        assert output[-1, 6] == pytest.approx(1.0, abs=0.01), \
-            "Final dried should be ~1.0"
+        # Column 6: Dried should be percent 0-100
+        assert 0 <= output[0, 6] <= 100.0, "Dried should be percent 0-100"
+        assert output[-1, 6] == pytest.approx(100.0, abs=1.0), \
+            "Final dried should be ~100.0%"
 
 
 class TestWebInterfaceComparison:

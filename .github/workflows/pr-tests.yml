@@ -26,7 +26,7 @@ jobs:
     - name: Determine test mode
       id: mode
       run: |
-        if [ "${{ github.event.pull_request.draft }}" ]; then
+        if [ "${{ github.event.pull_request.draft }}" = "true" ]; then
           echo "mode=fast" >> $GITHUB_OUTPUT
         else
           echo "mode=full" >> $GITHUB_OUTPUT

@@ -107,7 +107,7 @@ class TestFreezing:
         check_max_time(results, Tshelf, dt)
         assert results[-1, 1] == pytest.approx(Tshelf["setpt"][-1])
         # Since default setup has long hold, product should approach shelf
-        assert results[-1, 2] == pytest.approx(results[-1, 2], abs=0.1)
+        assert results[-1, 2] == pytest.approx(Tshelf["setpt"][-1], abs=0.1)
 
 
 class TestFreezingEdgeCases:

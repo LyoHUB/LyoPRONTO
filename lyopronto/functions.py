@@ -406,8 +406,9 @@ def fill_output(sol, config):
     interp_func = PchipInterpolator(sol.t, interp_points, axis=0)
     fullout = np.zeros((len(out_t), 7))
     for i, t in enumerate(out_t):
-        if np.any(sol.t == t):
-            fullout[i,:] = interp_points[sol.t == t, :]
+        mask = sol.t == t
+        if np.any(mask):
+            fullout[i,:] = interp_points[mask, :][0]
         else:
             fullout[i,:] = interp_func(t)
     return fullout
