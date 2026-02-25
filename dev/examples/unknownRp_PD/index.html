@@ -19,7 +19,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -524,7 +524,7 @@
 </span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="c1"># ramp_rate = Shelf temperature ramping rate in C/min</span>
 </span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="n">Tshelf</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;init&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">35.0</span><span class="p">,</span> <span class="s1">&#39;setpt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">20.0</span><span class="p">],</span> <span class="s1">&#39;dt_setpt&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1800.0</span><span class="p">],</span> <span class="s1">&#39;ramp_rate&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
 </span></code></pre></div>
-<p>To estimate $R_p$, we need to provide experimentally measured temperatures. The format preferred by the web interface is a CSV with no headers, time in hours in the first column, and temperature in degrees Celsius in the second column.</p>
+<p>To estimate <span class="arithmatex">\(R_p\)</span>, we need to provide experimentally measured temperatures. The format preferred by the web interface is a CSV with no headers, time in hours in the first column, and temperature in degrees Celsius in the second column.</p>
 <p>If you are loading these yourself in a script, you should provide it with those units, but you can load it from whatever file makes sense and simply provide it to the call to <code>calc_unknownRp.dry</code> below.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">data_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">product_temp_filename</span> <span class="o">=</span> <span class="s1">&#39;temperature.txt&#39;</span>
@@ -536,7 +536,7 @@
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">time</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">Tbot_exp</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
 </span></code></pre></div>
-<p>The call to <code>calc_unkonwRp.dry</code> provides an array of simulation output, as well as an array with time, dry layer height, and $R_p$ in the three columns. </p>
+<p>The call to <code>calc_unkonwRp.dry</code> provides an array of simulation output, as well as an array with time, dry layer height, and <span class="arithmatex">\(R_p\)</span> in the three columns. </p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">output_table</span><span class="p">,</span> <span class="n">product_res</span> <span class="o">=</span> <span class="n">calc_unknownRp</span><span class="o">.</span><span class="n">dry</span><span class="p">(</span><span class="n">vial</span><span class="p">,</span><span class="n">product</span><span class="p">,</span><span class="n">ht</span><span class="p">,</span><span class="n">Pchamber</span><span class="p">,</span><span class="n">Tshelf</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">Tbot_exp</span><span class="p">)</span>
 </span></code></pre></div>
 <p>The web interface simply feeds the computed resistance vs dry layer height to SciPy's <code>scipy.optimize.curve_fit</code> in order to estimate the simple nonlinear form:
@@ -563,7 +563,7 @@ $$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
 </span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="n">lineWidth</span> <span class="o">=</span> <span class="mi">5</span>
 </span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="n">markerSize</span> <span class="o">=</span> <span class="mi">20</span>
 </span></code></pre></div>
-<p>The web interface is not currently set up to show the following graph, but it is absolutely worth checking what the fit looks like in $R_p$ space.</p>
+<p>The web interface is not currently set up to show the following graph, but it is absolutely worth checking what the fit looks like in <span class="arithmatex">\(R_p\)</span> space.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_rp</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -573,7 +573,7 @@ $$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>&lt;matplotlib.legend.Legend at 0x299a30a7cb0&gt;
 </span></code></pre></div>
-<p><img alt="img" src="../_data/f9c1931b2ecd46ff8d7d9a939d9ceadf.png" /></p>
+<p><img alt="img" src="../_data/96d76a7cfae74187bc942aeeab8252fc.png" /></p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">ax2</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">twinx</span><span class="p">()</span>
@@ -585,7 +585,7 @@ $$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
 </span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>
 </span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </span></code></pre></div>
-<p><img alt="img" src="../_data/9a88e33884ca4946b00130f1bd714461.png" /></p>
+<p><img alt="img" src="../_data/1cd085224fa94946a8d95e8523d641f8.png" /></p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_percdried</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -595,7 +595,7 @@ $$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
 </span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="c1"># plt.savefig(figure_name)</span>
 </span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a><span class="c1"># plt.close()</span>
 </span></code></pre></div>
-<p><img alt="img" src="../_data/3f7d55eb44104069908211648e69e91f.png" /></p>
+<p><img alt="img" src="../_data/991bef36f69a47b9a7789dac308c8b96.png" /></p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">figwidth</span><span class="p">,</span><span class="n">figheight</span><span class="p">))</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">plot_styling</span><span class="o">.</span><span class="n">axis_style_temperature</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
@@ -610,7 +610,7 @@ $$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
 </span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a><span class="c1"># plt.savefig(figure_name)</span>
 </span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="c1"># plt.close()</span>
 </span></code></pre></div>
-<p><img alt="img" src="../_data/723bd22add9746a194fa599b107c9c93.png" /></p>
+<p><img alt="img" src="../_data/aadf9699808646f4a22e6171f85c09e0.png" /></p>
 
 
 
@@ -664,6 +664,10 @@ $$ R_p = R_0 + \frac{A_1 l}{1 + A_2 l} $$</p>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
