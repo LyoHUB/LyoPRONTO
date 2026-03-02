@@ -67,25 +67,17 @@ def check_shape(output, Pchamber, Tshelf):
     n_Tsh = len(Tshelf["setpt"])
     n_Pch = len(Pchamber["setpt"])
 
-    # Shelf results: 5 components, each with shape (n_Tsh, n_Pch)
-    assert len(shelf_results) == 5
     # for each of (Tmax, drying_time, avg_flux, max_flux, end_flux),
     # there should be a value for each combination (n_Tsh x n_Pch)
-    for component in shelf_results:
-        assert component.shape == (n_Tsh, n_Pch)
+    assert shelf_results.shape == (5, n_Tsh, n_Pch)
 
-    # Product results: 2 values for each Pchamber
-    assert len(product_results) == 5
+    # Product results: 2 values, for min and max Pchamber
     # for each of (T_product, drying_time, avg_flux, min_flux, end_flux),
-    # 2 values
-    for component in product_results:
-        assert component.shape == (2,)  # 2 T_product values x n_Pch
+    assert product_results.shape == (5, 2)
 
     # Equipment capability results: 1 value per Pchamber
-    assert len(eq_cap_results) == 3
     # for each of (Tmax, drying_time, flux), 1 value per Pch
-    for component in eq_cap_results:
-        assert component.shape == (n_Pch,)  # n_Pch
+    assert eq_cap_results.shape == (3, n_Pch)
 
 
 class TestDesignSpaceBasic:

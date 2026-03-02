@@ -3,11 +3,13 @@
 import pytest
 import numpy as np
 from lyopronto import calc_knownRp, constant
+from lyopronto.high_level import execute_simulation
 from .utils import (
     assert_physically_reasonable_output,
     assert_complete_drying,
     assert_incomplete_drying,
 )
+
 
 
 @pytest.fixture
@@ -149,6 +151,50 @@ class TestCalcKnownRp:
             f"Mass removed {mass_removed:.4f} kg != initial mass {water_mass_initial:.4f} kg "
             f"(error: {abs(mass_removed - water_mass_initial) / water_mass_initial * 100:.1f}%)"
         )
+
+    @pytest.mark.main
+    def test_main_known_kv(self, mocker, knownRp_standard_setup):
+        """Test that this function is called from high-level API without errors."""
+        sim = {"tool": "Primary Drying Calculator",
+               "Kv_known": True,
+               "Rp_known": True,}
+        vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
+
+        mocked_func = mocker.patch("lyopronto.calc_knownRp.dry", wraps=calc_knownRp.dry, autospec=True)
+        inputs = {"sim": sim,}
+        loc = locals()
+        for key in ["vial", "product", "ht", "Pchamber", "Tshelf", "dt", ]:
+            inputs[key] = loc[key]
+
+        output = execute_simulation(inputs)
+
+        mocked_func.assert_called_once_with(vial, product, ht, Pchamber, Tshelf, dt)
+
+        assert_physically_reasonable_output(output)
+        assert_complete_drying(output)
+
+    @pytest.mark.main
+    def test_main_unknown_kv(self, mocker, knownRp_standard_setup):
+        """Test that this function is called from high-level API without errors."""
+        sim = {"tool": "Primary Drying Calculator",
+               "Kv_known": False,
+               "Rp_known": True,}
+        vial, product, _, Pchamber, Tshelf, dt = knownRp_standard_setup
+        Kv_range = [1e-4, 1e-2]
+        t_dry_exp = 12.0
+
+        mocked_func = mocker.patch("lyopronto.calc_knownRp.dry", wraps=calc_knownRp.dry, autospec=True)
+        inputs = {"sim": sim,}
+        loc = locals()
+        for key in ["vial", "product", "Kv_range", "Pchamber", "Tshelf", "dt", "t_dry_exp"]:
+            inputs[key] = loc[key]
+
+        output = execute_simulation(inputs)
+
+        assert mocked_func.call_count > 2 # Should be called at least twice by rootfinder
+
+        assert_physically_reasonable_output(output)
+        assert_complete_drying(output)
 
 
 class TestEdgeCases:
@@ -363,3 +409,4 @@ class TestRegression:
         # After peak, flux should generally decrease (late stage)
         late_stage = flux[int(len(flux) * 0.8) :]
         assert np.all(np.diff(late_stage) <= 0.0), "Flux should decrease in late stage"
+

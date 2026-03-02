@@ -1,0 +1,29 @@
+sim:
+  tool: Freezing Calculator
+  Kv_known: true
+  Rp_known: true
+  Variable_Pch: false
+  Variable_Tsh: false
+vial:
+  Av: 3.8
+  Ap: 3.14
+  Vfill: 2.0
+product:
+  cSolid: 0.0
+  Tpr0: 15.8
+  Tf: -1.54
+  Tn: -5.84
+  T_pr_crit: -5
+Tshelf:
+  init: 15.0
+  setpt:
+  - -40.0
+  dt_setpt:
+  - 180.0
+  ramp_rate: 1.0
+dt: 0.01
+eq_cap:
+  a: -0.182
+  b: 11.7
+nVial: 398
+h_freezing: 38.0

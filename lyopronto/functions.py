@@ -328,28 +328,26 @@ def crystallization_time_FUN(V,h,Av,Tf,Tn,Tsh_func,t0):
     hA = h*constant.hr_To_s * Av*constant.cm_To_m**2 # heat transfer coefficient in J/K/hr
     # t = rhoV*(Hf-Cp*(Tf-Tn))/hA/(Tf-Tsh) # time: g*(J/g- J/g/K*K)/(J/m^2/K/hr*m^2*K) = hr
     lhs = rhoV*(Hf-Cp*(Tf-Tn))/hA
-    def integrand(t):
-        return Tf - Tsh_func(t+t0)
-    def resid(t):
-        integral, _ = quad(integrand, 0, t)
+    def integrand(dt):
+        return Tf - Tsh_func(t0+dt)
+    def resid(delta_t):
+        integral, _ = quad(integrand, 0, delta_t)
         return integral - lhs
-    t = brentq(resid, t0, t0+100.0)
-
-
-    return t
+    delta_t = brentq(resid, 0, 100.0)
+    return delta_t
 
 ##
 
 
 
 ################################################################
-def calc_step(t, Lck, config):
+def calc_step(t, Lck, inputs):
     """Calculate the full set of system states at a given time step from ODE solution states.
 
     Args:
         t (float): The current time in hours.
         Lck (float): The cake thickness in cm.
-        config (tuple): A tuple containing the configuration parameters.
+        inputs (tuple): A tuple containing the inputs parameters.
 
     Returns:
         (np.ndarray): The full set of system states at the given time step:
@@ -361,7 +359,7 @@ def calc_step(t, Lck, config):
             5. Sublimation flux [kg/hr/m²],
             6. Drying percent [%]
     """
-    vial, product, ht, Pch_t, Tsh_t, dt, Lpr0 = config
+    vial, product, ht, Pch_t, Tsh_t, dt, Lpr0 = inputs
     Tsh = Tsh_t(t)
     Pch = Pch_t(t)
     Kv = Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
@@ -379,12 +377,12 @@ def calc_step(t, Lck, config):
     col = np.array([t, Tsub, Tbot, Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), dry_percent])
     return col
 
-def fill_output(sol, config):
+def fill_output(sol, inputs):
     """Fill the output array with the results from the ODE solver.
 
     Args:
         sol (ODESolution): The solution object returned by the ODE solver.
-        config (tuple): A tuple containing the configuration parameters.
+        inputs (tuple): A tuple containing the input parameters.
 
     Returns:
         (np.ndarray): The output array filled with the results from the ODE solver.
@@ -393,11 +391,11 @@ def fill_output(sol, config):
     of points is impractical. Instead, we calculate at the the ODE solver points, and 
     interpolate elsewhere.
     """
-    dt = config[5]
+    dt = inputs[5]
 
     interp_points = np.zeros((len(sol.t), 7))
     for i,(t, y) in enumerate(zip(sol.t, sol.y[0])):
-        interp_points[i,:] = calc_step(t, y, config)
+        interp_points[i,:] = calc_step(t, y, inputs)
     # out_t = np.arange(0, sol.t[-1], dt)   
     if dt is None:
         return interp_points
