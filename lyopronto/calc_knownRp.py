@@ -63,7 +63,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     if Pch_t.max_setpt() > functions.Vapor_pressure(Tsh_t.max_setpt()):
         warn("Chamber pressure setpoint exceeds vapor pressure at shelf temperature " +\
         "setpoint(s). Drying cannot proceed.")
-        return np.array([[0.0, Tsh_t(0), Tsh_t(0), Tsh_t(0), Pch_t(0), 0.0, 0.0]])
+        return np.array([[0.0, Tsh_t(0), Tsh_t(0), Tsh_t(0), Pch_t(0) * 1000.0, 0.0, 0.0]])
 
     inputs = (vial, product, ht, Pch_t, Tsh_t, dt, Lpr0)
 

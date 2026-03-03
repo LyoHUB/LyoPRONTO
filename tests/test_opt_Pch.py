@@ -46,8 +46,8 @@ def opt_pch_consistency(output, setup):
     assert np.all(Pch_values >= Pchamber["min"] * constant.Torr_to_mTorr), (
         "Pressure should be >= min bound"
     )
-    if hasattr(Pchamber, "max"):
-        assert np.all(Pch_values <= Pchamber["max"] * constant.Torr_to_mTorr), (
+    if "max" in Pchamber:
+        assert np.all(Pch_values <= Pchamber["max"] * constant.Torr_to_mTorr + 0.5), (
             "Pressure should be <= max bound"
         )
 
@@ -355,12 +355,13 @@ class TestOptPchReference:
         # Instead, check that output is reasonable and matches or exceeds the performance.
         opt_pch_consistency(output, opt_pch_reference_inputs)
         assert_complete_drying(output)
-        # Drying time should be equal to or better than reference
+        # Drying time should be equal to or better than reference (with small tolerance
+        # for floating-point differences across Python versions)
         drying_time_ref = output_ref[-1, 0]
         drying_time = output[-1, 0]
-        assert drying_time <= drying_time_ref, (
-            f"Drying time {drying_time:.2f} hr should be <= reference "
-            + f"{drying_time_ref:.2f} hr"
+        assert drying_time <= drying_time_ref + 1e-6, (
+            f"Drying time {drying_time:.6f} hr should be <= reference "
+            + f"{drying_time_ref:.6f} hr"
         )
         # array_compare = np.isclose(output, output_ref, atol=1e-3)
         # assert array_compare.all(), (

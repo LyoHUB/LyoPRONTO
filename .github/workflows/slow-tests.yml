@@ -17,6 +17,14 @@ on:
         options:
           - 'true'
           - 'false'
+      include_pyomo:
+        description: 'Include Pyomo tests (requires IPOPT)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 jobs:
   slow-tests:
@@ -43,18 +51,39 @@ jobs:
         python -m pip install --upgrade pip setuptools wheel
         pip install .
         pip install .[dev]
+        if [ "${{ inputs.include_pyomo }}" == "true" ]; then
+          pip install pyomo idaes-pse
+        fi
         pip install -e . --no-build-isolation
     
-    - name: Run slow tests
+    - name: Install IPOPT solver via IDAES (if Pyomo enabled)
+      if: inputs.include_pyomo == 'true'
       run: |
+        echo "Installing IPOPT solver via IDAES extensions"
+        idaes get-extensions --extra petsc
+    
+    - name: Run slow tests
+      env:
+        RUN_SLOW_TESTS: "1"
+      run: |
+        # Helper: allow exit code 5 (no tests collected) to pass gracefully
+        run_pytest() { "$@" || { rc=$?; [ $rc -eq 5 ] && echo "No matching tests found (exit 5 is OK)" && return 0; return $rc; }; }
         if [ "${{ inputs.run_all }}" == "true" ]; then
-          echo "🔍 Running ALL tests (including slow optimization tests)"
-          echo "⏱️ This may take 30-40 minutes on CI"
-          pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          echo "Running ALL tests (including slow optimization tests)"
+          echo "This may take 30-40 minutes on CI"
+          if [ "${{ inputs.include_pyomo }}" == "true" ]; then
+            run_pytest pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          else
+            run_pytest pytest tests/ -n auto -v -m "not pyomo" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          fi
         else
-          echo "🐌 Running ONLY slow tests (marked with @pytest.mark.slow)"
-          echo "⏱️ This focuses on optimization tests that take minutes"
-          pytest tests/ -n auto -v -m "slow" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          echo "Running ONLY slow tests (marked with @pytest.mark.slow)"
+          echo "This focuses on optimization tests that take minutes"
+          if [ "${{ inputs.include_pyomo }}" == "true" ]; then
+            run_pytest pytest tests/ -n auto -v -m "slow" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          else
+            run_pytest pytest tests/ -n auto -v -m "slow and not pyomo" --cov=lyopronto --cov-report=xml --cov-report=term-missing
+          fi
         fi
     
     - name: Upload coverage
@@ -70,8 +99,8 @@ jobs:
       if: always()
       run: |
         if [ "${{ inputs.run_all }}" == "true" ]; then
-          echo "✅ Complete test suite finished"
+          echo "Complete test suite finished"
         else
-          echo "🐌 Slow tests completed"
+          echo "Slow tests completed"
         fi
-        echo "📊 Coverage uploaded to Codecov"
+        echo "Coverage uploaded to Codecov"

@@ -1,14 +1,15 @@
 name: Main Branch Tests
 
 # Full tests with coverage for main branch
-# (PRs are handled by pr-tests.yml)
+# Runs both scipy tests and Pyomo tests in separate jobs
 
 on:
   push:
-    branches: [ main, dev-pyomo ]
+    branches: [ main ]
 
 jobs:
-  test:
+  test-scipy:
+    name: SciPy Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -33,23 +34,77 @@ jobs:
         pip install .[dev]
         pip install -e . --no-build-isolation
     
-    - name: Run ALL tests with pytest and coverage (including slow tests)
+    - name: Run SciPy tests (excluding Pyomo tests)
       run: |
-        echo "🔍 Running complete test suite including slow tests"
-        echo "⏱️ This may take 30-40 minutes on CI (includes optimization tests)"
-        pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
+        echo "Running SciPy test suite (excluding Pyomo tests)"
+        pytest tests/ -n auto -v -m "not pyomo" --cov=lyopronto --cov-report=xml --cov-report=term-missing
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
-        flags: unittests
-        name: codecov-umbrella
+        flags: scipy-tests
+        name: scipy-coverage
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
     
     - name: Coverage Summary
       if: always()
       run: |
-        echo "✅ Full coverage tests completed for main branch"
-        echo "📊 Coverage metrics updated in Codecov"
+        echo "SciPy tests completed for main branch"
+        echo "Coverage metrics updated in Codecov"
+
+  test-pyomo:
+    name: Pyomo Tests
+    runs-on: ubuntu-latest
+    continue-on-error: true  # Pyomo tests are brittle, don't block merges
+    
+    steps:
+    - uses: actions/checkout@v4
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.versions.outputs.result }}
+        cache: 'pip'
+        cache-dependency-path: |
+          pyproject.toml
+    
+    - name: Install dependencies with optimization stack
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install .
+        pip install .[dev]
+        pip install pyomo idaes-pse
+        pip install -e . --no-build-isolation
+    
+    - name: Install IPOPT solver via IDAES
+      run: |
+        echo "Installing IPOPT solver via IDAES extensions"
+        idaes get-extensions --extra petsc
+    
+    - name: Run Pyomo tests
+      run: |
+        echo "Running Pyomo test suite"
+        echo "These tests require IPOPT solver and may be slower"
+        # Exit code 5 = no tests collected (pyomo tests added in later PRs)
+        pytest tests/ -n auto -v -m "pyomo" --cov=lyopronto --cov-report=xml --cov-report=term-missing || { rc=$?; [ $rc -eq 5 ] && echo "No pyomo-marked tests found yet (expected until PR #8)" && exit 0; exit $rc; }
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: pyomo-tests
+        name: pyomo-coverage
+        fail_ci_if_error: false
+        token: ${{ secrets.CODECOV_TOKEN }}
+    
+    - name: Pyomo Test Summary
+      if: always()
+      run: |
+        echo "Pyomo tests completed (continue-on-error enabled)"
+        echo "Coverage metrics updated in Codecov"

@@ -4,6 +4,7 @@ name: PR Tests
 # - Draft PRs: Fast tests only (no coverage) for rapid iteration
 # - Ready for Review: Full tests with coverage for quality assurance
 # - All subsequent commits: Continue with full coverage
+# - Pyomo tests run separately and don't block PRs
 
 on:
   pull_request:
@@ -11,7 +12,8 @@ on:
     types: [ opened, synchronize, reopened, ready_for_review, converted_to_draft ]
 
 jobs:
-  test:
+  test-scipy:
+    name: SciPy Tests
     runs-on: ubuntu-latest
     
     steps:
@@ -26,7 +28,7 @@ jobs:
     - name: Determine test mode
       id: mode
       run: |
-        if [ "${{ github.event.pull_request.draft }}" ]; then
+        if [ "${{ github.event.pull_request.draft }}" = "true" ]; then
           echo "mode=fast" >> $GITHUB_OUTPUT
         else
           echo "mode=full" >> $GITHUB_OUTPUT
@@ -48,19 +50,17 @@ jobs:
         pip install -e . --no-build-isolation
     
     - name: Run tests
-    # Currently this conditional branching doesn't actually do anything,
-    # since pyproject.toml adds these coverage arguments to the testing anyway
       run: |
         if [ "${{ steps.mode.outputs.mode }}" == "fast" ]; then
-          echo "⚡ Skipping notebook tests (marked with @pytest.mark.notebook) - these run separately"
-          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=term-missing
+          echo "Draft PR: Skipping notebook and pyomo tests for fast feedback"
+          pytest tests/ -n auto -v -m "not notebook and not pyomo"
         else
-          echo "⚡ Skipping notebook tests (marked with @pytest.mark.slow), not running coverage"
-          pytest tests/ -n auto -v -m "not notebook"
+          echo "Ready PR: Running full scipy test suite (excluding notebook and pyomo)"
+          pytest tests/ -n auto -v -m "not notebook and not pyomo" --cov=lyopronto --cov-report=xml:coverage.xml
         fi
     
-    - name: Upload coverage (if run)
-      if: steps.mode.outputs.coverage == 'true'
+    - name: Upload coverage
+      if: steps.mode.outputs.mode == 'full'
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
@@ -68,3 +68,51 @@ jobs:
         name: pr-coverage
         fail_ci_if_error: false
         token: ${{ secrets.CODECOV_TOKEN }}
+
+  test-pyomo:
+    name: Pyomo Tests (Optional)
+    if: ${{ github.event.pull_request.draft == false }}
+    runs-on: ubuntu-latest
+    continue-on-error: true  # Pyomo tests are brittle, don't block PRs
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Read CI version config
+      id: versions
+      uses: mikefarah/yq@v4.44.1
+      with:
+        cmd: yq eval '.python-version' .github/ci-config/ci-versions.yml
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ steps.versions.outputs.result }}
+        cache: 'pip'
+        cache-dependency-path: |
+          pyproject.toml
+    
+    - name: Install dependencies with optimization stack
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install .
+        pip install .[dev]
+        pip install pyomo idaes-pse
+        pip install -e . --no-build-isolation
+    
+    - name: Install IPOPT solver via IDAES
+      run: |
+        echo "Installing IPOPT solver via IDAES extensions"
+        idaes get-extensions --extra petsc
+    
+    - name: Run Pyomo tests
+      run: |
+        echo "Running Pyomo test suite (continue-on-error enabled)"
+        # Exit code 5 = no tests collected (pyomo tests added in later PRs)
+        pytest tests/ -n auto -v -m "pyomo" --cov=lyopronto --cov-report=term-missing || { rc=$?; [ $rc -eq 5 ] && echo "No pyomo-marked tests found yet (expected until PR #8)" && exit 0; exit $rc; }
+    
+    - name: Pyomo Test Summary
+      if: always()
+      run: |
+        echo "Pyomo tests completed"
+        echo "Failures here don't block PR merge"

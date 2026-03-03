@@ -96,9 +96,9 @@ class TestCalcKnownRp:
         vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
         product_dilute = product.copy()
         product_concentrated = product.copy()
-        output_dilute = calc_knownRp.dry(vial, product_dilute, ht, Pchamber, Tshelf, dt)
         product_dilute["cSolid"] = 0.01  # 1%
         product_concentrated["cSolid"] = 0.10  # 10%
+        output_dilute = calc_knownRp.dry(vial, product_dilute, ht, Pchamber, Tshelf, dt)
         output_concentrated = calc_knownRp.dry(
             vial, product_concentrated, ht, Pchamber, Tshelf, dt
         )
