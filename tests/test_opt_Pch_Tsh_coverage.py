@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from lyopronto import opt_Pch_Tsh, opt_Pch, opt_Tsh
-from .test_helpers import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output
 
 
 class TestOptPchTsh:
@@ -216,9 +216,10 @@ class TestOptPchTsh:
             opt_both_setup['nVial']
         )
         
-        final_fraction = output[-1, 6]
-        assert final_fraction >= 0.99, \
-            f"Should reach 99% dried, got {final_fraction*100:.1f}%"
+        # opt_Pch_Tsh.dry returns percent (0-100), consistent with other modules
+        final_percent = output[-1, 6]
+        assert final_percent >= 99.0, \
+            f"Should reach 99% dried, got {final_percent:.1f}%"
     
     @pytest.mark.slow
     def test_opt_both_convergence(self, opt_both_setup):

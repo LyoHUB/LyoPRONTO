@@ -14,11 +14,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
-import sys
-import scipy.optimize as sp
-import numpy as np
-import math
-import csv
-
 from .lyopronto import *

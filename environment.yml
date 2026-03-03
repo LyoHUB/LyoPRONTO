@@ -23,10 +23,12 @@ dependencies:
   - scipy>=1.10.0
   - matplotlib>=3.7.0
   - pandas>=2.0.0
+  - ruamel.yaml>=0.18.0
   
   # Testing framework (from requirements-dev.txt)
   - pytest>=7.4.0
   - pytest-cov>=4.1.0
+  - pytest-mock>=3
   - pytest-xdist>=3.3.0
   
   # Property-based testing

@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from lyopronto import calc_knownRp, calc_unknownRp
-from .test_helpers import assert_physically_reasonable_output
+from .utils import assert_physically_reasonable_output
 
 
 class TestCalcKnownRp:
@@ -35,10 +35,10 @@ class TestCalcKnownRp:
             standard_setup['dt']
         )
         
-        # Should reach at least 99% dried (column 6 is fraction 0-1, not percentage)
-        final_fraction_dried = output[-1, 6]
-        assert final_fraction_dried >= 0.99, \
-            f"Only {final_fraction_dried*100:.1f}% dried (fraction={final_fraction_dried:.4f})"
+        # Should reach at least 99% dried (column 6 is percent 0-100)
+        final_percent_dried = output[-1, 6]
+        assert final_percent_dried >= 99.0, \
+            f"Only {final_percent_dried:.1f}% dried"
     
     def test_reasonable_drying_time(self, standard_setup):
         """Test that drying time is in a reasonable range."""
@@ -150,9 +150,9 @@ class TestCalcKnownRp:
         
         # Higher pressure generally allows higher shelf temp without exceeding
         # critical product temp, but with same shelf temp, low pressure is better
-        # Check they both complete (fraction >= 0.99)
-        assert output_low[-1, 6] >= 0.99
-        assert output_high[-1, 6] >= 0.99
+        # Check they both complete (percent >= 99%)
+        assert output_low[-1, 6] >= 99.0
+        assert output_high[-1, 6] >= 99.0
     
     def test_concentrated_product_takes_longer(self, standard_vial, dilute_product,
                                                concentrated_product, standard_ht,
@@ -260,7 +260,7 @@ class TestEdgeCases:
         assert output.shape[0] > 0
         # Skip physical reasonableness check for this edge case
         # since very low temperatures can cause numerical issues
-        assert np.all(output[:, 6] >= 0) and np.all(output[:, 6] <= 1.01)
+        assert np.all(output[:, 6] >= 0) and np.all(output[:, 6] <= 101.0)
         assert np.all(output[:, 5] >= 0)  # Non-negative flux
     
     def test_very_small_fill(self, standard_setup):
@@ -277,8 +277,8 @@ class TestEdgeCases:
             setup['dt']
         )
         
-        # Should complete quickly (fraction >= 0.99)
-        assert output[-1, 6] >= 0.99
+        # Should complete quickly (percent >= 99%)
+        assert output[-1, 6] >= 99.0
         assert output[-1, 0] < 20.0  # Should dry in less than 20 hours
     
     def test_high_resistance_product(self, standard_setup):
@@ -296,7 +296,7 @@ class TestEdgeCases:
         )
         
         # High resistance means longer drying, but check it completes
-        assert output[-1, 6] >= 0.99  # Should eventually complete
+        assert output[-1, 6] >= 99.0  # Should eventually complete
         # Note: May not take >20 hours depending on other parameters
 
 
@@ -329,7 +329,7 @@ class TestMassBalance:
         mass_rates = fluxes * Ap_m2  # [kg/hr]
         
         # Numerical integration using trapezoidal rule
-        mass_removed = np.trapz(mass_rates, times)  # [kg]
+        mass_removed = np.trapezoid(mass_rates, times)  # [kg]
         
         # Should be approximately equal (within 2% due to numerical integration)
         # Note: Trapezoidal rule on 100 points gives ~2% error

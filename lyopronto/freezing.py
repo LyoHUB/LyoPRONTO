@@ -14,12 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import scipy.optimize as sp
+from warnings import warn
 import numpy as np
-import math
-import csv
-from . import constant
 from . import functions
+from .functions import RampInterpolator
 
 
 ################# Freezing ###############
@@ -29,43 +27,33 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     ##################  Initialization ################
 
     # Initial fill height
-    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])    # [cm]
+    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
 
     # Frozen product volume
-    V_frozen = Lpr0*vial['Ap']     # [mL]
+    V_frozen = Lpr0*vial['Ap']    # mL
 
     # Initialization of time
     iStep = 0      # Time iteration number
-    t = 0.0    # Time [hr]
+    t = 0.0    # Time in hr
 
     # Initial shelf temperature
-    Tsh = Tshelf['init']         # [degC]
+    Tsh = Tshelf['init']        # degC
     
     # Shelf temperature and time triggers, ramping rates
-    Tsh_tr = np.array([Tshelf['init']])     # [degC]
-    for T in Tshelf['setpt']:
-        Tsh_tr = np.append(Tsh_tr,T)     # [degC]
-        Tsh_tr = np.append(Tsh_tr,T)     # [degC]
-    r = np.array([[0.0]])     # [degC/min]
+    Tshr = RampInterpolator(Tshelf)
+    Tsh_tr = Tshr.values
+    t_tr = Tshr.times
+    r = np.array([[0.0]])    # degC/min
     for i,T in enumerate(Tsh_tr[:-1]):
         if Tsh_tr[i+1]>T:
-            r = np.append(r,Tshelf['ramp_rate'])     # [degC/min]
-        elif Tsh_tr[i-1]<T:
-            r = np.append(r,-Tshelf['ramp_rate'])     # [degC/min]
+            r = np.append(r,Tshelf['ramp_rate'])    # degC/min
+        elif Tsh_tr[i+1]<T:
+            r = np.append(r,-Tshelf['ramp_rate'])    # degC/min
         else:
-            r = np.append(r,0.0)     # [degC/min]
-    t_tr = np.array([[0.0]])     # [hr]
-    j = 0
-    for i,T in enumerate(Tsh_tr[:-1]):
-        if Tsh_tr[i+1]==T:
-            t_tr = np.append(t_tr,t_tr[i-1]+Tshelf['dt_setpt'][j]/constant.hr_To_min)
-            j = j+1
-        else:
-            t_tr = np.append(t_tr,(Tsh_tr[i+1]-T)/r[i+1]/constant.hr_To_min)     # [hr]
-    
+            r = np.append(r,0.0)    # degC/min
 
     # Initial product temperature
-    Tpr = product['Tpr0']     # [degC]
+    Tpr = product['Tpr0']    # degC
     Tpr0 = Tpr
     i_prev = 1    
     
@@ -78,71 +66,84 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     while(Tpr>product['Tn']): # Till the product reaches the nucleation temperature
 
         iStep = iStep + 1 # Time iteration number
-        t = iStep*dt  # [hr]
+        t = iStep*dt # hr
 
-        if len(np.where(t_tr>t)[0])==0:
-            print("Total time exceeded. Freezing incomplete")    # Shelf temperature set point time exceeded, freezing not done
-            break
+        if np.all(t_tr<t):
+            warn("Total time exceeded. Freezing incomplete, no nucleation occurred")    # Shelf temperature set point time exceeded, freezing not done
+            return freezing_output_saved
         else:
-            i = np.where(t_tr>t)[0][0]
+            i = np.argmax(t_tr>t) # Get first index where time trigger exceeds current time
             if not(i == i_prev):
                 Tpr0 = Tpr
                 i_prev = i
-            # Ramp shelf temperature till next set point is reached and then maintain at set point
-            Tsh = Tsh + r[i]*constant.hr_To_min*dt     # [degC]
+            # Evaluate shelf temperature at current time point
+            Tsh = Tshr(t)
             # Product temperature
-            Tpr = functions.lumped_cap_Tpr(t-t_tr[i-1],Tpr0,constant.rho_solution,constant.Cp_solution,vial['Vfill'],h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])     # [degC]
+            Tpr = functions.lumped_cap_Tpr_sol(t-t_tr[i-1],Tpr0,vial['Vfill'],h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])    # degC
 
         # Update record as functions of the cycle time
-            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]], axis=0)    
+            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)    
 
     ######################################################
 
     ################ Nucleation ######################
 
-    freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, product['Tn']]], axis=0)
+    freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, product['Tn']]],axis=0)
 
     ######################################################
 
     ################ Crystallization ######################
 
-    tn = t    # Nucleation onset time [hr]
-    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tsh)    # Crystallization time [hr]
-    ts = tn + dt_crystallization    # Solidification onset time [hr]
+    tn = t    # Nucleation onset time in hr
+    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tshr, tn)    # Crystallization time in hr
+    ts = tn + dt_crystallization    # Solidification onset time in hr
 
     while(t<ts):
 
-        if len(np.where(t_tr>t)[0])==0:
-            print("Total time exceeded. Freezing incomplete")    # Shelf temperature set point time exceeded, freezing not done
-            break
+        if np.all(t_tr<t):
+            warn("Total time exceeded. Freezing incomplete, nucleated but not fully crystallized")    # Shelf temperature set point time exceeded, freezing not done
+            return freezing_output_saved
         else:
-            i = np.where(t_tr>t)[0][0]
+            i = np.argmax(t_tr>t) # Get first index where time trigger exceeds current time
             if not(i == i_prev):
-                Tpr0 = Tpr
                 i_prev = i
-            # Ramp shelf temperature till next set point is reached and then maintain at set point
-            Tsh = Tsh + r[i]*constant.hr_To_min*dt     # [degC]
+            # Evaluate shelf temperature at current time point 
+            Tsh = Tshr(t)    # degC
             # Product temperature stays at freezing temperature
-            Tpr = product['Tf']     # [degC]
+            Tpr = product['Tf']    # degC
 
         # Update record as functions of the cycle time
-            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]], axis=0)
+            freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
 
         iStep = iStep + 1 # Time iteration number
-        t = iStep*dt  # [hr]
-        ######################################################
+        t = iStep*dt # hr    
+
+    ######################################################
 
     ################ Solidification ######################
 
+    t_last = ts
+    Tpr0 = Tpr    # degC
+    Tsh0 = Tsh
     while(t<t_tr[-1]):
 
-        Tpr = functions.lumped_cap_Tpr(t-ts,product['Tf'],constant.rho_ice,constant.Cp_ice,V_frozen,h_freezing,vial['Av'],Tsh,Tsh,0.0)
+        i = np.argmax(t_tr>t) # Get first index where time trigger exceeds current time
+        if not(i == i_prev):
+            i_prev = i
+            t_last = t_tr[i-1]
+            Tpr0 = Tpr
+            Tsh0 = Tsh
 
+        # Evaluate shelf temperature at current time point 
+        Tsh = Tshr(t)    # degC
+
+        # Product temperature
+        Tpr = functions.lumped_cap_Tpr_ice(t-t_last,Tpr0,V_frozen,h_freezing,vial['Av'],Tsh,Tsh0,r[i])
         # Update record as functions of the cycle time
-        freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]], axis=0)
+        freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
 
         iStep = iStep + 1 # Time iteration number
-        t = iStep*dt  # [hr]
+        t = iStep*dt # hr
 
     ######################################################
     
