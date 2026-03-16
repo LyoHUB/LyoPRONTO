@@ -79,7 +79,7 @@ class TestRegressionStandardCase:
         assert np.isclose(final_Tsh, 20.0, rtol=0.01)  # Should reach target shelf temp
         # Flux stays relatively high (not near zero) because heat input continues
         assert final_flux > 0.5  # Flux should still be significant
-        assert final_fraction >= 0.99  # Should be essentially complete
+        assert final_fraction >= 99.0  # Should be essentially complete (percent 0-100)
 
 
 class TestRegressionParametricCases:
@@ -96,9 +96,9 @@ class TestRegressionParametricCases:
         
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
-        # Should complete successfully (fraction >= 0.99)
-        assert output[-1, 6] >= 0.99
-        
+        # Should complete successfully (percent dried 0-100 scale)
+        assert output[-1, 6] >= 99.0
+
         # Drying time should be in reasonable range
         drying_time = output[-1, 0]
         assert 5.0 < drying_time < 30.0
@@ -114,9 +114,9 @@ class TestRegressionParametricCases:
         
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
-        # Should complete successfully (fraction >= 0.99)
-        assert output[-1, 6] >= 0.99
-        
+        # Should complete successfully (percent dried 0-100 scale)
+        assert output[-1, 6] >= 99.0
+
         # Check it completes (timing depends on many factors)
         drying_time = output[-1, 0]
         assert drying_time > 5.0  # Should take at least 5 hours
@@ -132,9 +132,9 @@ class TestRegressionParametricCases:
         
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         
-        # Should complete successfully (fraction >= 0.99)
-        assert output[-1, 6] >= 0.99
-        
+        # Should complete successfully (percent dried 0-100 scale)
+        assert output[-1, 6] >= 99.0
+
         # Product temperature should stay safely cold
         assert np.all(output[:, 2] < -5.0)  # Tbot should stay below -5°C
 
@@ -160,7 +160,7 @@ class TestRegressionConsistency:
         # Verify column meanings are preserved
         # [time, Tsub, Tbot, Tsh, Pch_mTorr, flux, frac_dried]
         assert output[0, 0] == 0.0  # Time starts at 0
-        assert output[-1, 6] >= 0.99  # Last column is fraction dried, should reach ~1.0
+        assert output[-1, 6] >= 99.0  # Last column is percent dried (0-100 scale)
     
     def test_numerical_stability(self):
         """Test that simulation is numerically stable."""
@@ -177,10 +177,11 @@ class TestRegressionConsistency:
         assert not np.any(np.isnan(output)), "Output contains NaN values"
         assert not np.any(np.isinf(output)), "Output contains Inf values"
         
-        # Check for unreasonable jumps in values
-        for col in range(output.shape[1]):
+        # Check for unreasonable jumps in physical columns
+        # Skip column 0 (time) which has uniform steps, and column 6 (%dried)
+        # which can have large jumps near completion
+        for col in range(1, output.shape[1]):
             diffs = np.abs(np.diff(output[:, col]))
-            if col != 6:  # Skip %dried which can have large jumps near end
-                # No value should change by more than 50% between steps (except near singularities)
+            if col != 6:
                 max_relative_change = np.max(diffs[1:-1] / (np.abs(output[1:-2, col]) + 1e-10))
                 assert max_relative_change < 5.0, f"Column {col} has unstable values"

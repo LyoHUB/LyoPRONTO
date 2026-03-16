@@ -361,8 +361,8 @@ class TestOptPchTshComparison:
         # Check both achieve some drying progress
         final_both = output_both[-1, 6]
         final_pch = output_pch[-1, 6]
-        assert final_both > 0.0, "Joint optimization should show drying progress"
-        assert final_pch > 0.0, "Pch-only optimization should show drying progress"
+        assert final_both >= 99.0, "Joint optimization should reach completion"
+        assert final_pch > 10.0, "Pch-only optimization should show meaningful drying progress"
     
     @pytest.mark.slow
     def test_joint_opt_shorter_or_equal_time(self, comparison_setup):
@@ -484,7 +484,7 @@ class TestOptPchTshEdgeCases:
         )
         
         # Should still find solution within narrow ranges
-        assert output[-1, 6] >= 0.95
+        assert output[-1, 6] >= 95.0
     
     @pytest.mark.slow
     def test_tight_equipment_constraint(self, conservative_setup):
@@ -505,7 +505,7 @@ class TestOptPchTshEdgeCases:
         )
         
         # Should complete even with tight constraint
-        assert output[-1, 6] >= 0.95
+        assert output[-1, 6] >= 95.0
     
     @pytest.mark.slow
     def test_concentrated_product(self, conservative_setup):

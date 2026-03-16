@@ -265,7 +265,7 @@ class TestOptimizerWebInterface:
         # Verify results
         assert results is not None
         assert results.size > 0
-        assert results[-1, 6] >= 0.99  # Drying complete
+        assert results[-1, 6] >= 99.0  # Drying complete (percent 0-100 scale)
 
 
 class TestOptimizerEdgeCases:

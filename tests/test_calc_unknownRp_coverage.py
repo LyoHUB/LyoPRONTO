@@ -1,7 +1,6 @@
 """Tests for calc_unknownRp.py to increase coverage from 11% to 80%+."""
 import pytest
 import numpy as np
-import os
 from lyopronto import calc_unknownRp
 
 
@@ -26,11 +25,11 @@ class TestCalcUnknownRp:
     """Test calculator with unknown product resistance (uses experimental Tbot data)."""
     
     @pytest.fixture
-    def unknown_rp_setup(self, standard_vial, standard_ht):
+    def unknown_rp_setup(self, standard_vial, standard_ht, reference_data_path):
         """Setup for unknown Rp calculation with experimental temperature data."""
         # Product without R0, A1, A2 (will be estimated)
         product = {'cSolid': 0.05, 'T_pr_crit': -30.0}
-        
+
         # Time-varying shelf temperature
         Tshelf = {
             'init': -40.0,
@@ -38,17 +37,16 @@ class TestCalcUnknownRp:
             'dt_setpt': [120.0, 120.0],  # 2 hours in [min]
             'ramp_rate': 0.1  # deg/min
         }
-        
+
         # Time-varying chamber pressure
         Pchamber = {
             'setpt': [0.060, 0.080, 0.100],  # Three pressure stages
             'dt_setpt': [60.0, 120.0, 120.0],  # Time at each stage [min]
             'ramp_rate': 0.5  # Ramp rate [Torr/min]
         }
-        
+
         # Load experimental temperature data
-        test_data_dir = os.path.join(os.path.dirname(__file__), '..', 'test_data')
-        temp_file = os.path.join(test_data_dir, 'temperature.txt')
+        temp_file = reference_data_path / 'temperature.txt'
         
         # Load and parse temperature data
         time_exp = []

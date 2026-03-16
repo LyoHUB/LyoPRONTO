@@ -147,12 +147,14 @@ class TestCalcKnownRp:
         
         time_low = output_low[-1, 0]
         time_high = output_high[-1, 0]
-        
-        # Higher pressure generally allows higher shelf temp without exceeding
-        # critical product temp, but with same shelf temp, low pressure is better
-        # Check they both complete (percent >= 99%)
+
+        # Both should complete drying
         assert output_low[-1, 6] >= 99.0
         assert output_high[-1, 6] >= 99.0
+        # Different pressures at the same shelf temperature should produce
+        # different drying times (confirming pressure actually affects the result)
+        assert time_low != pytest.approx(time_high, rel=0.01), \
+            "Drying times should differ for different pressures"
     
     def test_concentrated_product_takes_longer(self, standard_vial, dilute_product,
                                                concentrated_product, standard_ht,

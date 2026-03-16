@@ -83,15 +83,15 @@ class TestWebInterfaceExample:
         assert final_dried >= 99.0, \
             f"Final dried percent {final_dried:.2f} < 99.0"
     
-    def test_compare_with_reference_csv(self, web_interface_inputs):
+    def test_compare_with_reference_csv(self, web_interface_inputs, reference_data_path):
         """Test that output matches reference CSV from web interface."""
         vial, product, ht, Pchamber, Tshelf, dt = web_interface_inputs
-        
+
         # Run simulation
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
-        
+
         # Load reference CSV (if it exists)
-        ref_csv = Path('test_data/reference_primary_drying.csv')
+        ref_csv = reference_data_path / 'reference_primary_drying.csv'
         if not ref_csv.exists():
             pytest.skip(f"Reference CSV not found: {ref_csv}")
         
@@ -229,10 +229,10 @@ class TestWebInterfaceExample:
 class TestWebInterfaceComparison:
     """Integration tests comparing with actual web interface output."""
     
-    def test_exact_match_with_reference(self):
+    def test_exact_match_with_reference(self, reference_data_path):
         """Test for exact match with reference web output."""
         # This test uses the actual reference CSV
-        ref_csv = Path('test_data/reference_primary_drying.csv')
+        ref_csv = reference_data_path / 'reference_primary_drying.csv'
         if not ref_csv.exists():
             pytest.skip(f"Reference CSV not found: {ref_csv}")
         

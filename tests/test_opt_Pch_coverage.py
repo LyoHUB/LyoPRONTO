@@ -193,11 +193,8 @@ class TestOptPchOnly:
         )
         
         final_percent = output[-1, 6]
-        # Optimizer should show progress, but may not reach full completion
-        assert final_percent > 0.0, \
-            f"Should show drying progress, got {final_percent:.1f}%"
-        assert final_percent <= 100.0, \
-            f"Percent dried should not exceed 100%, got {final_percent:.1f}%"
+        assert final_percent > 10.0, \
+            f"Should show meaningful drying progress, got {final_percent:.1f}%"
     
     def test_opt_pch_convergence(self, opt_pch_setup):
         """Test optimization converges to a solution."""
@@ -361,5 +358,5 @@ class TestOptPchEdgeCases:
         assert output is not None
         assert output.size > 0
         final_percent = output[-1, 6]
-        assert final_percent >= 0.0, "Should have non-negative drying progress"
-        assert final_percent <= 100.0, "Percent should not exceed 100%"
+        assert final_percent > 1.0, \
+            f"Should show some drying progress even with tight constraint, got {final_percent:.1f}%"
