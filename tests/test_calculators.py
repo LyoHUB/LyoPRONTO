@@ -318,9 +318,9 @@ class TestMassBalance:
         
         # Calculate initial water mass
         from lyopronto import constant, functions
-        Vfill = standard_setup['vial']['Vfill']  # mL
+        Vfill = standard_setup['vial']['Vfill']  # [mL]
         cSolid = standard_setup['product']['cSolid']
-        water_mass_initial = Vfill * constant.rho_solution * (1 - cSolid) / constant.kg_To_g  # kg
+        water_mass_initial = Vfill * constant.rho_solution * (1 - cSolid) / constant.kg_To_g  # [kg]
         
         # Integrate sublimation flux over time
         times = output[:, 0]  # [hr]

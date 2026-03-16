@@ -172,7 +172,7 @@ class TestWebInterfaceExample:
         Pch_output = output[:, 4]  # In mTorr
         
         # Should be constant at 150 mTorr (0.15 Torr * 1000)
-        expected_Pch = 150.0  # mTorr
+        expected_Pch = 150.0  # [mTorr]
         assert np.all(Pch_output == pytest.approx(expected_Pch, abs=0.1)), \
             f"Chamber pressure not constant at {expected_Pch} mTorr"
     
@@ -191,7 +191,7 @@ class TestWebInterfaceExample:
         
         # Integrate sublimation flux
         time = output[:, 0]
-        flux = output[:, 5]  # kg/hr/m²
+        flux = output[:, 5]  # [kg/hr/m²]
         
         # Convert flux to total mass sublimed
         # flux is kg/hr/m², Ap is in cm² = Ap*1e-4 m²

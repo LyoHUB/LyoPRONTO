@@ -44,8 +44,8 @@ class TestLpr0Function:
 
     def test_lpr0_standard_case(self):
         """Test initial fill height for standard 2 mL fill."""
-        Vfill = 2.0  # mL
-        Ap = 3.14  # cm^2
+        Vfill = 2.0  # [mL]
+        Ap = 3.14  # [cm^2]
         cSolid = 0.05
 
         Lpr0 = functions.Lpr0_FUN(Vfill, Ap, cSolid)
@@ -159,10 +159,10 @@ class TestSubRate:
 
     def test_sub_rate_positive_driving_force(self):
         """Sublimation rate should be positive when Psub > Pch."""
-        Ap = 3.14  # cm^2
-        Rp = 1.4  # cm^2-hr-Torr/g
-        T_sub = -20.0  # degC
-        Pch = 0.1  # Torr
+        Ap = 3.14  # [cm^2]
+        Rp = 1.4  # [cm^2-hr-Torr/g]
+        T_sub = -20.0  # [degC]
+        Pch = 0.1  # [Torr]
 
         dmdt = functions.sub_rate(Ap, Rp, T_sub, Pch)
 
@@ -218,10 +218,10 @@ class TestTBotFunction:
     def test_tbot_greater_than_tsub(self):
         """Bottom temperature should be greater than sublimation temperature."""
         T_sub = -20.0
-        Lpr0 = 0.7  # cm
-        Lck = 0.3  # cm
-        Pch = 0.1  # Torr
-        Rp = 1.4  # cm^2-hr-Torr/g
+        Lpr0 = 0.7  # [cm]
+        Lck = 0.3  # [cm]
+        Pch = 0.1  # [Torr]
+        Rp = 1.4  # [cm^2-hr-Torr/g]
 
         Tbot = functions.T_bot_FUN(T_sub, Lpr0, Lck, Pch, Rp)
 

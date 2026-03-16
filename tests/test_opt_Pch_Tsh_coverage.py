@@ -254,7 +254,7 @@ class TestOptPchTsh:
             opt_both_setup['nVial']
         )
         
-        Pch = output[:, 4] / 1000  # Torr
+        Pch = output[:, 4] / 1000  # [Torr]
         Tsh = output[:, 3]  # °C
         
         # Both should vary during optimization

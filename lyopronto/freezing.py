@@ -27,33 +27,33 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     ##################  Initialization ################
 
     # Initial fill height
-    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
+    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # [cm]
 
     # Frozen product volume
-    V_frozen = Lpr0*vial['Ap']    # mL
+    V_frozen = Lpr0*vial['Ap']    # [mL]
 
     # Initialization of time
     iStep = 0      # Time iteration number
-    t = 0.0    # Time in hr
+    t = 0.0    # Time [hr]
 
     # Initial shelf temperature
-    Tsh = Tshelf['init']        # degC
+    Tsh = Tshelf['init']        # [degC]
     
     # Shelf temperature and time triggers, ramping rates
     Tshr = RampInterpolator(Tshelf)
     Tsh_tr = Tshr.values
     t_tr = Tshr.times
-    r = np.array([[0.0]])    # degC/min
+    r = np.array([[0.0]])    # [degC/min]
     for i,T in enumerate(Tsh_tr[:-1]):
         if Tsh_tr[i+1]>T:
-            r = np.append(r,Tshelf['ramp_rate'])    # degC/min
+            r = np.append(r,Tshelf['ramp_rate'])    # [degC/min]
         elif Tsh_tr[i+1]<T:
-            r = np.append(r,-Tshelf['ramp_rate'])    # degC/min
+            r = np.append(r,-Tshelf['ramp_rate'])    # [degC/min]
         else:
-            r = np.append(r,0.0)    # degC/min
+            r = np.append(r,0.0)    # [degC/min]
 
     # Initial product temperature
-    Tpr = product['Tpr0']    # degC
+    Tpr = product['Tpr0']    # [degC]
     Tpr0 = Tpr
     i_prev = 1    
     
@@ -66,7 +66,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     while(Tpr>product['Tn']): # Till the product reaches the nucleation temperature
 
         iStep = iStep + 1 # Time iteration number
-        t = iStep*dt # hr
+        t = iStep*dt # [hr]
 
         if np.all(t_tr<t):
             warn("Total time exceeded. Freezing incomplete, no nucleation occurred")    # Shelf temperature set point time exceeded, freezing not done
@@ -79,7 +79,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             # Evaluate shelf temperature at current time point
             Tsh = Tshr(t)
             # Product temperature
-            Tpr = functions.lumped_cap_Tpr_sol(t-t_tr[i-1],Tpr0,vial['Vfill'],h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])    # degC
+            Tpr = functions.lumped_cap_Tpr_sol(t-t_tr[i-1],Tpr0,vial['Vfill'],h_freezing,vial['Av'],Tsh,Tsh_tr[i-1],r[i])    # [degC]
 
         # Update record as functions of the cycle time
             freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)    
@@ -94,9 +94,9 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
 
     ################ Crystallization ######################
 
-    tn = t    # Nucleation onset time in hr
-    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tshr, tn)    # Crystallization time in hr
-    ts = tn + dt_crystallization    # Solidification onset time in hr
+    tn = t    # Nucleation onset time [hr]
+    dt_crystallization = functions.crystallization_time_FUN(vial['Vfill'],h_freezing,vial['Av'],product['Tf'],product['Tn'],Tshr, tn)    # Crystallization time [hr]
+    ts = tn + dt_crystallization    # Solidification onset time [hr]
 
     while(t<ts):
 
@@ -108,22 +108,22 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             if not(i == i_prev):
                 i_prev = i
             # Evaluate shelf temperature at current time point 
-            Tsh = Tshr(t)    # degC
+            Tsh = Tshr(t)    # [degC]
             # Product temperature stays at freezing temperature
-            Tpr = product['Tf']    # degC
+            Tpr = product['Tf']    # [degC]
 
         # Update record as functions of the cycle time
             freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
 
         iStep = iStep + 1 # Time iteration number
-        t = iStep*dt # hr    
+        t = iStep*dt # [hr]    
 
     ######################################################
 
     ################ Solidification ######################
 
     t_last = ts
-    Tpr0 = Tpr    # degC
+    Tpr0 = Tpr    # [degC]
     Tsh0 = Tsh
     while(t<t_tr[-1]):
 
@@ -135,7 +135,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
             Tsh0 = Tsh
 
         # Evaluate shelf temperature at current time point 
-        Tsh = Tshr(t)    # degC
+        Tsh = Tshr(t)    # [degC]
 
         # Product temperature
         Tpr = functions.lumped_cap_Tpr_ice(t-t_last,Tpr0,V_frozen,h_freezing,vial['Av'],Tsh,Tsh0,r[i])
@@ -143,7 +143,7 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
         freezing_output_saved = np.append(freezing_output_saved, [[t, Tsh, Tpr]],axis=0)
 
         iStep = iStep + 1 # Time iteration number
-        t = iStep*dt # hr
+        t = iStep*dt # [hr]
 
     ######################################################
     
