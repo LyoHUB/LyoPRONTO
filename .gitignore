@@ -1,9 +1,26 @@
 # ----------- Files excluded for this project
 #
-# Python precompiled files
-*.pyc
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+MANIFEST
+
 # Data files
 *.csv
+# But keep test reference data
+!test_data/*.csv
+
+# Coverage reports
+.coverage
+coverage.xml
+htmlcov/
 
 docs/build
 
