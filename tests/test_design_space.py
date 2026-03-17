@@ -153,8 +153,8 @@ class TestDesignSpaceBasic:
         # Equipment sublimation rate
         dmdt_eq = (
             eq_cap["a"] + eq_cap["b"] * Pchamber["setpt"][0]
-        )  # kg/hr for all vials
-        flux_eq_expected = dmdt_eq / nVial / (vial["Ap"] * 1e-4)  # kg/hr/m²
+        )  # [kg/hr] for all vials
+        flux_eq_expected = dmdt_eq / nVial / (vial["Ap"] * 1e-4)  # [kg/hr/m²]
 
         flux_eq_calculated = eq_cap_results[2][0]
 

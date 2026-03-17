@@ -130,11 +130,11 @@ class TestCalcKnownRp:
         vial, product, ht, Pchamber, Tshelf, dt = knownRp_standard_setup
         output = calc_knownRp.dry(*knownRp_standard_setup)
         # Calculate initial water mass
-        Vfill = vial["Vfill"]  # mL
+        Vfill = vial["Vfill"]  # [mL]
         cSolid = product["cSolid"]
         water_mass_initial = (
             Vfill * constant.rho_solution * (1 - cSolid) / constant.kg_To_g
-        )  # kg
+        )  # [kg]
 
         # Integrate sublimation flux over time
         times = output[:, 0]  # [hr]
