@@ -71,3 +71,9 @@ def standard_setup(
         "Tshelf": standard_tshelf,
         "dt": 0.01,
     }
+
+
+@pytest.fixture
+def small_vial():
+    """Small vial configuration."""
+    return {"Av": 2.0, "Ap": 1.5, "Vfill": 1.0}

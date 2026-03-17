@@ -643,6 +643,57 @@ class TestRampInterpolatorCombinedDt:
         with pytest.warns(UserWarning, match="Ramp"):
             functions.RampInterpolator(Tshelf, count_ramp_against_dt=True)
 
+    def test_ramp_interpolator_noinit_multisetpt_no_double_count(self):
+        """Test that the no-init path does not double-count dt_setpt[0].
+
+        Regression test for https://github.com/LyoHUB/LyoPRONTO/issues/17.
+        Without the fix, the first call to dt_setpt consumed index 0 during
+        initialization (times starts with [0, dt_setpt[0]]) and in the loop
+        at i=1.
+        """
+        Pchamber = {
+            "setpt": [0.1, 0.2],
+            "dt_setpt": [60, 120],   # 1 hr for first stage, 2 hr for second
+            "ramp_rate": 1.0,
+        }
+        ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=True)
+
+        # First stage: hold at 0.1 for 1 hr (from initialization)
+        # Second stage: ramp from 0.1->0.2 (ramptime = 0.1/1.0 / 60 hr),
+        #               then hold for remainder of dt_setpt[1]=120 min = 2 hr
+        ramptime_2 = abs(0.2 - 0.1) / 1.0 / constant.hr_To_min
+        holdtime_2 = 120 / constant.hr_To_min - ramptime_2
+
+        expected_times = np.cumsum([0.0, 60 / constant.hr_To_min, ramptime_2, holdtime_2])
+        np.testing.assert_allclose(ramp.times, expected_times)
+
+        # Times should be monotonically non-decreasing (holdtime can be 0)
+        assert np.all(np.diff(ramp.times) >= 0), "Times must be monotonically non-decreasing"
+
+        # Values at boundaries
+        assert ramp(0.0) == pytest.approx(0.1)
+        assert ramp(ramp.times[-1]) == pytest.approx(0.2)
+        assert ramp(100.0) == pytest.approx(0.2)
+
+    def test_ramp_interpolator_holdtime_clamped_to_zero(self):
+        """Test that negative holdtime is clamped to 0 with a warning.
+
+        Regression test for https://github.com/LyoHUB/LyoPRONTO/issues/17.
+        When ramp time exceeds the total stage time, holdtime goes negative
+        which would produce non-monotonic cumulative times.
+        """
+        Tshelf = {
+            "init": 0.0,
+            "setpt": [100.0],          # Need to ramp 100 deg
+            "dt_setpt": [1],           # Only 1 minute allowed
+            "ramp_rate": 0.1,          # 0.1 deg/min -> takes 1000 min
+        }
+        with pytest.warns(UserWarning, match="Ramp time"):
+            ramp = functions.RampInterpolator(Tshelf, count_ramp_against_dt=True)
+
+        # holdtime should be clamped to 0, not negative
+        assert np.all(np.diff(ramp.times) >= 0), "Times must be monotonically non-decreasing"
+
     def test_ramp_interpolator_out_of_bounds(self):
         """Test RampInterpolator behavior outside defined time range."""
         Tshelf = {
