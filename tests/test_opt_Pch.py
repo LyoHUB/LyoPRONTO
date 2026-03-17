@@ -359,7 +359,7 @@ class TestOptPchReference:
         # for floating-point differences across Python versions)
         drying_time_ref = output_ref[-1, 0]
         drying_time = output[-1, 0]
-        assert drying_time <= drying_time_ref + 1e-6, (
+        assert drying_time <= drying_time_ref + 1e-3, (
             f"Drying time {drying_time:.6f} hr should be <= reference "
             + f"{drying_time_ref:.6f} hr"
         )

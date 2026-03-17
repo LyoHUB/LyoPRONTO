@@ -349,7 +349,7 @@ class TestOptimizerEdgeCases:
         assert_complete_drying(output)
 
     def test_short_time(self, optimizer_params):
-        """Test with multiple chamber pressure setpoints."""
+        """Test with short total time (should not complete drying)."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = optimizer_params
 
         # Very short total time
