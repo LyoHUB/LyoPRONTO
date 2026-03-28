@@ -233,7 +233,7 @@ class TestOptPchEdgeCases:
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
 
         # Higher minimum pressure
-        Pchamber["min"] = 0.10  # Torr = 100 mTorr
+        Pchamber["min"] = 0.10  # [Torr] = 100 mTorr
         # Needs a lower shelf temperature to complete drying
         Tshelf["setpt"] = np.array([-20.0])
 
@@ -252,7 +252,7 @@ class TestOptPchEdgeCases:
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = standard_opt_pch_inputs
 
         # Higher minimum pressure
-        Pchamber["min"] = 0.10  # Torr = 100 mTorr
+        Pchamber["min"] = 0.10  # [Torr] = 100 mTorr
         # With higher shelf temperature, CANNOT complete drying and adhere to constraints
         Tshelf["setpt"] = [0]
 

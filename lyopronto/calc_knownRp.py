@@ -49,7 +49,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     ##################  Initialization ################
 
     # Initial fill height
-    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # cm
+    Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # [cm]
 
     # Time-dependent functions for Pchamber and Tshelf, take time in hours
     Pch_t = functions.RampInterpolator(Pchamber)
@@ -58,7 +58,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     # Get maximum simulation time based on shelf and chamber setpoints
     # This may not really be necessary, but is part of legacy behavior
     # Could remove in a future release
-    max_t = max(Pch_t.max_time(), Tsh_t.max_time())   # hr, add buffer
+    max_t = max(Pch_t.max_time(), Tsh_t.max_time())   # [hr], add buffer
 
     if Pch_t.max_setpt() > functions.Vapor_pressure(Tsh_t.max_setpt()):
         warn("Chamber pressure setpoint exceeds vapor pressure at shelf temperature " +\
@@ -75,13 +75,13 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     # taking them as arguments.
     def calc_dLdt(t, u):
         # Time in hours
-        Lck = u[0] # cm
+        Lck = u[0] # [cm]
         Tsh = Tsh_t(t)
         Pch = Pch_t(t)
-        Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient in cal/s/K/cm^2
-        Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance in cm^2-hr-Torr/g
-        Tsub = fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature array in degC
-        dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate array in kg/hr
+        Kv = functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],Pch)  # Vial heat transfer coefficient [cal/s/K/cm^2]
+        Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance [cm^2-hr-Torr/g]
+        Tsub = fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature [degC]
+        dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate [kg/hr]
         if dmdt<0:
             # print("Shelf temperature is too low for sublimation.")
             dmdt = 0.0
@@ -89,7 +89,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
             return [dLdt]
         # Tbot = functions.T_bot_FUN(Tsub,Lpr0,Lck,Pch,Rp)    # Vial bottom temperature array in degC
 
-        dLdt = (dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # cm/hr
+        dLdt = (dmdt*constant.kg_To_g)/(1-product['cSolid']*constant.rho_solution/constant.rho_solute)/(vial['Ap']*constant.rho_ice)*(1-product['cSolid']*(constant.rho_solution-constant.rho_ice)/constant.rho_solute) # [cm/hr]
         return [dLdt]
 
     ### ------ Condition for ending simulation: completed drying
