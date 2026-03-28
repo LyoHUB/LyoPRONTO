@@ -38,7 +38,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     percent_dried = Lck/Lpr0*100.0        # Percent dried
 
     # Initial chamber pressure
-    P0 = 0.1    # Initial guess for chamber pressure in Torr
+    P0 = (Pchamber['min'] + Pchamber.get('max', Pchamber['min']*3))/2.0
        
     # Initial product and shelf temperatures
     T0=product['T_pr_crit']   # degC
@@ -64,7 +64,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
             {'type':'ineq','fun':lambda x: functions.Ineq_Constraints(x[0],x[1],product['T_pr_crit'],x[2],eq_cap['a'],eq_cap['b'],nVial)[0]},  # equipment capability inequlity
             {'type':'ineq','fun':lambda x: functions.Ineq_Constraints(x[0],x[1],product['T_pr_crit'],x[2],eq_cap['a'],eq_cap['b'],nVial)[1]})  # maximum product temperature inequality
         # Bounds for the unknowns
-        bnds = ((Pchamber['min'],None),(None,None),(None,None),(Tshelf['min'],Tshelf['max']),(None,None),(None,None),(None,None))
+        bnds = ((Pchamber['min'],Pchamber.get('max', None)),(None,None),(None,None),(Tshelf['min'],Tshelf['max']),(None,None),(None,None),(None,None))
         # Minimize the objective function i.e. maximize the sublimation rate
         res = sp.minimize(fun,x0,bounds = bnds, constraints = cons)
         [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv] = res['x']    # Results in Torr, kg/hr, degC, degC, Torr, degC, cal/s/K/cm^2

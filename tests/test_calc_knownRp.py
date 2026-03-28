@@ -410,16 +410,6 @@ class TestRegression:
         late_stage = flux[int(len(flux) * 0.8) :]
         assert np.all(np.diff(late_stage) <= 0.0), "Flux should decrease in late stage"
 
-
-class TestCalcKnownRpEarlyReturn:
-    """Tests for the early-return path in calc_knownRp.dry.
-
-    When chamber pressure exceeds vapor pressure at shelf temperature,
-    drying cannot proceed and a single-row warning output is returned.
-    The output pressure must be in mTorr (column 4), consistent with
-    the normal output path.
-    """
-
     def test_early_return_pressure_in_mtorr(self, knownRp_standard_setup):
         """Regression test for the bug where Pch_t(0) was returned without the
         * constant.Torr_to_mTorr conversion, making column 4 three orders of
@@ -440,10 +430,7 @@ class TestCalcKnownRpEarlyReturn:
         Pch_mTorr = output[0, 4]
         Pch_Torr = 10.0  # The setpoint we passed in
 
-        assert Pch_mTorr == pytest.approx(
-            Pch_Torr * constant.Torr_to_mTorr, rel=0.01
-        ), (
+        assert Pch_mTorr == Pch_Torr * constant.Torr_to_mTorr, (
             f"Early-return pressure should be in mTorr ({Pch_Torr * constant.Torr_to_mTorr}), "
             f"got {Pch_mTorr}"
         )
-

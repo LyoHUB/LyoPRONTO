@@ -288,12 +288,7 @@ class RampInterpolator:
         # Older logic: setpoint_dt includes the ramp time.
         # Kept for backward compatibility, but add a check if insufficient time allowed for ramp
         if count_ramp_against_dt:
-            # In the no-init path, dt_setpt[0] is already consumed during
-            # initialization (times starts with [0, dt_setpt[0]]).  Start the
-            # loop index for dt_setpt at i (not i-1) so that dt_setpt[0] is
-            # not consumed a second time.  In the init path, times starts
-            # with just [0] and the loop correctly starts consuming at
-            # dt_setpt[0] via index i-1.
+            # If there is no "init" value, dt_setpt[0] was already consumed.
             has_init = "init" in rampspec
             for i in range(1, len(self.setpt)):
                 # If fewer dt_setpt than setpt provided, repeat the last dt

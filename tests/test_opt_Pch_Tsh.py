@@ -103,10 +103,8 @@ def opt_both_consistency(output, setup):
         "Pressure should be >= min bound"
     )
     if "max" in Pchamber:
-        max_mTorr = Pchamber["max"] * constant.Torr_to_mTorr
-        assert np.all(Pch_values <= max_mTorr * 1.10), (
-            f"Pressure should be <= max bound ({max_mTorr} mTorr + 10%), "
-            f"got max {Pch_values.max():.1f} mTorr"
+        assert np.all(Pch_values <= Pchamber["max"] * constant.Torr_to_mTorr), (
+            "Pressure should be <= max bound"
         )
     assert np.all(Tsh_values >= Tshelf["min"]), "Tsh should be >= min bound"
     assert np.all(Tsh_values <= Tshelf["max"]), "Tsh should be <= max bound"

@@ -47,7 +47,7 @@ def opt_pch_consistency(output, setup):
         "Pressure should be >= min bound"
     )
     if "max" in Pchamber:
-        assert np.all(Pch_values <= Pchamber["max"] * constant.Torr_to_mTorr + 0.5), (
+        assert np.all(Pch_values <= Pchamber["max"] * constant.Torr_to_mTorr), (
             "Pressure should be <= max bound"
         )
 
