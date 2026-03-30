@@ -257,7 +257,6 @@ class TestFreezingReference:
         output = freeze(*freezing_params_ref)
 
         array_compare = np.isclose(output, output_ref, rtol=1e-2)
-        print(output[~array_compare], output_ref[~array_compare])
         assert array_compare.all(), (
             f"Freezing output does not match reference data, at {np.where(~array_compare)}"
         )

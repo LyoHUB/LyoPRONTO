@@ -507,7 +507,6 @@ class TestRampInterpolatorSeparateDt:
         ramp = functions.RampInterpolator(Pchamber, count_ramp_against_dt=False)
 
         assert len(ramp.times) == 2 * len(Pchamber["setpt"])
-        print(ramp.times)
         assert np.isclose(np.diff(ramp.times)[0::2], 1.0).all()
 
         assert ramp(0.0) == Pchamber["setpt"][0]
