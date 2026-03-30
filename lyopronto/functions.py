@@ -400,6 +400,8 @@ def fill_output(sol, inputs):
     """
     dt = inputs[5]
 
+    Pch_t, Tsh_t = inputs[3], inputs[4]
+
     interp_points = np.zeros((len(sol.t), 7))
     for i,(t, y) in enumerate(zip(sol.t, sol.y[0])):
         interp_points[i,:] = calc_step(t, y, inputs)
@@ -415,4 +417,6 @@ def fill_output(sol, inputs):
             fullout[i,:] = interp_points[sol.t == t, :]
         else:
             fullout[i,:] = interp_func(t)
+        fullout[i, 3] = Tsh_t(t)  # Ensure shelf temp is exact
+        fullout[i, 4] = Pch_t(t)*constant.Torr_to_mTorr  # Ensure chamber pressure is exact
     return fullout

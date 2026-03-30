@@ -2,7 +2,7 @@
 
 import pytest
 import numpy as np
-from lyopronto import calc_knownRp, constant
+from lyopronto import calc_knownRp, constant, functions
 from lyopronto.high_level import execute_simulation
 from .utils import (
     assert_physically_reasonable_output,
@@ -273,6 +273,33 @@ class TestEdgeCases:
         assert_complete_drying(output)
         # Note: May not take >20 hours depending on other parameters
         assert_physically_reasonable_output(output)
+
+    def test_sharp_corners(self, knownRp_standard_setup):
+        """Test that solve_ivp interpolation does not smooth out shelf temperature profile."""
+        vial, _, ht, __, ___, ____ = knownRp_standard_setup
+        # Larger resistance is not crucial, but this example shows some smoothing
+        product = {"R0": 0.5, "A1": 40.0, "A2": 2.0, "cSolid": 0.05} 
+        # More steps -> more smoothing
+        Tshelf = {
+            "init": -45.0,
+            "setpt": [10.0, 40.0],
+            "dt_setpt": [180.0, 120.0],
+            "ramp_rate": 1.0,
+        }
+        Pchamber = {"setpt": [0.005], "dt_setpt": [1800.0], "ramp_rate": 0.5}
+
+        output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, 0.01)
+
+        assert_complete_drying(output)
+        assert_physically_reasonable_output(output)
+        ri = functions.RampInterpolator(Tshelf)
+        for i, t in enumerate(output[:, 0]):
+            expected_Tsh = ri(t)
+            actual_Tsh = output[i, 3]
+            assert actual_Tsh == pytest.approx(expected_Tsh, abs=1e-4), (
+                f"At time {t:.1f} hr, expected shelf temp {expected_Tsh:.2f} °C, "
+                f"but got {actual_Tsh:.2f} °C"
+            )
 
 
 class TestRegression:
