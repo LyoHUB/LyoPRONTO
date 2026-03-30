@@ -287,14 +287,21 @@ class RampInterpolator:
             times = np.array([0.0, self.dt_setpt[0] / constant.hr_To_min])
         # Older logic: setpoint_dt includes the ramp time.
         # Kept for backward compatibility, but add a check if insufficient time allowed for ramp
-        if count_ramp_against_dt: 
+        if count_ramp_against_dt:
+            # If there is no "init" value, dt_setpt[0] was already consumed.
+            has_init = "init" in rampspec
             for i in range(1, len(self.setpt)):
-                # If less dt_setpt than setpt provided, repeat the last dt
-                totaltime = self.dt_setpt[min(len(self.dt_setpt)-1, i-1)] / constant.hr_To_min
+                # If fewer dt_setpt than setpt provided, repeat the last dt
+                dt_idx = i - 1 if has_init else i
+                totaltime = self.dt_setpt[min(len(self.dt_setpt) - 1, dt_idx)] / constant.hr_To_min
                 ramptime = abs((self.setpt[i] - self.setpt[i-1]) / self.ramp_rate) / constant.hr_To_min
                 holdtime = totaltime - ramptime
-                if ramptime > holdtime:
-                    warn(f"Ramp time from {self.setpt[i-1]:.2e} to {self.setpt[i]:.2e} exceeds total time for setpoint change, {totaltime}.")
+                if holdtime < 0:
+                    warn(f"Ramp time ({ramptime * constant.hr_To_min:.1f} min) from "
+                         f"{self.setpt[i-1]:.2e} to {self.setpt[i]:.2e} exceeds "
+                         f"total stage time ({totaltime * constant.hr_To_min:.1f} min). "
+                         f"Clamping hold time to 0.")
+                    holdtime = 0.0
                 times = np.append(times, [ramptime, holdtime])
         else:
         # Newer logic: setpoint_dt applies *after* the ramp is complete.

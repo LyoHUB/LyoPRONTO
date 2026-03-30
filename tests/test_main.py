@@ -1,9 +1,22 @@
 """Tests for the high-level API (formerly main.py)."""
 
-from contextlib import chdir
+import os
+from contextlib import contextmanager
 import pytest
 import numpy as np
 from lyopronto import *
+
+
+@contextmanager
+def chdir(path):
+    """contextlib.chdir was added in Python 3.11; this provides equivalent
+    functionality for older supported versions."""
+    old = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(old)
 
 class TestHighLevelAPI:
     """Tests for the high-level API functions in lyopronto.high_level."""

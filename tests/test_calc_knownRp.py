@@ -410,3 +410,27 @@ class TestRegression:
         late_stage = flux[int(len(flux) * 0.8) :]
         assert np.all(np.diff(late_stage) <= 0.0), "Flux should decrease in late stage"
 
+    def test_early_return_pressure_in_mtorr(self, knownRp_standard_setup):
+        """Regression test for the bug where Pch_t(0) was returned without the
+        * constant.Torr_to_mTorr conversion, making column 4 three orders of
+        magnitude too small compared to normal output.
+        """
+        vial, product, ht, _, _, dt = knownRp_standard_setup
+
+        # Set chamber pressure very high so it exceeds vapor pressure at Tsh
+        Pchamber_high = {"setpt": [10.0], "dt_setpt": [1800.0], "ramp_rate": 0.5}
+        Tshelf = {"init": -40.0, "setpt": [-35.0], "dt_setpt": [1800.0], "ramp_rate": 1.0}
+
+        with pytest.warns(UserWarning, match="Chamber pressure"):
+            output = calc_knownRp.dry(vial, product, ht, Pchamber_high, Tshelf, dt)
+
+        assert output.shape == (1, 7), "Early return should produce exactly one row"
+
+        # Column 4 is chamber pressure in mTorr
+        Pch_mTorr = output[0, 4]
+        Pch_Torr = 10.0  # The setpoint we passed in
+
+        assert Pch_mTorr == Pch_Torr * constant.Torr_to_mTorr, (
+            f"Early-return pressure should be in mTorr ({Pch_Torr * constant.Torr_to_mTorr}), "
+            f"got {Pch_mTorr}"
+        )

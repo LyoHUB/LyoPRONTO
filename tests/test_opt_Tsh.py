@@ -33,7 +33,7 @@ def opt_tsh_consistency(output, setup):
     # Chamber pressure should start at first setpoint
     # Note: May not reach final setpoint if drying completes first
     Pch_values = output[:, 4]
-    Pch_check = functions.RampInterpolator(Pchamber)(output[:, 0])
+    Pch_check = functions.RampInterpolator(Pchamber)(output[:, 0]) * constant.Torr_to_mTorr
     np.testing.assert_allclose(Pch_values, Pch_check, atol=0.1)
 
     # Shelf temperature (column 3) should start at init
@@ -49,7 +49,7 @@ def opt_tsh_consistency(output, setup):
     assert np.all(Tsh_values >= Tshelf["min"]), (
         "Shelf temperature should be >= min bound"
     )
-    if hasattr(Tshelf, "max"):
+    if "max" in Tshelf:
         assert np.all(Tsh_values <= Tshelf["max"]), (
             "Shelf temperature should be <= max bound"
         )
