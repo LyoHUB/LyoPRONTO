@@ -58,7 +58,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     # Get maximum simulation time based on shelf and chamber setpoints
     # This may not really be necessary, but is part of legacy behavior
     # Could remove in a future release
-    max_t = max(Pch_t.max_time(), Tsh_t.max_time())   # [hr], add buffer
+    max_t = min(Pch_t.max_time(), Tsh_t.max_time())   # [hr], add buffer
 
     if Pch_t.max_setpt() > functions.Vapor_pressure(Tsh_t.max_setpt()):
         warn("Chamber pressure setpoint exceeds vapor pressure at shelf temperature " +\

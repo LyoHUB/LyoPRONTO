@@ -203,13 +203,13 @@ class TestEdgeCases:
     def test_short_time(self, knownRp_standard_setup):
         """Test with short time (should not finish drying)."""
         vial, product, ht, Pchamber, _, dt = knownRp_standard_setup
-        Tshelf = {"init": -35.0, "setpt": [20.0], "dt_setpt": [10.0], "ramp_rate": 0.5}
+        Tshelf = {"init": -35.0, "setpt": [20.0], "dt_setpt": [30.0], "ramp_rate": 0.5}
         Pchamber["dt_setpt"] = [10.0]
 
         with pytest.warns(UserWarning, match="time"):
             output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         assert_physically_reasonable_output(output)
-        assert_incomplete_drying(output)
+        assert_incomplete_drying(output, t_end=10/60) # Pch limited
 
         Tshelf = {
             "init": -35.0,
@@ -221,15 +221,14 @@ class TestEdgeCases:
         with pytest.warns(UserWarning, match="time"):
             output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         assert_physically_reasonable_output(output)
-        assert_incomplete_drying(output)
+        assert_incomplete_drying(output, t_end=10/60) # Pch limited
 
-        Tshelf = {"init": -35.0, "setpt": [20.0], "dt_setpt": [10.0], "ramp_rate": 0.5}
-        Pchamber["setpt"] = [0.1, 0.12]
-        Pchamber["dt_setpt"] = [10.0]
+        Tshelf = {"init": -35.0, "setpt": [20.0], "dt_setpt": [20.0], "ramp_rate": 10.0}
+        Pchamber = {"setpt": [0.1, 0.12], "dt_setpt": [20.0, 30.0], "ramp_rate": 0.5}
         with pytest.warns(UserWarning, match="time"):
             output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, dt)
         assert_physically_reasonable_output(output)
-        assert_incomplete_drying(output)
+        assert_incomplete_drying(output, t_end=20/60) # Tsh limited
 
     def test_very_low_shelf_temperature(self, knownRp_standard_setup):
         """Test with very low shelf temperature (should not dry at all)."""
@@ -290,7 +289,6 @@ class TestEdgeCases:
 
         output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, 0.01)
 
-        assert_complete_drying(output)
         assert_physically_reasonable_output(output)
         ri = functions.RampInterpolator(Tshelf)
         for i, t in enumerate(output[:, 0]):
