@@ -601,9 +601,9 @@ def _plot_design_space(data, inputs, props, timestamp):
     )
     # Design space: sublimation flux vs pressures
 
-    # Range in pressure space, min to max, Torr
+    # Range in pressure space, min to max [Torr]
     x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000)
-    # Line 1: equipment capability sub flux, kg/hr/m^2
+    # Line 1: equipment capability sub flux [kg/hr/m^2]
     # Indices (2,-1) is average sub flux at last Pch setpt,
     #         (2,0) is average sub flux at first Pch setpt
     # Slope: (delta sub flux)/(delta pressure)
@@ -611,7 +611,7 @@ def _plot_design_space(data, inputs, props, timestamp):
     y1 = ((ds_eq_cap[2, -1] - ds_eq_cap[2, 0]) / (Pchamber[-1] - Pchamber[0])) * (
         x - Pchamber[0]
     ) + ds_eq_cap[2, 0]
-    # Line 2: product temperature limited sub flux, kg/hr/m^2
+    # Line 2: product temperature limited sub flux [kg/hr/m^2]
     # Indices (3, -1) is minimum sub flux at last setpt,
     #          (3,0) is minimum sub flux at first setpt
     # Slope: (delta sub flux)/(delta pressure)
@@ -692,7 +692,7 @@ def _plot_design_space(data, inputs, props, timestamp):
     # Drying time vs pressures
 
     #### First, filled area above constraints
-    # Pressure range in Torr
+    # Pressure range [Torr]
     x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000)
     # Line 1: drying time limited by equipment capability
     y1 = np.interp(x, Pchamber, ds_eq_cap[1, :])
@@ -746,11 +746,11 @@ def _plot_design_space(data, inputs, props, timestamp):
 
     # Product temperature vs pressures
 
-    x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000)  # pressure range in Torr
+    x = np.linspace(np.min(Pchamber), np.max(Pchamber), 1000)  # Pressure range [Torr]
     # Curve 1: equipment capability limited product temperature
     y1 = np.interp(
         x, Pchamber, ds_eq_cap[0, :]
-    )  # equipment capability limiting product temperature in degC
+    )  # Equipment capability limiting product temperature [degC]
     # Curve 2: horizontal line at product temperature limit
     y2 = np.full_like(y1, T_pr_crit)  # horizontal line at product temperature limit
     y = np.minimum(y1, y2)
