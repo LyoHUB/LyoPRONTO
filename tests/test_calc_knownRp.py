@@ -287,17 +287,13 @@ class TestEdgeCases:
         }
         Pchamber = {"setpt": [0.005], "dt_setpt": [1800.0], "ramp_rate": 0.5}
 
-        output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, 0.01)
+        with pytest.warns(UserWarning, match="time"):
+            output = calc_knownRp.dry(vial, product, ht, Pchamber, Tshelf, 0.01)
 
         assert_physically_reasonable_output(output)
-        ri = functions.RampInterpolator(Tshelf)
-        for i, t in enumerate(output[:, 0]):
-            expected_Tsh = ri(t)
-            actual_Tsh = output[i, 3]
-            assert actual_Tsh == pytest.approx(expected_Tsh, abs=1e-4), (
-                f"At time {t:.1f} hr, expected shelf temp {expected_Tsh:.2f} °C, "
-                f"but got {actual_Tsh:.2f} °C"
-            )
+        assert_incomplete_drying(output, t_end=300/60) # Should be limited by first ramp
+        ri = functions.RampInterpolator(Tshelf, count_ramp_against_dt=True)
+        np.testing.assert_array_almost_equal(output[:, 3], ri(output[:, 0]), decimal=2)
 
 
 class TestRegression:

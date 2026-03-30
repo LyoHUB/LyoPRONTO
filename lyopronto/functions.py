@@ -18,7 +18,7 @@
 from warnings import warn
 from scipy.optimize import fsolve, brentq
 from scipy.integrate import quad
-from scipy.interpolate import PchipInterpolator
+from scipy.interpolate import make_interp_spline
 import numpy as np
 from . import constant
 
@@ -384,11 +384,11 @@ def calc_step(t, Lck, inputs):
     col = np.array([t, Tsub, Tbot, Tsh, Pch*constant.Torr_to_mTorr, dmdt/(vial['Ap']*constant.cm_To_m**2), dry_percent])
     return col
 
-def fill_output(sol, inputs):
+def fill_output(sols, inputs):
     """Fill the output array with the results from the ODE solver.
 
     Args:
-        sol (ODESolution): The solution object returned by the ODE solver.
+        sols (list): A list of solution objects returned by the ODE solver.
         inputs (tuple): A tuple containing the input parameters.
 
     Returns:
@@ -400,23 +400,25 @@ def fill_output(sol, inputs):
     """
     dt = inputs[5]
 
-    Pch_t, Tsh_t = inputs[3], inputs[4]
-
-    interp_points = np.zeros((len(sol.t), 7))
-    for i,(t, y) in enumerate(zip(sol.t, sol.y[0])):
-        interp_points[i,:] = calc_step(t, y, inputs)
-    # out_t = np.arange(0, sol.t[-1], dt)   
+    total_len = np.sum([len(sol.t) for sol in sols])
+    interp_points = np.zeros((total_len, 7))
+    i = 0
+    for sol in sols:
+        for t, y in zip(sol.t, sol.y[0]):
+            interp_points[i,:] = calc_step(t, y, inputs)
+            i += 1
+    sols_t, unique_inds = np.unique(np.concatenate([sol.t for sol in sols]), return_index=True)
+    interp_uniques = interp_points[unique_inds, :]
     if dt is None:
-        return interp_points
-    else:
-        out_t = np.arange(0, sol.t[-1], dt)   
-    interp_func = PchipInterpolator(sol.t, interp_points, axis=0)
+        return interp_uniques
+
+    out_t = np.arange(0, sol.t[-1], dt)   
     fullout = np.zeros((len(out_t), 7))
+    interp_func = make_interp_spline(sols_t, interp_uniques, k=1)
     for i, t in enumerate(out_t):
-        if np.any(sol.t == t):
-            fullout[i,:] = interp_points[sol.t == t, :]
+        if np.any(sols_t == t):
+            fullout[i,:] = interp_uniques[sols_t == t, :]
         else:
             fullout[i,:] = interp_func(t)
-        fullout[i, 3] = Tsh_t(t)  # Ensure shelf temp is exact
-        fullout[i, 4] = Pch_t(t)*constant.Torr_to_mTorr  # Ensure chamber pressure is exact
+
     return fullout

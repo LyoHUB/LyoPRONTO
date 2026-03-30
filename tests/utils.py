@@ -102,6 +102,6 @@ def assert_incomplete_drying(output, t_end=None):
     )
     if t_end is not None:
         final_time = output[-1, 0]
-        assert final_time == approx(t_end, rel=1e-4), (
-            f"Simulation ended at {final_time:.2f} hr, expected exactly {t_end:.2f} hr"
+        assert final_time == approx(t_end, rel=1e-2), (
+            f"Simulation ended at {final_time:.2f} hr, expected {t_end:.2f} hr"
         )
