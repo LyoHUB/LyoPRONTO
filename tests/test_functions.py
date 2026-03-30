@@ -333,30 +333,38 @@ class TestIneqConstraints:
             Pch, dmdt, Tpr_crit, Tbot, eq_cap_a, eq_cap_b, nVial
         )
 
-        # Should return two inequality constraints
+        # C1 = eq_cap_a + eq_cap_b*Pch - nVial*dmdt
+        expected_C1 = eq_cap_a + eq_cap_b * Pch - nVial * dmdt
+        # C2 = Tpr_crit - Tbot
+        expected_C2 = Tpr_crit - Tbot
+
         assert len(result) == 2
-        assert isinstance(result[0], (int, float))
-        assert isinstance(result[1], (int, float))
+        assert result[0] == pytest.approx(expected_C1)
+        assert result[1] == pytest.approx(expected_C2)
+        assert result[0] < 0  # Equipment capability violated (dmdt too high for these params)
+        assert result[1] == pytest.approx(2.0)  # 2 degrees of margin
 
         # Test case 2: Equipment capability constraint active
         dmdt_high = 0.5  # High sublimation rate
         result2 = functions.Ineq_Constraints(
             Pch, dmdt_high, Tpr_crit, Tbot, eq_cap_a, eq_cap_b, nVial
         )
-        assert len(result2) == 2
+        assert result2[0] < 0  # Equipment capability violated
+        assert result2[1] == pytest.approx(2.0)  # Temperature still OK
 
         # Test case 3: Temperature constraint active
         Tbot_high = -25.0  # Higher than critical
         result3 = functions.Ineq_Constraints(
             Pch, dmdt, Tpr_crit, Tbot_high, eq_cap_a, eq_cap_b, nVial
         )
-        assert len(result3) == 2
+        assert result3[1] < 0  # Temperature constraint violated
 
         # Test case 4: Both constraints active
         result4 = functions.Ineq_Constraints(
             Pch, dmdt_high, Tpr_crit, Tbot_high, eq_cap_a, eq_cap_b, nVial
         )
-        assert len(result4) == 2
+        assert result4[0] < 0  # Equipment violated
+        assert result4[1] < 0  # Temperature violated
 
     def test_ineq_constraints_boundary_cases(self):
         """Test Ineq_Constraints at boundary conditions."""
