@@ -58,7 +58,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     # Get maximum simulation time based on shelf and chamber setpoints
     # This may not really be necessary, but is part of legacy behavior
     # Could remove in a future release
-    max_t = max(Pch_t.max_time(), Tsh_t.max_time())   # [hr], add buffer
+    max_t = min(Pch_t.max_time(), Tsh_t.max_time())   # [hr], add buffer
 
     if Pch_t.max_setpt() > functions.Vapor_pressure(Tsh_t.max_setpt()):
         warn("Chamber pressure setpoint exceeds vapor pressure at shelf temperature " +\
@@ -83,7 +83,6 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
         Tsub = fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature [degC]
         dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate [kg/hr]
         if dmdt<0:
-            # print("Shelf temperature is too low for sublimation.")
             dmdt = 0.0
             dLdt = 0
             return [dLdt]
@@ -96,15 +95,36 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     def finish(t, L):
         return Lpr0 - L[0]
     finish.terminal = True
+    timestops = np.unique(np.sort(np.concatenate((Pch_t.times, Tsh_t.times)))) # These will be consumed
+    def corner(t, L0):
+        nearest = np.argmin(np.abs(timestops - t))
+        return t - timestops[nearest]
+    corner.terminal = True
+    corner.direction = 1
     
 
     # ------- Solve the equations
-    sol = solve_ivp(calc_dLdt, (0, max_t), Lck0, events=finish, 
-                    vectorized=False, dense_output=True, method="BDF")
-    if sol.t[-1] == max_t:# and Lpr0 > sol.y[0, -1]:
-        warn("Maximum simulation time (specified by Pchamber and Tshelf) reached before drying completion.")
+    sols = []
+    Lck = Lck0
+    for i in range(0, len(timestops)-1):
+        tspan = (timestops[0], timestops[1])
+        timestops = timestops[1:] # Remove the first time point,
+        # so the next iteration doesn't hit that same corner event immediately
+        sol = solve_ivp(calc_dLdt, tspan, Lck, events=(finish, corner),
+                        vectorized=False, dense_output=True, method="BDF")
+        sols.append(sol)
+        Lck[0] = sol.y[0, -1]
+        if len(sol.t_events[0]) > 0: # Hit finish event
+            break
+        elif sol.t[-1] == max_t: # and Lpr0 > sol.y[0, -1]:
+            warn("Maximum simulation time (specified by Pchamber and Tshelf) reached before drying completion.")
+            break
+        elif len(sol.t_events[1]) > 0: # Hit corner event
+            continue
 
-    output = functions.fill_output(sol, inputs)
+
+
+    output = functions.fill_output(sols, inputs)
 
     return output    
     

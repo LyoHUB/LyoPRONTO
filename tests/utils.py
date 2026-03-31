@@ -1,7 +1,7 @@
 """Helper functions for test validation."""
 
 import numpy as np
-
+from pytest import approx
 
 def assert_physically_reasonable_output(output, Tmax=60):
     """
@@ -89,7 +89,7 @@ def assert_complete_drying(output):
     )
 
 
-def assert_incomplete_drying(output):
+def assert_incomplete_drying(output, t_end=None):
     """
     Assert that drying did not complete for given simulation output.
 
@@ -100,3 +100,8 @@ def assert_incomplete_drying(output):
     assert final_percent_dried < 99.0, (
         f"Drying unexpectedly completed, reached {final_percent_dried:.1f}%"
     )
+    if t_end is not None:
+        final_time = output[-1, 0]
+        assert final_time == approx(t_end, rel=1e-2), (
+            f"Simulation ended at {final_time:.2f} hr, expected {t_end:.2f} hr"
+        )
