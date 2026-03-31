@@ -26,7 +26,7 @@ jobs:
     - name: Determine test mode
       id: mode
       run: |
-        if [ "${{ github.event.pull_request.draft }}" ]; then
+        if [ "${{ github.event.pull_request.draft }}" == "true" ]; then
           echo "mode=fast" >> $GITHUB_OUTPUT
         else
           echo "mode=full" >> $GITHUB_OUTPUT
@@ -43,24 +43,20 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        pip install .
-        pip install .[dev]
-        pip install -e . --no-build-isolation
+        pip install -e ".[dev]"
     
     - name: Run tests
-    # Currently this conditional branching doesn't actually do anything,
-    # since pyproject.toml adds these coverage arguments to the testing anyway
       run: |
         if [ "${{ steps.mode.outputs.mode }}" == "fast" ]; then
-          echo "⚡ Skipping notebook tests (marked with @pytest.mark.notebook) - these run separately"
-          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=term-missing
-        else
-          echo "⚡ Skipping notebook tests (marked with @pytest.mark.slow), not running coverage"
+          echo "Running fast tests (draft PR, no coverage)"
           pytest tests/ -n auto -v -m "not notebook"
+        else
+          echo "Running full tests with coverage (ready for review)"
+          pytest tests/ -n auto -v -m "not notebook" --cov=lyopronto --cov-report=term-missing --cov-report=xml
         fi
     
     - name: Upload coverage (if run)
-      if: steps.mode.outputs.coverage == 'true'
+      if: steps.mode.outputs.mode == 'full'
       uses: codecov/codecov-action@v4
       with:
         file: ./coverage.xml
