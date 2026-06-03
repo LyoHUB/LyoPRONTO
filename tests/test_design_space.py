@@ -165,8 +165,8 @@ class TestDesignSpaceBasic:
 
 
 class TestDesignSpaceEdgeCases:
-    def test_design_space_negative_sublimation(self, design_space_1T1P):
-        """Test design space with conditions that could lead to negative sublimation."""
+    def test_design_space_lowT(self, design_space_1T1P):
+        """Test design space finishes execution when shelf temperature is too low to drive drying."""
         # Set very low shelf temperature to potentially trigger dmdt < 0
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
         Tshelf["init"] = -60.0
@@ -188,6 +188,27 @@ class TestDesignSpaceEdgeCases:
             "Output should contain NaNs for infeasible conditions"
         )
 
+    def test_design_space_highP(self, design_space_1T1P):
+        """Test that design space finishes execution when chamber pressure is too high for drying."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        Pchamber["setpt"] = [150.0]  # Very high pressure due to incorrect input units
+
+        # Expect a warning about infeasible sublimation
+        with pytest.warns(UserWarning, match="sublimation"):
+            output = design_space.dry(
+                vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+            )
+
+        # Calculation should complete anyway
+        assert len(output) == 3
+        assert (
+            output[0].shape[0] == 5
+        )  # [T_max, drying_time, sub_flux_avg, sub_flux_max, sub_flux_end]
+        # But should have some NaNs due to infeasibility
+        assert np.any(np.isnan(output[0])), (
+            "Output should contain NaNs for infeasible conditions"
+        )
+
     def test_design_space_shelf_ramp_down(self, design_space_1T1P):
         """Test design space with ramp-down in shelf temperature."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
@@ -200,7 +221,7 @@ class TestDesignSpaceEdgeCases:
         )
         check_shape(output, Pchamber, Tshelf)
 
-    def test_design_space_no_sub(self, design_space_1T1P):
+    def test_design_space_no_initial_sub(self, design_space_1T1P):
         """Test design space with no sublimation at initial shelf temperature."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
         # Set ramp down in shelf temperature
