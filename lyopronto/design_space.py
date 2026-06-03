@@ -177,10 +177,11 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     for j,Pch in enumerate([Pchamber['setpt'][0],Pchamber['setpt'][-1]]):
 
         # Check for feasibility
-        if functions.Vapor_pressure(product['T_pr_crit']) < Pch:
+        if functions.Vapor_pressure(product['T_pr_crit']) <= Pch:
             # TODO: decide about how to gracefully exit
             # For now, just set outputs to NaN and continue
-            warn(f"With maximum T of Tcrit={product['T_pr_crit']} and Pch={Pch}, sublimation is not feasible (vapor pressure < chamber pressure).")
+            warn(f"With maximum T of Tcrit={product['T_pr_crit']} and Pch={Pch}, sublimation is not feasible (vapor pressure <= chamber pressure).")
+            drying_time_pr[j] = np.nan
             sub_flux_avg_pr[j] = np.nan
             sub_flux_min_pr[j] = np.nan
             sub_flux_end_pr[j] = np.nan

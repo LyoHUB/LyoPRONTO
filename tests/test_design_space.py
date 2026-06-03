@@ -166,7 +166,7 @@ class TestDesignSpaceBasic:
 
 class TestDesignSpaceEdgeCases:
     def test_design_space_lowT(self, design_space_1T1P):
-        """Test design space with conditions that could lead to negative sublimation."""
+        """Test design space finishes execution when shelf temperature is too low to drive drying."""
         # Set very low shelf temperature to potentially trigger dmdt < 0
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
         Tshelf["init"] = -60.0
@@ -189,9 +189,9 @@ class TestDesignSpaceEdgeCases:
         )
 
     def test_design_space_highP(self, design_space_1T1P):
-        """Test that design space outputs have correct shapes for multiple Tshelf and Pchamber."""
+        """Test that design space finishes execution when chamber pressure is too high for drying."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
-        Pchamber["setpt"] = [150.0] # Very high pressure due to incorrect input units
+        Pchamber["setpt"] = [150.0]  # Very high pressure due to incorrect input units
 
         # Expect a warning about infeasible sublimation
         with pytest.warns(UserWarning, match="sublimation"):
