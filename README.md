@@ -17,6 +17,31 @@ python3 LyoPronto.main -m
 This will execute the file `main.py` in an appropriate scope. Parameters can be changed in `main.py`. Files listing the inputs and outputs will be generated in the current directory, along with some plots of temperature, pressure, and drying progress vs. time.
 A video tutorial by the authors illustrating this process can be found [on LyoHUB's YouTube channel](https://youtu.be/DI-Gz0pBI0w).
 
+Alternatively, construct a YAML file with all the necessary inputs (see YAML files under `test_data` of this repository for examples), then run a Python script like the following:
+```python
+import time
+
+import lyopronto as lp
+
+# get time for recording simulation results
+current_time = time.strftime("%y%m%d_%H%M", time.localtime())
+
+yaml_fname = "your_dir/cycle_setup.yaml" # Fill in with your filename and appropriate location
+
+# Read in simulation inputs
+inputs = lp.read_inputs(yaml_fname)
+# Execute the simulation
+output = lp.execute_simulation(inputs)
+
+# Record the simulation inputs, outputs, and figures
+save_inputs(inputs, current_time)
+save_csv(output, inputs, current_time)
+generate_visualizations(output, inputs, current_time)
+```
+This will generate a record of both inputs and outputs each time you execute the file, so you can edit the original YAML and rerun the script without worrying about losing prior values of the inputs.
+
+See also documentation examples online [here](https://lyohub.github.io/LyoPRONTO/dev/examples/knownRp_PD/) and [here](https://lyohub.github.io/LyoPRONTO/dev/examples/unknownRp_PD/)
+
 # Citation
 G. Shivkumar, P. S. Kazarin, A. D. Strongrich, & A. A. Alexeenko, "LyoPRONTO: An Open-Source Lyophilization PRocess OptimizatioN TOol",  AAPS PharmSciTech (2019) 20: 328. 
 
@@ -24,7 +49,7 @@ The noted paper is open access, and can be found [here](https://link.springer.co
 
 # Licensing
 
-Copyright (C) 2019, Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko.
+Copyright (C) 2019, Gayathri Shivkumar, Petr S. Kazarin, Alina A. Alexeenko, and Isaac S. Wheeler.
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
