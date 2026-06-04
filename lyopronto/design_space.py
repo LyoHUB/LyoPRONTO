@@ -112,6 +112,8 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
                 Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance [cm^2-hr-Torr/g]
 
                 Tsub = fsolve(functions.T_sub_solver_FUN, T0, args = (Pch,vial['Av'],vial['Ap'],Kv,Lpr0,Lck,Rp,Tsh))[0] # Sublimation front temperature [degC]
+                # Use previous value as guess for next iteration
+                T0 = Tsub
                 dmdt = functions.sub_rate(vial['Ap'],Rp,Tsub,Pch)   # Total sublimation rate [kg/hr]
                 if dmdt<0:
                     warn(f"At t={t}hr, shelf temperature Tsh={Tsh} is too low for sublimation.")
@@ -151,8 +153,15 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
             ######################################################
 
             T_max[i_Tsh,i_Pch] = np.max(output_saved[:,1])    # Maximum product temperature [degC]
+
             drying_time[i_Tsh,i_Pch] = t    # Total drying time [hr]
             # TODO: consider whether to make this error rather than return NaN
+            if T_max[i_Tsh,i_Pch] > 0: # exceeds melting temperature, not a physically valid solution
+                warn(f"At Tsh={Tsh} and Pch={Pch}, computed temperatures of {T_max[i_Tsh,i_Pch]} exceed melting point of ice: check inputs.")
+                sub_flux_avg[i_Tsh,i_Pch] = np.nan
+                sub_flux_max[i_Tsh,i_Pch] = np.nan
+                sub_flux_end[i_Tsh,i_Pch] = np.nan
+                continue
             if output_saved.shape[0] <= 2:
                 warn(f"At Tsh={Tsh} and Pch={Pch}, drying completed in single timestep: check inputs.")
                 sub_flux_avg[i_Tsh,i_Pch] = np.nan

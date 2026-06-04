@@ -209,6 +209,79 @@ class TestDesignSpaceEdgeCases:
             "Output should contain NaNs for infeasible conditions"
         )
 
+    def test_design_space_highT_highP(self, design_space_1T1P):
+        """Test that design space finishes execution (i.e., no infinite loops) when chamber pressure is too high for drying."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        Tshelf["setpt"] = [20.0]  # High shelf temperature
+        Pchamber["setpt"] = [150.0]  # Very high pressure due to incorrect input units
+
+        # Expect a warning about infeasible sublimation
+        with pytest.warns(UserWarning, match="sublimation"):
+            output = design_space.dry(
+                vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+            )
+
+        # Calculation should complete anyway
+        assert len(output) == 3
+        assert (
+            output[0].shape[0] == 5
+        )  # [T_max, drying_time, sub_flux_avg, sub_flux_max, sub_flux_end]
+        # But should have some NaNs due to infeasibility
+        assert np.any(np.isnan(output[0])), (
+            "Output should contain NaNs for infeasible conditions in shelf T section"
+        )
+        assert np.any(np.isnan(output[1])), (
+            "Output should contain NaNs for infeasible conditions in product T section"
+        )
+        assert not np.any(np.isnan(output[2])), (
+            "Output should contain no NaNs for infeasible conditions in eq cap section"
+        )
+
+    def test_design_space_hotdry(self, design_space_1T1P):
+        """Test that design space solves correctly when chamber pressure barely exceeds
+        vapor pressure of shelf temperature, but exceeds critical product temperature."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        Tshelf["setpt"] = [20.0]
+        # High pressure due to incorrect input units, but just barely lower than Tshelf
+        Pchamber["setpt"] = [15.0]  
+
+        with pytest.warns(UserWarning, match="sublimation"):
+            with pytest.warns(UserWarning, match="melting"):
+                output = design_space.dry(
+                    vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+                )
+        check_shape(output, Pchamber, Tshelf)
+        assert np.any(np.isnan(output[0])), (
+            "Output should contain NaNs for infeasible conditions in shelf T section"
+        )
+        assert np.any(np.isnan(output[1])), (
+            "Output should contain NaNs for infeasible conditions in product section"
+        )
+        assert not np.any(np.isnan(output[2])), (
+            "Output should contain no NaNs for infeasible conditions in eq cap section"
+        )
+
+    def test_design_space_subzero_eqcap(self, design_space_1T1P):
+        """Test design space with equipment capability leading to subzero sublimation."""
+        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
+        Pchamber["setpt"] = [0.001]  # Pch such that a + b*Pch < 0
+
+        with pytest.warns(UserWarning, match="negative"):
+            output = design_space.dry(
+                vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
+            )
+
+        check_shape(output, Pchamber, Tshelf)
+        assert not np.any(np.isnan(output[0])), (
+            "Output should contain no NaNs for infeasible conditions in shelf T section"
+        )
+        assert not np.any(np.isnan(output[1])), (
+            "Output should contain no NaNs for infeasible conditions in product T section"
+        )
+        assert np.any(np.isnan(output[2])), (
+            "Output should contain NaNs for infeasible conditions in eq cap section"
+        )
+
     def test_design_space_shelf_ramp_down(self, design_space_1T1P):
         """Test design space with ramp-down in shelf temperature."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
@@ -224,7 +297,6 @@ class TestDesignSpaceEdgeCases:
     def test_design_space_no_initial_sub(self, design_space_1T1P):
         """Test design space with no sublimation at initial shelf temperature."""
         vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
-        # Set ramp down in shelf temperature
         Tshelf["init"] = -60.0
         Tshelf["setpt"] = [-30.0]
 
@@ -269,17 +341,6 @@ class TestDesignSpaceEdgeCases:
                 )
         check_shape(output, Pchamber, Tshelf)
 
-    def test_design_space_subzero_eqcap(self, design_space_1T1P):
-        """Test design space with equipment capability leading to subzero sublimation."""
-        vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial = design_space_1T1P
-        Pchamber["setpt"] = [0.001]  # Pch such that a + b*Pch < 0
-
-        with pytest.warns(UserWarning, match="negative"):
-            output = design_space.dry(
-                vial, product, ht, Pchamber, Tshelf, dt, eq_cap, nVial
-            )
-
-        check_shape(output, Pchamber, Tshelf)
 
 
 class TestDesignSpaceComparison:
