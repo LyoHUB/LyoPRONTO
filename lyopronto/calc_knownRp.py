@@ -28,11 +28,11 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt):
     """Simulate the primary drying process for known condiditions and parameters.
 
     Args:
-        vial (dict): see master simulation inputs
-        product (dict): see master simulation inputs
-        ht (dict): see master simulation inputs
-        Pchamber (dict): see master simulation inputs
-        Tshelf (dict): see master simulation inputs
+        vial (dict): Vial properties, including 'Vfill' and 'Ap'.
+        product (dict): Product properties, including 'cSolid' and Rp parameters 'R0', 'A1', and 'A2'.
+        ht (dict): Heat transfer properties, including 'KC', 'KP', and 'KD'.
+        Pchamber (dict): Chamber pressure control data.
+        Tshelf (dict): Shelf temperature control data.
         dt (float): Fixed time step for output [hours]
 
     Returns:

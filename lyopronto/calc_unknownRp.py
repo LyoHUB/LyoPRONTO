@@ -22,9 +22,23 @@ from . import functions
 
 ################# Primary drying at fixed set points ###############
 
-def dry(vial,product,ht,Pchamber,Tshelf,time,Tbot_exp):
+def dry(vial, product, ht, Pchamber, Tshelf, time, Tbot_exp):
+    """Simulates the primary drying process for a vial.
 
-    ##################  Initialization ################
+    Args:
+        vial (dict): Vial properties, including 'Vfill' and 'Ap'.
+        product (dict): Product properties, including 'cSolid' and Rp parameters 'R0', 'A1', and 'A2'.
+        ht (dict): Heat transfer properties, including 'KC', 'KP', and 'KD'.
+        Pchamber (dict): Chamber pressure control data.
+        Tshelf (dict): Shelf temperature control data.
+        time (np.ndarray): Array of time points for the simulation.
+        Tbot_exp (np.ndarray): Array of expected bottom temperatures at each time step.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: A tuple containing:
+            output_saved (np.ndarray): Saved output data for each time step, including time, sublimation temperature, bottom temperature, shelf temperature, chamber pressure, sublimation rate, and percent dried.
+            product_res (np.ndarray): Calculated product resistance data, including time, cake length, and product resistance.
+    """
 
     # Initial fill height
     Lpr0 = functions.Lpr0_FUN(vial['Vfill'],vial['Ap'],product['cSolid'])   # [cm]

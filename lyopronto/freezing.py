@@ -23,6 +23,18 @@ from .functions import RampInterpolator
 ################# Freezing ###############
 
 def freeze(vial,product,h_freezing,Tshelf,dt):
+    """Simulates the primary drying process for a vial.
+
+    Args:
+        vial (dict): Vial properties, including 'Vfill' and 'Ap'.
+        product (dict): Product properties, including 'cSolid' and Rp parameters 'R0', 'A1', and 'A2'.
+        h_freezing (float): Heat transfer coefficient during freezing [W/m²/K].
+        Tshelf (dict): Shelf temperature control data.
+        dt (float): Time step for the simulation [hr]. Used only as a sampling rate for output.
+
+    Returns:
+        np.ndarray: An array containing the time, shelf temperature, and product temperature at each time step.
+    """
 
     ##################  Initialization ################
 

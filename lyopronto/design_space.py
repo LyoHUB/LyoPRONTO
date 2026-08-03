@@ -22,19 +22,18 @@ from . import functions
 
 ################# Primary drying at fixed set points ###############
 
-# TODO: document this properly
 def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     """Compute quantities necessary for constructing a graphical design space. 
 
     Args:
-        vial (dict): _description_
-        product (dict): _description_
-        ht (dict): _description_
-        Pchamber (dict): _description_
-        Tshelf (dict): _description_
-        dt (float): _description_
-        eq_cap (dict): _description_
-        nVial (int): _description_
+        vial (dict): Vial properties, including 'Vfill' and 'Ap'.
+        product (dict): Product properties, including 'cSolid', 'T_pr_crit', and Rp parameters 'R0', 'A1', and 'A2'.
+        ht (dict): Heat transfer properties, including 'KC', 'KP', and 'KD'.
+        Pchamber (dict): Chamber pressure control data.
+        Tshelf (dict): Shelf temperature control data.
+        dt (float): Fixed time step for output [hours]
+        eq_cap (dict): Equipment capability line, with 'a' slope and 'b' intercept
+        nVial (int): Number of vials in the load, used for equipment capability calculation
 
     Returns:
         ndarray: table of results for shelf isotherms
