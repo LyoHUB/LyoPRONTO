@@ -9,15 +9,7 @@ Maintained and updated by Isaac S. Wheeler.
 A web-based GUI is available for this software at http://lyopronto.geddes.rcac.purdue.edu.
 
 # How to Use This Code Directly
-Download this repository, then in your preferred command line navigate to the containing directory (so that `LyoPronto` is a subdirectory).
-Execute:
-```
-python3 LyoPronto.main -m
-```
-This will execute the file `main.py` in an appropriate scope. Parameters can be changed in `main.py`. Files listing the inputs and outputs will be generated in the current directory, along with some plots of temperature, pressure, and drying progress vs. time.
-A video tutorial by the authors illustrating this process can be found [on LyoHUB's YouTube channel](https://youtu.be/DI-Gz0pBI0w).
-
-Alternatively, construct a YAML file with all the necessary inputs (see YAML files under `test_data` of this repository for examples), then run a Python script like the following:
+Construct a YAML file with all the necessary inputs (see YAML files under `test_data` of this repository for examples), then run a Python script like the following:
 ```python
 import time
 
@@ -41,6 +33,16 @@ generate_visualizations(output, inputs, current_time)
 This will generate a record of both inputs and outputs each time you execute the file, so you can edit the original YAML and rerun the script without worrying about losing prior values of the inputs.
 
 See also documentation examples online [here](https://lyohub.github.io/LyoPRONTO/dev/examples/knownRp_PD/) and [here](https://lyohub.github.io/LyoPRONTO/dev/examples/unknownRp_PD/)
+
+The original method for running this code, as illustrated in a video tutorial
+[on LyoHUB's YouTube channel](https://youtu.be/DI-Gz0pBI0w),
+is to download this repository, edit the script `main.py` in its root directory, then run that script from the command line (in the directory containing the repo directory, so that `LyoPronto` is a module).
+```
+python3 LyoPronto.main -m
+```
+This will execute the file `main.py` in an appropriate scope.
+Files listing the inputs and outputs will be generated in the current directory, along with some plots of temperature, pressure, and drying progress vs. time.
+
 
 # Citation
 G. Shivkumar, P. S. Kazarin, A. D. Strongrich, & A. A. Alexeenko, "LyoPRONTO: An Open-Source Lyophilization PRocess OptimizatioN TOol",  AAPS PharmSciTech (2019) 20: 328. 
