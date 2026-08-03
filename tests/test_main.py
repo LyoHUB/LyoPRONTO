@@ -4,6 +4,7 @@ import os
 from contextlib import contextmanager
 import pytest
 import numpy as np
+import matplotlib.pyplot as plt
 from lyopronto import *
 
 
@@ -17,6 +18,24 @@ def chdir(path):
         yield
     finally:
         os.chdir(old)
+
+
+def assert_visualization_outputs(
+    output, inputs, tmp_path, expected_count, expected_files
+):
+    """Assert no-save and save visualization behaviors for one simulation output."""
+    figures = generate_visualizations(output, inputs, "testtime", save_figures=False)
+    assert isinstance(figures, list)
+    assert len(figures) == expected_count
+    assert len(figures[0].axes) > 0
+    for filename in expected_files:
+        assert not (tmp_path / filename).exists()
+    plt.close("all")
+
+    generate_visualizations(output, inputs, "testtime")
+    for filename in expected_files:
+        assert (tmp_path / filename).exists()
+    plt.close("all")
 
 class TestHighLevelAPI:
     """Tests for the high-level API functions in lyopronto.high_level."""
@@ -39,8 +58,13 @@ class TestHighLevelAPI:
             save_csv(output, inputs, "testtime")
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=1,
+                expected_files=["lyo_Temperatures_testtime.pdf"],
+            )
 
 
     @pytest.mark.main
@@ -61,10 +85,17 @@ class TestHighLevelAPI:
             save_csv(output, inputs, "testtime")
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
-            assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=3,
+                expected_files=[
+                    "lyo_Temperatures_testtime.pdf",
+                    "lyo_Pressure_SublimationFlux_testtime.pdf",
+                    "lyo_DryingProgress_testtime.pdf",
+                ],
+            )
 
     @pytest.mark.main
     def test_unknownKv_fullstack(self, mocker, repo_root, tmp_path, capsys):
@@ -86,10 +117,17 @@ class TestHighLevelAPI:
             save_csv(output, inputs, "testtime")
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
-            assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=3,
+                expected_files=[
+                    "lyo_Temperatures_testtime.pdf",
+                    "lyo_Pressure_SublimationFlux_testtime.pdf",
+                    "lyo_DryingProgress_testtime.pdf",
+                ],
+            )
 
     @pytest.mark.main
     def test_unknownkv_edgecases(self, repo_root, capsys):
@@ -140,11 +178,18 @@ class TestHighLevelAPI:
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
             assert (tmp_path / "lyo_Rp_data_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_Rp_Fit_testtime.pdf").exists()
-            assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
-            assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=4,
+                expected_files=[
+                    "lyo_Rp_Fit_testtime.pdf",
+                    "lyo_Temperatures_testtime.pdf",
+                    "lyo_Pressure_SublimationFlux_testtime.pdf",
+                    "lyo_DryingProgress_testtime.pdf",
+                ],
+            )
 
 
     @pytest.mark.main
@@ -162,10 +207,17 @@ class TestHighLevelAPI:
             save_csv(output, inputs, "testtime")
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_DesignSpace_ProductTemperature_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DesignSpace_SublimationFlux_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DesignSpace_DryingTime_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=3,
+                expected_files=[
+                    "lyo_DesignSpace_ProductTemperature_testtime.pdf",
+                    "lyo_DesignSpace_SublimationFlux_testtime.pdf",
+                    "lyo_DesignSpace_DryingTime_testtime.pdf",
+                ],
+            )
     
     @pytest.mark.main
     def test_optimizer_novariable(self, repo_root, tmp_path):
@@ -194,10 +246,17 @@ class TestHighLevelAPI:
             save_csv(output, inputs, "testtime")
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
-            assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=3,
+                expected_files=[
+                    "lyo_Temperatures_testtime.pdf",
+                    "lyo_Pressure_SublimationFlux_testtime.pdf",
+                    "lyo_DryingProgress_testtime.pdf",
+                ],
+            )
 
     @pytest.mark.main
     def test_opt_pch_tsh_fullstack(self, mocker, repo_root, tmp_path, capsys):
@@ -217,10 +276,17 @@ class TestHighLevelAPI:
             save_csv(output, inputs, "testtime")
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
-            assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=3,
+                expected_files=[
+                    "lyo_Temperatures_testtime.pdf",
+                    "lyo_Pressure_SublimationFlux_testtime.pdf",
+                    "lyo_DryingProgress_testtime.pdf",
+                ],
+            )
 
     @pytest.mark.main
     def test_opt_pch_fullstack(self, mocker, repo_root, tmp_path, capsys):
@@ -235,15 +301,23 @@ class TestHighLevelAPI:
             assert (tmp_path / "lyopronto_input_testtime.csv").exists()
 
             output = execute_simulation(inputs)
+
             assert mocked_func.call_count == 1 # Should be called multiple times by rootfinder
 
             save_csv(output, inputs, "testtime")
             assert (tmp_path / "lyopronto_output_testtime.csv").exists()
 
-            generate_visualizations(output, inputs, "testtime")
-            assert (tmp_path / "lyo_Temperatures_testtime.pdf").exists()
-            assert (tmp_path / "lyo_Pressure_SublimationFlux_testtime.pdf").exists()
-            assert (tmp_path / "lyo_DryingProgress_testtime.pdf").exists()
+            assert_visualization_outputs(
+                output,
+                inputs,
+                tmp_path,
+                expected_count=3,
+                expected_files=[
+                    "lyo_Temperatures_testtime.pdf",
+                    "lyo_Pressure_SublimationFlux_testtime.pdf",
+                    "lyo_DryingProgress_testtime.pdf",
+                ],
+            )
 
     @pytest.mark.main
     def test_misspelled(self, repo_root):
