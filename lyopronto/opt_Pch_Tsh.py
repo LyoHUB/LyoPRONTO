@@ -54,19 +54,28 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         # Quantities solved for: x = [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv]
         def fun(x): 
             return x[0]-x[4]    # Objective function to be minimized to maximize sublimation rate
+        # Exact gradient of the linear objective, so SLSQP does not
+        # finite-difference it at every point.
+        def fun_jac(x):
+            return np.array([1.0,0.0,0.0,0.0,-1.0,0.0,0.0])
         x0 = [P0,0.0,T0,T0,P0,T0,3.0e-4]    # Initial values
-        # Constraints
-        cons = ({'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[0]},  # sublimation front pressure [Torr]
-            {'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[1]},    # sublimation rate [kg/hr]
-            {'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[2]},    # vial heat transfer balance
-            {'type':'eq','fun':lambda x: functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)[3]},    # shelf temperature [degC]
-            {'type':'eq','fun':lambda x: x[6]-functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],x[0])},    # vial heat transfer coefficient [cal/s/K/cm^2]
-            {'type':'ineq','fun':lambda x: functions.Ineq_Constraints(x[0],x[1],product['T_pr_crit'],x[2],eq_cap['a'],eq_cap['b'],nVial)[0]},  # equipment capability inequlity
-            {'type':'ineq','fun':lambda x: functions.Ineq_Constraints(x[0],x[1],product['T_pr_crit'],x[2],eq_cap['a'],eq_cap['b'],nVial)[1]})  # maximum product temperature inequality
+        # Stack the equality constraints into one vector-valued constraint so
+        # SLSQP evaluates and differentiates the whole system once per point
+        # rather than once per component: sublimation front pressure [Torr],
+        # sublimation rate [kg/hr], vial heat transfer balance, shelf
+        # temperature [degC], vial heat transfer coefficient [cal/s/K/cm^2]
+        def eq_sys(x):
+            return np.array(functions.Eq_Constraints(x[0],x[1],x[2],x[3],x[4],x[5],x[6],Lpr0,Lck,vial['Av'],vial['Ap'],Rp)
+                            + (x[6]-functions.Kv_FUN(ht['KC'],ht['KP'],ht['KD'],x[0]),))
+        # Inequality constraints: equipment capability and maximum product temperature
+        def ineq_sys(x):
+            return np.array(functions.Ineq_Constraints(x[0],x[1],product['T_pr_crit'],x[2],eq_cap['a'],eq_cap['b'],nVial))
+        cons = ({'type':'eq','fun':eq_sys},
+            {'type':'ineq','fun':ineq_sys})
         # Bounds for the unknowns
         bnds = ((Pchamber['min'],Pchamber.get('max', None)),(None,None),(None,None),(Tshelf['min'],Tshelf['max']),(None,None),(None,None),(None,None))
         # Minimize the objective function i.e. maximize the sublimation rate
-        res = sp.minimize(fun,x0,bounds = bnds, constraints = cons)
+        res = sp.minimize(fun,x0,jac = fun_jac,bounds = bnds, constraints = cons)
         [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv] = res['x']    # Results [Torr], [kg/hr], [degC], [degC], [Torr], [degC], [cal/s/K/cm^2]
 
         # Sublimated ice length
