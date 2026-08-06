@@ -52,11 +52,11 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         Rp = functions.Rp_FUN(Lck,product['R0'],product['A1'],product['A2'])  # Product resistance [cm^2-hr-Torr/g]
     
         # Quantities solved for: x = [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv]
-        def fun(x): 
+        def objfun(x): 
             return x[0]-x[4]    # Objective function to be minimized to maximize sublimation rate
         # Exact gradient of the linear objective, so SLSQP does not
         # finite-difference it at every point.
-        def fun_jac(x):
+        def objfun_jac(x):
             return np.array([1.0,0.0,0.0,0.0,-1.0,0.0,0.0])
         x0 = [P0,0.0,T0,T0,P0,T0,3.0e-4]    # Initial values
         # Stack the equality constraints into one vector-valued constraint so
@@ -75,7 +75,7 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         # Bounds for the unknowns
         bnds = ((Pchamber['min'],Pchamber.get('max', None)),(None,None),(None,None),(Tshelf['min'],Tshelf['max']),(None,None),(None,None),(None,None))
         # Minimize the objective function i.e. maximize the sublimation rate
-        res = sp.minimize(fun,x0,jac = fun_jac,bounds = bnds, constraints = cons)
+        res = sp.minimize(objfun,x0,jac = objfun_jac,bounds = bnds, constraints = cons)
         [Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv] = res['x']    # Results [Torr], [kg/hr], [degC], [degC], [Torr], [degC], [cal/s/K/cm^2]
 
         # Sublimated ice length
