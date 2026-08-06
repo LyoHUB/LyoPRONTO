@@ -22,6 +22,12 @@ from scipy.interpolate import make_interp_spline
 import numpy as np
 from . import constant
 
+# Antoine-form coefficients for the vapor pressure of ice over the primary
+# drying range, in Torr and K. Used by Vapor_pressure and by its inverse in
+# Tbot_max_eq_cap.
+VAPOR_PRESSURE_PREEXPONENTIAL = 2.698e10
+VAPOR_PRESSURE_TEMPERATURE_COEFFICIENT = 6144.96
+
 ####################### Functions #######################
 
 ##
@@ -32,7 +38,7 @@ def Vapor_pressure(T_sub):
     temperature [degC]
     """
 
-    p = 2.698e10*np.exp(-6144.96/(273.15+T_sub))   # Vapor pressure at the sublimation temperature [Torr]
+    p = VAPOR_PRESSURE_PREEXPONENTIAL*np.exp(-VAPOR_PRESSURE_TEMPERATURE_COEFFICIENT/(273.15+T_sub))   # Vapor pressure at the sublimation temperature [Torr]
 
     return p
 
@@ -202,7 +208,7 @@ def Tbot_max_eq_cap(Pch,dm_dt,Lpr0,Lck,Rp,Ap):
     """
 
     P_sub = dm_dt/Ap*Rp + Pch     # Sublimation front pressure [Torr]
-    T_sub = -6144.96/np.log(P_sub/2.698e10) - 273.15    # Sublimation front temperature [degC]
+    T_sub = -VAPOR_PRESSURE_TEMPERATURE_COEFFICIENT/np.log(P_sub/VAPOR_PRESSURE_PREEXPONENTIAL) - 273.15    # Sublimation front temperature [degC]
     Tbot = T_sub + (Lpr0-Lck)*(P_sub-Pch)*constant.dHs/Rp/constant.hr_To_s/constant.k_ice	# Vial bottom temperature [degC]
     Tbot_max = np.max(Tbot)   # Maximum vial bottom temperature [degC]
 
@@ -234,7 +240,7 @@ def Eq_Constraints(Pch,dmdt,Tbot,Tsh,Psub,Tsub,Kv,Lpr0,Lck,Av,Ap,Rp):
     vial area [cm^2], product area [cm^2], and product resistance [cm^2-Torr-hr/g]
     """
 
-    C1 = Psub - 2.698e10*np.exp(-6144.96/(273.15+Tsub))   # Vapor pressure at the sublimation temperature [Torr]
+    C1 = Psub - Vapor_pressure(Tsub)   # Vapor pressure at the sublimation temperature [Torr]
     
     C2 = dmdt - Ap/Rp/constant.kg_To_g*(Psub-Pch)  # Sublimation rate [kg/hr]
     
