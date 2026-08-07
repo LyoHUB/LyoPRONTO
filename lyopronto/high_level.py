@@ -12,12 +12,23 @@ from . import functions, constant, plot_styling
 from warnings import warn
 import numpy as np
 import csv
-import matplotlib.pyplot as plt
-from matplotlib import rc as matplotlibrc
 from scipy.optimize import curve_fit, brentq
 from ruamel.yaml import YAML
 
 yaml = YAML()
+
+
+def _load_matplotlib():
+    """Import matplotlib on demand.
+
+    Only the plotting helpers need it, so importing it at module scope makes
+    every ``import lyopronto`` pay for a backend initialization that a headless
+    or simulation-only caller never uses.
+    """
+    import matplotlib.pyplot as plt
+    from matplotlib import rc as matplotlibrc
+
+    return plt, matplotlibrc
 
 
 def execute_simulation(inputs):
@@ -419,6 +430,7 @@ def generate_visualizations(output_data, inputs, timestamp):
     """
     Create and save publication-quality plots based on simulation results.
     """
+    plt, matplotlibrc = _load_matplotlib()
 
     # TODO: move these to kwargs for the function
     figure_props = {
@@ -433,19 +445,19 @@ def generate_visualizations(output_data, inputs, timestamp):
     plt.rcParams["font.family"] = "Arial"
 
     if tool == "Freezing Calculator":
-        _plot_freezing_results(output_data, figure_props, timestamp)
+        _plot_freezing_results(output_data, figure_props, timestamp, plt)
     elif tool in ["Primary Drying Calculator", "Optimizer"]:
         if tool == "Primary Drying Calculator" and not inputs["sim"]["Rp_known"]:
-            _plot_rp_results(output_data, figure_props, timestamp)
+            _plot_rp_results(output_data, figure_props, timestamp, plt)
             data = output_data[0]  # There are extra returns for Rp fitting
         else:
             data = output_data  # for all but unknown Rp, output_data is the only return
-        _plot_drying_results(data, figure_props, timestamp)
+        _plot_drying_results(data, figure_props, timestamp, plt)
     elif tool == "Design Space Generator":
-        _plot_design_space(output_data, inputs, figure_props, timestamp)
+        _plot_design_space(output_data, inputs, figure_props, timestamp, plt)
 
 
-def _plot_freezing_results(data, props, timestamp):
+def _plot_freezing_results(data, props, timestamp, plt):
     """Generate freezing process visualization."""
     fig, ax = plt.subplots(figsize=(props["figwidth"], props["figheight"]))
     ax.plot(
@@ -469,7 +481,7 @@ def _plot_freezing_results(data, props, timestamp):
     plt.close()
 
 
-def _plot_drying_results(data, props, timestamp):
+def _plot_drying_results(data, props, timestamp, plt):
     """Generate primary drying process visualizations."""
 
     figwidth = props["figwidth"]
@@ -551,7 +563,7 @@ def _plot_drying_results(data, props, timestamp):
     plt.close()
 
 
-def _plot_rp_results(data, props, timestamp):
+def _plot_rp_results(data, props, timestamp, plt):
     product_res = data[1]
     params = data[2]
     figwidth = props["figwidth"]
@@ -583,7 +595,7 @@ def _plot_rp_results(data, props, timestamp):
     plt.close()
 
 
-def _plot_design_space(data, inputs, props, timestamp):
+def _plot_design_space(data, inputs, props, timestamp, plt):
     """Generate design space boundary visualization."""
     # Implementation for design space plotting
 
