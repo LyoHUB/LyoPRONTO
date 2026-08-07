@@ -5,7 +5,7 @@ name: Main Branch Tests
 
 on:
   push:
-    branches: [ main, dev-pyomo ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -29,14 +29,12 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        pip install .
-        pip install .[dev]
-        pip install -e . --no-build-isolation
+        pip install -e ".[dev]"
     
     - name: Run ALL tests with pytest and coverage (including slow tests)
       run: |
-        echo "🔍 Running complete test suite including slow tests"
-        echo "⏱️ This may take 30-40 minutes on CI (includes optimization tests)"
+        echo "Running complete test suite including slow tests"
+        echo "This may take 30-40 minutes on CI (includes optimization tests)"
         pytest tests/ -n auto -v --cov=lyopronto --cov-report=xml --cov-report=term-missing
     
     - name: Upload coverage to Codecov
@@ -51,5 +49,5 @@ jobs:
     - name: Coverage Summary
       if: always()
       run: |
-        echo "✅ Full coverage tests completed for main branch"
-        echo "📊 Coverage metrics updated in Codecov"
+        echo "Full coverage tests completed for main branch"
+        echo "Coverage metrics updated in Codecov"
