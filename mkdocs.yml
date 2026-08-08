@@ -45,11 +45,14 @@ nav:
     # List of web pages to show, in order
     - index.md
     - tutorials.md
-    - how-to-guides.md
+    # - how-to-guides.md
     - Examples:
         - examples/knownRp_PD.ipynb
         - examples/unknownRp_PD.ipynb
-    - explanation.md
+        - examples/freezing.ipynb
+        - examples/opt_Pch_PD.ipynb
+    # - explanation.md
+    - yaml_inputs.md
     - reference.md
     - dev.md
 

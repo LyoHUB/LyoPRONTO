@@ -26,9 +26,9 @@ inputs = lp.read_inputs(yaml_fname)
 output = lp.execute_simulation(inputs)
 
 # Record the simulation inputs, outputs, and figures
-save_inputs(inputs, current_time)
-save_csv(output, inputs, current_time)
-generate_visualizations(output, inputs, current_time)
+lp.save_inputs(inputs, current_time)
+lp.save_csv(output, inputs, current_time)
+lp.generate_visualizations(output, inputs, current_time)
 ```
 This will generate a record of both inputs and outputs each time you execute the file, so you can edit the original YAML and rerun the script without worrying about losing prior values of the inputs.
 
@@ -36,11 +36,10 @@ See also documentation examples online [here](https://lyohub.github.io/LyoPRONTO
 
 The original method for running this code, as illustrated in a video tutorial
 [on LyoHUB's YouTube channel](https://youtu.be/DI-Gz0pBI0w),
-is to download this repository, edit the script `main.py` in its root directory, then run that script from the command line (in the directory containing the repo directory, so that `LyoPronto` is a module).
+is to download this repository, edit the script `main.py` in its root directory, then run that script from the command line (in the same directory):
 ```
-python3 LyoPronto.main -m
+python main.py
 ```
-This will execute the file `main.py` in an appropriate scope.
 Files listing the inputs and outputs will be generated in the current directory, along with some plots of temperature, pressure, and drying progress vs. time.
 
 

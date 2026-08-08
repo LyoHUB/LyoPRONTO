@@ -28,11 +28,11 @@ Run
 ```
 mike deploy [name]
 ```
-to deploy a docs version with ID `[name]`, which could be e.g. `v1.1.0` or `pr-10`, etc. Preview locally by navigating to `LyoPRONTO_folder/site`, then running
+to deploy a docs version with ID `[name]`, which could be e.g. `v1.1.0` or `pr-10`, etc. Preview locally by running
 ```
-python -m http.server --bind localhost
+mkdocs serve
 ```
-to spin up a local HTTP server on your own machine. 
+which will spin up a local HTTP server showing the docs, which will hot-reload as you edit the files in `docs` or the configuration in `mkdocs.yml` 
 
 On pushing to master, GitHub actions will run
 ```
