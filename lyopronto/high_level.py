@@ -21,9 +21,16 @@ yaml = YAML()
 
 
 def execute_simulation(inputs):
-    """
-    Run the selected simulation tool with the provided inputs.
-    Returns output data based on the chosen simulation mode.
+    """Runs the selected simulation tool with the provided inputs.
+
+    Args:
+        inputs: A dictionary containing simulation parameters and tool selection.
+
+    Returns:
+        The output data from the selected simulation tool.
+
+    Raises:
+        ValueError: If an invalid simulation tool is selected.
     """
     sim_type = inputs["sim"]["tool"]
     output_data = None
