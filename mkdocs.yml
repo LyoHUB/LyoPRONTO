@@ -49,6 +49,7 @@ nav:
     - Examples:
         - examples/knownRp_PD.ipynb
         - examples/unknownRp_PD.ipynb
+        - examples/design_space_PD.ipynb
     - explanation.md
     - reference.md
     - dev.md
