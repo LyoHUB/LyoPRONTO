@@ -24,10 +24,41 @@ def execute_simulation(inputs):
     """Runs the selected simulation tool with the provided inputs.
 
     Args:
-        inputs: A dictionary containing simulation parameters and tool selection.
+        inputs (dict): A dictionary containing simulation parameters and tool selection.
 
     Returns:
-        The output data from the selected simulation tool.
+        The output data from the selected simulation tool, depending on the tool:
+
+            - "Freezing Calculator": np.ndarray
+                Array with columns: time [hr], shelf temperature [°C], product temperature [°C].
+
+            - "Primary Drying Calculator" (Kv known, Rp known): np.ndarray
+                Output table with columns: time [hr], sublimation front temperature [°C],
+                vial bottom temperature [°C], shelf temperature [°C], chamber pressure [mTorr],
+                sublimation flux [kg/hr/m²], drying percent [%].
+
+            - "Primary Drying Calculator" (Kv unknown, Rp known): np.ndarray
+                Same output table as above, after optimizing Kv.
+
+            - "Primary Drying Calculator" (Kv known, Rp unknown): tuple[np.ndarray, np.ndarray, np.ndarray]
+                A tuple of (output_table, product_res, params) where:
+                    output_table: np.ndarray with the same columns as above.
+                    product_res: np.ndarray with columns: time [hr], cake length [cm], product resistance [cm²-hr-Torr/g].
+                    params: np.ndarray of fitted Rp parameters [R0, A1, A2].
+
+            - "Design Space Generator": tuple[np.ndarray, np.ndarray, np.ndarray]
+                A tuple of (shelf_isotherms, product_isotherms, eq_capability) where:
+                    shelf_isotherms: (5, nT, nP) array with rows for max product temp [°C],
+                        drying time [hr], avg sublimation flux [kg/hr/m²], max/min sublimation flux [kg/hr/m²],
+                        and sublimation flux at end of primary drying [kg/hr/m²].
+                    product_isotherms: (5, 2) array with the same row structure for lowest/highest Pchamber.
+                    eq_capability: (3, nP) array with rows for max product temp [°C], drying time [hr],
+                        and avg sublimation flux [kg/hr/m²].
+
+            - "Optimizer": np.ndarray
+                Output table with columns: time [hr], sublimation front temperature [°C],
+                vial bottom temperature [°C], shelf temperature [°C], chamber pressure [mTorr],
+                sublimation flux [kg/hr/m²], drying percent [%].
 
     Raises:
         ValueError: If an invalid simulation tool is selected.
@@ -422,9 +453,17 @@ def _write_design_space_csv(data, inputs, filename):
 
 # TODO: add more kwargs, proper documentation, possibly refactor to make
 # each subfunction part of the API
-def generate_visualizations(output_data, inputs, timestamp):
-    """
-    Create and save publication-quality plots based on simulation results.
+def generate_visualizations(output_data, inputs, timestamp, save_figures=True):
+    """Create publication-quality plots and optionally save them to disk.
+
+    Args:
+        output_data (np.ndarray or tuple): Simulation output array(s).
+        inputs (dict): Simulation input dictionary.
+        timestamp (str): Timestamp suffix used for figure filenames.
+        save_figures (bool): If True, save generated figures to disk. If False, skip saving.
+
+    Returns:
+        (list): the generated matplotlib Figure objects.
     """
 
     # TODO: move these to kwargs for the function
@@ -440,19 +479,27 @@ def generate_visualizations(output_data, inputs, timestamp):
     plt.rcParams["font.family"] = "Arial"
 
     if tool == "Freezing Calculator":
-        _plot_freezing_results(output_data, figure_props, timestamp)
+        return [_plot_freezing_results(output_data, figure_props, timestamp, save_figures)]
     elif tool in ["Primary Drying Calculator", "Optimizer"]:
+        figures = []
         if tool == "Primary Drying Calculator" and not inputs["sim"]["Rp_known"]:
-            _plot_rp_results(output_data, figure_props, timestamp)
+            figures.append(
+                _plot_rp_results(output_data, figure_props, timestamp, save_figures)
+            )
             data = output_data[0]  # There are extra returns for Rp fitting
         else:
             data = output_data  # for all but unknown Rp, output_data is the only return
-        _plot_drying_results(data, figure_props, timestamp)
+        figures.extend(_plot_drying_results(data, figure_props, timestamp, save_figures))
+        return figures
     elif tool == "Design Space Generator":
-        _plot_design_space(output_data, inputs, figure_props, timestamp)
+        return _plot_design_space(
+            output_data, inputs, figure_props, timestamp, save_figures
+        )
+
+    return []
 
 
-def _plot_freezing_results(data, props, timestamp):
+def _plot_freezing_results(data, props, timestamp, save_figures=True):
     """Generate freezing process visualization."""
     fig, ax = plt.subplots(figsize=(props["figwidth"], props["figheight"]))
     ax.plot(
@@ -472,19 +519,22 @@ def _plot_freezing_results(data, props, timestamp):
     plot_styling.axis_style_temperature(ax)
     ax.legend(prop={"size": 40})
     plt.tight_layout()
-    plt.savefig(f"lyo_Temperatures_{timestamp}.pdf")
-    plt.close()
+    if save_figures:
+        plt.savefig(f"lyo_Temperatures_{timestamp}.pdf")
+    return fig
 
 
-def _plot_drying_results(data, props, timestamp):
+def _plot_drying_results(data, props, timestamp, save_figures=True):
     """Generate primary drying process visualizations."""
 
     figwidth = props["figwidth"]
     figheight = props["figheight"]
     linewidth = props["linewidth"]
     marker_size = props["marker_size"]
+    figures = []
+
     # Pressure and sublimation flux
-    fig = plt.figure(0, figsize=(figwidth, figheight))
+    fig = plt.figure(figsize=(figwidth, figheight))
     ax1 = fig.add_subplot(1, 1, 1)
     ax2 = ax1.twinx()
     ax1.plot(
@@ -510,20 +560,22 @@ def _plot_drying_results(data, props, timestamp):
     plot_styling.axis_style_subflux(ax2)
 
     plt.tight_layout()
-    plt.savefig(f"lyo_Pressure_SublimationFlux_{timestamp}.pdf")
-    plt.close()
+    if save_figures:
+        plt.savefig(f"lyo_Pressure_SublimationFlux_{timestamp}.pdf")
+    figures.append(fig)
 
     # Drying progress
-    fig = plt.figure(0, figsize=(figwidth, figheight))
+    fig = plt.figure(figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plot_styling.axis_style_percdried(ax)
     ax.plot(data[:, 0], data[:, -1], "-k", linewidth=linewidth, label="Percent Dried")
     plt.tight_layout()
-    plt.savefig(f"lyo_DryingProgress_{timestamp}.pdf")
-    plt.close()
+    if save_figures:
+        plt.savefig(f"lyo_DryingProgress_{timestamp}.pdf")
+    figures.append(fig)
 
     # Temperatures
-    fig = plt.figure(0, figsize=(figwidth, figheight))
+    fig = plt.figure(figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plot_styling.axis_style_temperature(ax)
     ax.plot(
@@ -554,18 +606,21 @@ def _plot_drying_results(data, props, timestamp):
     ll, ul = ax.get_ylim()
     ax.set_ylim([ll, ul + 5.0])
     plt.tight_layout()
-    plt.savefig(f"lyo_Temperatures_{timestamp}.pdf")
-    plt.close()
+    if save_figures:
+        plt.savefig(f"lyo_Temperatures_{timestamp}.pdf")
+    figures.append(fig)
+
+    return figures
 
 
-def _plot_rp_results(data, props, timestamp):
+def _plot_rp_results(data, props, timestamp, save_figures=True):
     product_res = data[1]
     params = data[2]
     figwidth = props["figwidth"]
     figheight = props["figheight"]
     linewidth = props["linewidth"]
     marker_size = props["marker_size"]
-    fig = plt.figure(0, figsize=(figwidth, figheight))
+    fig = plt.figure(figsize=(figwidth, figheight))
     ax = fig.add_subplot(111)
     plot_styling.axis_style_rp(ax)
     ax.plot(
@@ -586,11 +641,13 @@ def _plot_rp_results(data, props, timestamp):
     ll, ul = ax.get_ylim()
     ax.set_ylim([max(0, ll), ul])
     plt.legend(fontsize=40, loc="best")
-    plt.savefig(f"lyo_Rp_Fit_{timestamp}.pdf")
-    plt.close()
+    if save_figures:
+        plt.savefig(f"lyo_Rp_Fit_{timestamp}.pdf")
+
+    return fig
 
 
-def _plot_design_space(data, inputs, props, timestamp):
+def _plot_design_space(data, inputs, props, timestamp, save_figures=True):
     """Generate design space boundary visualization."""
     # Implementation for design space plotting
 
@@ -602,6 +659,7 @@ def _plot_design_space(data, inputs, props, timestamp):
     figheight = props["figheight"]
     lineWidth = props["linewidth"]
     color_list = ["b", "m", "g", "c", "r", "y", "k"]  # Line colors
+    figures = []
 
     assert np.all(np.diff(Pchamber) >= 0), (
         "Plotting assumes Pchamber set points are sorted."
@@ -631,7 +689,7 @@ def _plot_design_space(data, inputs, props, timestamp):
     # Get whichever sub flux is lower at each x value
     y = np.minimum(y1, y2)
 
-    fig = plt.figure(0, figsize=(figwidth, figheight))
+    fig = plt.figure(figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plt.axes(ax)
     # Plot boundary lines
@@ -677,15 +735,6 @@ def _plot_design_space(data, inputs, props, timestamp):
     # Adjust axis limits
     # TODO: consider under what conditions y limits should be adjusted
     # Particularly: if eq cap is much higher than product, or vice versa
-    # Former logic follows
-    # # If minimum of eq cap average flux > maximum of pr limited min flux
-    # if np.min(ds_eq_cap[2, :]) > np.max(ds_pr[3, :]):
-    #     # Adjust upper limit to be 1/3 of first two eq cap average flux values
-    #     ul = (ds_eq_cap[2, 0] + ds_eq_cap[2, 1]) / 3
-    # # If instead minimum of pr limited min flux > maximum of eq cap average flux
-    # elif np.min(ds_pr[3, :]) > np.max(ds_eq_cap[2, :]):
-    #     # Adjust upper limit to be 1/4 of the two pr limited min flux values
-    #     ul = (ds_pr[3, 0] + ds_pr[3, 1]) / 4
     ll = max(0, ll)
     # Fill the feasible region
     ax.fill_between(x, y, ll, color=[1.0, 1.0, 0.6])
@@ -693,8 +742,9 @@ def _plot_design_space(data, inputs, props, timestamp):
     ax.set_ylim([ll, ul])
     plt.tight_layout()
     figure_name = f"lyo_DesignSpace_SublimationFlux_{timestamp}.pdf"
-    plt.savefig(figure_name)
-    plt.close()
+    if save_figures:
+        plt.savefig(figure_name)
+    figures.append(fig)
 
     # Drying time vs pressures
 
@@ -709,7 +759,7 @@ def _plot_design_space(data, inputs, props, timestamp):
     y = np.maximum(y1, y2)
     x = x * constant.Torr_to_mTorr  # convert pressure range to mTorr
 
-    fig = plt.figure(0, figsize=(figwidth, figheight))
+    fig = plt.figure(figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plt.axes(ax)
     # Drying time boundary for eq cap
@@ -748,8 +798,9 @@ def _plot_design_space(data, inputs, props, timestamp):
     ax.fill_between(x, y, ul, color=[1.0, 1.0, 0.6])
     figure_name = f"lyo_DesignSpace_DryingTime_{timestamp}.pdf"
     plt.tight_layout()
-    plt.savefig(figure_name)
-    plt.close()
+    if save_figures:
+        plt.savefig(figure_name)
+    figures.append(fig)
 
     # Product temperature vs pressures
 
@@ -765,7 +816,7 @@ def _plot_design_space(data, inputs, props, timestamp):
     x = x * constant.Torr_to_mTorr  # Convert pressure range to mTorr
     # Pointwise minimum of y1 and y2
 
-    fig = plt.figure(0, figsize=(figwidth, figheight))
+    fig = plt.figure(figsize=(figwidth, figheight))
     ax = fig.add_subplot(1, 1, 1)
     plt.axes(ax)
     ax.plot(
@@ -801,5 +852,8 @@ def _plot_design_space(data, inputs, props, timestamp):
     ax.fill_between(x, y, ll, color=[1.0, 1.0, 0.6])
     figure_name = f"lyo_DesignSpace_ProductTemperature_{timestamp}.pdf"
     plt.tight_layout()
-    plt.savefig(figure_name)
-    plt.close()
+    if save_figures:
+        plt.savefig(figure_name)
+    figures.append(fig)
+
+    return figures

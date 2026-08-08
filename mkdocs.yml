@@ -49,6 +49,7 @@ nav:
     - Examples:
         - examples/knownRp_PD.ipynb
         - examples/unknownRp_PD.ipynb
+        - examples/design_space_PD.ipynb
         - examples/freezing.ipynb
         - examples/opt_Pch_PD.ipynb
     # - explanation.md

@@ -35,7 +35,7 @@ def dry(vial, product, ht, Pchamber, Tshelf, time, Tbot_exp):
         Tbot_exp (np.ndarray): Array of expected bottom temperatures at each time step.
 
     Returns:
-        tuple[np.ndarray, np.ndarray]: A tuple containing:
+        (tuple[np.ndarray, np.ndarray]): A tuple containing:
             output_saved (np.ndarray): Saved output data for each time step, including time, sublimation temperature, bottom temperature, shelf temperature, chamber pressure, sublimation rate, and percent dried.
             product_res (np.ndarray): Calculated product resistance data, including time, cake length, and product resistance.
     """

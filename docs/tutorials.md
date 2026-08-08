@@ -8,7 +8,7 @@ See also the video tutorial at https://www.youtube.com/watch?v=DI-Gz0pBI0w.
 ## Newer approach: YAML Input Format
 
 LyoPRONTO accepts inputs as a YAML file, loaded via `read_inputs(filename)` and executed with `execute_simulation(inputs)`. 
-The expected keys, values, etc. are fully specified with all units and constraints in the [full reference](reference.md#input-yaml-specification). The keys are also exemplified in the example notebooks, with a set of dictionaries that are put together into a `sim_setup` dictionary for each example.
+The expected keys, values, etc. are fully specified with all units and constraints in the [full reference](yaml_inputs.md). The keys are also exemplified in the example notebooks, with a set of dictionaries that are put together into a `sim_setup` dictionary for each example.
 
 With a YAML file for your inputs, the high-level workflow is as simple as this:
 
