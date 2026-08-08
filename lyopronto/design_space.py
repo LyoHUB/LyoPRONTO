@@ -36,9 +36,10 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
         nVial (int): Number of vials in the load, used for equipment capability calculation
 
     Returns:
-        ndarray: table of results for shelf isotherms
-        ndarray: table of results for product isotherms
-        ndarray: table of results for equipment capability curve
+        (tuple[ndarray, ndarray, ndarray]): A tuple containing:
+            - table of results for shelf isotherms
+            - table of results for product isotherms
+            - table of results for equipment capability curve
     
     The first two returns have 5 rows corresponding to:
         - Maximum product temperature [degC]

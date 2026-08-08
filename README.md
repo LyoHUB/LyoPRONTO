@@ -1,12 +1,19 @@
 
 LyoPRONTO is an open-source user-friendly tool to simulate and optimize freezing and primary drying in lyophilizers written using Python.
 
+# Installation
+
+Install this code directly from GitHub with `pip`:
+```bash
+pip install git+https://github.com/LyoHUB/LyoPRONTO
+```
+
 # Authors
 Original authors: Gayathri Shivkumar, Petr S. Kazarin and Alina A. Alexeenko.
 Maintained and updated by Isaac S. Wheeler.
 
 # Interactive Simulation
-A web-based GUI is available for this software at http://lyopronto.geddes.rcac.purdue.edu.
+A web-based GUI is available for this software at https://lyopronto.geddes.rcac.purdue.edu or https://lyopronto2.geddes.rcac.purdue.edu
 
 # How to Use This Code Directly
 Construct a YAML file with all the necessary inputs (see YAML files under `test_data` of this repository for examples), then run a Python script like the following:

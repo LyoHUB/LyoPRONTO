@@ -24,10 +24,41 @@ def execute_simulation(inputs):
     """Runs the selected simulation tool with the provided inputs.
 
     Args:
-        inputs: A dictionary containing simulation parameters and tool selection.
+        inputs (dict): A dictionary containing simulation parameters and tool selection.
 
     Returns:
-        The output data from the selected simulation tool.
+        The output data from the selected simulation tool, depending on the tool:
+
+            - "Freezing Calculator": np.ndarray
+                Array with columns: time [hr], shelf temperature [°C], product temperature [°C].
+
+            - "Primary Drying Calculator" (Kv known, Rp known): np.ndarray
+                Output table with columns: time [hr], sublimation front temperature [°C],
+                vial bottom temperature [°C], shelf temperature [°C], chamber pressure [mTorr],
+                sublimation flux [kg/hr/m²], drying percent [%].
+
+            - "Primary Drying Calculator" (Kv unknown, Rp known): np.ndarray
+                Same output table as above, after optimizing Kv.
+
+            - "Primary Drying Calculator" (Kv known, Rp unknown): tuple[np.ndarray, np.ndarray, np.ndarray]
+                A tuple of (output_table, product_res, params) where:
+                    output_table: np.ndarray with the same columns as above.
+                    product_res: np.ndarray with columns: time [hr], cake length [cm], product resistance [cm²-hr-Torr/g].
+                    params: np.ndarray of fitted Rp parameters [R0, A1, A2].
+
+            - "Design Space Generator": tuple[np.ndarray, np.ndarray, np.ndarray]
+                A tuple of (shelf_isotherms, product_isotherms, eq_capability) where:
+                    shelf_isotherms: (5, nT, nP) array with rows for max product temp [°C],
+                        drying time [hr], avg sublimation flux [kg/hr/m²], max/min sublimation flux [kg/hr/m²],
+                        and sublimation flux at end of primary drying [kg/hr/m²].
+                    product_isotherms: (5, 2) array with the same row structure for lowest/highest Pchamber.
+                    eq_capability: (3, nP) array with rows for max product temp [°C], drying time [hr],
+                        and avg sublimation flux [kg/hr/m²].
+
+            - "Optimizer": np.ndarray
+                Output table with columns: time [hr], sublimation front temperature [°C],
+                vial bottom temperature [°C], shelf temperature [°C], chamber pressure [mTorr],
+                sublimation flux [kg/hr/m²], drying percent [%].
 
     Raises:
         ValueError: If an invalid simulation tool is selected.
@@ -426,13 +457,13 @@ def generate_visualizations(output_data, inputs, timestamp, save_figures=True):
     """Create publication-quality plots and optionally save them to disk.
 
     Args:
-        output_data: Simulation output array(s).
-        inputs: Simulation input dictionary.
-        timestamp: Timestamp suffix used for figure filenames.
-        save_figures: If True, save generated figures to disk. If False, skip saving.
+        output_data (np.ndarray or tuple): Simulation output array(s).
+        inputs (dict): Simulation input dictionary.
+        timestamp (str): Timestamp suffix used for figure filenames.
+        save_figures (bool): If True, save generated figures to disk. If False, skip saving.
 
     Returns:
-        A list of generated matplotlib Figure objects.
+        (list): the generated matplotlib Figure objects.
     """
 
     # TODO: move these to kwargs for the function
