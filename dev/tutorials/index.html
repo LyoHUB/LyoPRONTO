@@ -12,7 +12,7 @@
         <link rel="prev" href="..">
       
       
-        <link rel="next" href="../how-to-guides/">
+        <link rel="next" href="../examples/knownRp_PD/">
       
       
         
@@ -198,6 +198,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -215,33 +233,47 @@
 
       </a>
       
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how-to-guides/" class="md-nav__link">
         
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
-  <span class="md-ellipsis">
+  
     
   
-    How-to Guide
   
-
-    
-  </span>
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#original-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Original approach
+      
+    </span>
+  </a>
   
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#newer-approach-yaml-input-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Newer approach: YAML Input Format
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -261,10 +293,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -282,8 +314,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -349,6 +381,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/freezing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulate freezing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/opt_Pch_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimize time-varying chamber pressure during primary drying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -363,14 +451,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../explanation/" class="md-nav__link">
+      <a href="../yaml_inputs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Explanations
+    Input YAML Specification
   
 
     
@@ -397,7 +485,7 @@
   <span class="md-ellipsis">
     
   
-    Full listing of all docstrings by module
+    Reference
   
 
     
@@ -457,6 +545,36 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#original-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Original approach
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#newer-approach-yaml-input-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Newer approach: YAML Input Format
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -473,8 +591,32 @@
 
 
 <h1 id="tutorials">Tutorials</h1>
-<p>Under construction. But for now, see the video tutorial at https://www.youtube.com/watch?v=DI-Gz0pBI0w.</p>
-<p>The short version here is, edit <code>main.py</code> in LyoPRONTO then execute it with <code>python -m LyoPRONTO.main</code>.</p>
+<h2 id="original-approach">Original approach</h2>
+<p>Edit <code>main.py</code> in the root folder of the repo, then execute it with <code>python main.py</code>.
+See also the video tutorial at https://www.youtube.com/watch?v=DI-Gz0pBI0w.</p>
+<h2 id="newer-approach-yaml-input-format">Newer approach: YAML Input Format</h2>
+<p>LyoPRONTO accepts inputs as a YAML file, loaded via <code>read_inputs(filename)</code> and executed with <code>execute_simulation(inputs)</code>. 
+The expected keys, values, etc. are fully specified with all units and constraints in the <a href="../reference/#input-yaml-specification">full reference</a>. The keys are also exemplified in the example notebooks, with a set of dictionaries that are put together into a <code>sim_setup</code> dictionary for each example.</p>
+<p>With a YAML file for your inputs, the high-level workflow is as simple as this:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">time</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span> <span class="nn">lyopronto</span> <span class="k">as</span> <span class="nn">lp</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># get time for recording simulation results</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%y%m</span><span class="si">%d</span><span class="s2">_%H%M&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">yaml_fname</span> <span class="o">=</span> <span class="s2">&quot;your_dir/cycle_setup.yaml&quot;</span> <span class="c1"># Fill in with your filename and appropriate location</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Read in simulation inputs</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">inputs</span> <span class="o">=</span> <span class="n">lp</span><span class="o">.</span><span class="n">read_inputs</span><span class="p">(</span><span class="n">yaml_fname</span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># Execute the simulation</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">output</span> <span class="o">=</span> <span class="n">lp</span><span class="o">.</span><span class="n">execute_simulation</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Record the simulation inputs, outputs, and figures</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">lp</span><span class="o">.</span><span class="n">save_inputs</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">current_time</span><span class="p">)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">lp</span><span class="o">.</span><span class="n">save_csv</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">current_time</span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">lp</span><span class="o">.</span><span class="n">generate_visualizations</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">current_time</span><span class="p">)</span>
+</span></code></pre></div>
 
 
 

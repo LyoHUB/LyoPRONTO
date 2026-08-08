@@ -213,33 +213,6 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="../how-to-guides/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    How-to Guide
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
     
     
     
@@ -249,10 +222,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
@@ -270,8 +243,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -337,6 +310,62 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/freezing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulate freezing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/opt_Pch_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimize time-varying chamber pressure during primary drying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -351,14 +380,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../explanation/" class="md-nav__link">
+      <a href="../yaml_inputs/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Explanations
+    Input YAML Specification
   
 
     
@@ -385,7 +414,7 @@
   <span class="md-ellipsis">
     
   
-    Full listing of all docstrings by module
+    Reference
   
 
     
@@ -634,10 +663,10 @@ to run all the tests; some that use <code>papermill</code> to generate documenta
 <p>Run
 <div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mike deploy [name]
 </span></code></pre></div>
-to deploy a docs version with ID <code>[name]</code>, which could be e.g. <code>v1.1.0</code> or <code>pr-10</code>, etc. Preview locally by navigating to <code>LyoPRONTO_folder/site</code>, then running
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python -m http.server --bind localhost
+to deploy a docs version with ID <code>[name]</code>, which could be e.g. <code>v1.1.0</code> or <code>pr-10</code>, etc. Preview locally by running
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>mkdocs serve
 </span></code></pre></div>
-to spin up a local HTTP server on your own machine. </p>
+which will spin up a local HTTP server showing the docs, which will hot-reload as you edit the files in <code>docs</code> or the configuration in <code>mkdocs.yml</code> </p>
 <p>On pushing to master, GitHub actions will run
 <div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>mike deploy dev
 </span></code></pre></div>

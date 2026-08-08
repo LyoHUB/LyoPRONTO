@@ -1,0 +1,1234 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../examples/opt_Pch_PD/">
+      
+      
+        <link rel="next" href="../reference/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Input YAML Specification - LyoPRONTO Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#input-yaml-specification" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="LyoPRONTO Documentation" class="md-header__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            LyoPRONTO Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Input YAML Specification
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="LyoPRONTO Documentation" class="md-nav__button md-logo" aria-label="LyoPRONTO Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    LyoPRONTO Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LyoPRONTO: Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/knownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulate primary drying with known Kv and Rp
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/unknownRp_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fitting Unknown Rp to Process Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/freezing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Simulate freezing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/opt_Pch_PD/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Optimize time-varying chamber pressure during primary drying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input YAML Specification
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input YAML Specification
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#top-level-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Top-Level Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-sim-simulation-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. sim — Simulation Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-vial-vial-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. vial — Vial Geometry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-product-product-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. product — Product Properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ht-heat-transfer-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ht — Heat Transfer Parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-pchamber-chamber-pressure-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Pchamber — Chamber Pressure Profile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-tshelf-shelf-temperature-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Tshelf — Shelf Temperature Profile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-equipment-and-scalar-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Equipment and Scalar Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-other-top-level-keys-by-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Other Top-level Keys by Mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dev/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributor Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#top-level-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Top-Level Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-sim-simulation-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. sim — Simulation Configuration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-vial-vial-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. vial — Vial Geometry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-product-product-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. product — Product Properties
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-ht-heat-transfer-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. ht — Heat Transfer Parameters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-pchamber-chamber-pressure-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Pchamber — Chamber Pressure Profile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-tshelf-shelf-temperature-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Tshelf — Shelf Temperature Profile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-equipment-and-scalar-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Equipment and Scalar Keys
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-other-top-level-keys-by-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Other Top-level Keys by Mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="input-yaml-specification">Input YAML Specification</h1>
+<p>LyoPRONTO reads simulation inputs from a YAML file via <code>read_inputs(filename)</code> and writes them back via <code>save_inputs(inputs, timestamp)</code>. The YAML uses <code>ruamel.yaml</code> (YAML 1.1, block style). Large arrays (<code>time_data</code>, <code>temp_data</code>) are stripped before writing; if your input references a temperature data file, the <code>product_temp_filename</code> key is preserved as a reminder, and you must load the data separately into <code>time_data</code> / <code>temp_data</code> before calling <code>execute_simulation()</code>.</p>
+<p>When read into Python, this YAML becomes a dictionary of dictionaries: you can construct that dictionary-of-dictionaries structure yourself in a script and pass it to simulations.</p>
+<h2 id="top-level-structure">Top-Level Structure</h2>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># always required:</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nt">sim</span><span class="p">:</span><span class="w">           </span><span class="c1"># simulation configuration (dict) — required</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nt">vial</span><span class="p">:</span><span class="w">          </span><span class="c1"># vial geometry (dict) — required</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="nt">product</span><span class="p">:</span><span class="w">       </span><span class="c1"># product properties (dict) — required</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="nt">ht</span><span class="p">:</span><span class="w">            </span><span class="c1"># heat transfer parameters (dict) — conditional</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nt">Pchamber</span><span class="p">:</span><span class="w">      </span><span class="c1"># chamber pressure profile (dict) — conditional shape</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nt">Tshelf</span><span class="p">:</span><span class="w">        </span><span class="c1"># shelf temperature profile (dict) — conditional shape</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># sometimes required:</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nt">dt</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.01</span><span class="w">       </span><span class="c1"># time step (hr) — required</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nt">eq_cap</span><span class="p">:</span><span class="w">        </span><span class="c1"># equipment capability (dict) — design space / optimizer</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nt">nVial</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">398</span><span class="w">     </span><span class="c1"># number of vials — design space / optimizer</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nt">h_freezing</span><span class="p">:</span><span class="w">    </span><span class="c1"># freezing heat transfer coefficient — freezing only</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="nt">t_dry_exp</span><span class="p">:</span><span class="w">     </span><span class="c1"># experimental drying time — Kv unknown only</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="nt">Kv_range</span><span class="p">:</span><span class="w">      </span><span class="c1"># Kv search bounds — Kv unknown only</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="nt">time_data</span><span class="p">:</span><span class="w">     </span><span class="c1"># experimental time array — Rp unknown only</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="nt">temp_data</span><span class="p">:</span><span class="w">     </span><span class="c1"># experimental temperature array — Rp unknown only</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="nt">product_temp_filename</span><span class="p">:</span><span class="w">  </span><span class="c1"># path to temperature file — Rp unknown only</span>
+</span></code></pre></div>
+<hr />
+<h2 id="1-sim-simulation-configuration">1. <code>sim</code> — Simulation Configuration</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tool</code></td>
+<td><code>str</code></td>
+<td>One of: <code>"Freezing Calculator"</code>, <code>"Primary Drying Calculator"</code>, <code>"Design Space Generator"</code>, <code>"Optimizer"</code></td>
+</tr>
+<tr>
+<td><code>Kv_known</code></td>
+<td><code>bool</code></td>
+<td>Whether the vial heat transfer coefficient is known (Drying calculator only)</td>
+</tr>
+<tr>
+<td><code>Rp_known</code></td>
+<td><code>bool</code></td>
+<td>Whether product resistance is known (Drying calculator only)</td>
+</tr>
+<tr>
+<td><code>Variable_Pch</code></td>
+<td><code>bool</code></td>
+<td>Chamber pressure is an optimization variable (Optimizer only)</td>
+</tr>
+<tr>
+<td><code>Variable_Tsh</code></td>
+<td><code>bool</code></td>
+<td>Shelf temperature is an optimization variable (Optimizer only)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Constraints</strong>:
+- For <code>"Optimizer"</code>, at least one of <code>Variable_Pch</code> or <code>Variable_Tsh</code> must be <code>true</code>.
+- For <code>"Primary Drying Calculator"</code>, <code>Kv_known</code> and <code>Rp_known</code> cannot both be <code>false</code>.</p>
+<hr />
+<h2 id="2-vial-vial-geometry">2. <code>vial</code> — Vial Geometry</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Av</code></td>
+<td><code>float</code></td>
+<td>cm²</td>
+<td>Vial cross-sectional area</td>
+</tr>
+<tr>
+<td><code>Ap</code></td>
+<td><code>float</code></td>
+<td>cm²</td>
+<td>Product surface area</td>
+</tr>
+<tr>
+<td><code>Vfill</code></td>
+<td><code>float</code></td>
+<td>mL</td>
+<td>Fill volume</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example</strong>:
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">vial</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">Av</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.8</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">Ap</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.14</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">Vfill</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2.0</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="3-product-product-properties">3. <code>product</code> — Product Properties</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Required When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cSolid</code></td>
+<td><code>float</code></td>
+<td>g/mL</td>
+<td>Always</td>
+</tr>
+<tr>
+<td><code>Tpr0</code></td>
+<td><code>float</code></td>
+<td>°C</td>
+<td><code>Freezing Calculator</code></td>
+</tr>
+<tr>
+<td><code>Tf</code></td>
+<td><code>float</code></td>
+<td>°C</td>
+<td><code>Freezing Calculator</code></td>
+</tr>
+<tr>
+<td><code>Tn</code></td>
+<td><code>float</code></td>
+<td>°C</td>
+<td><code>Freezing Calculator</code></td>
+</tr>
+<tr>
+<td><code>R0</code></td>
+<td><code>float</code></td>
+<td>cm²·hr·Torr/g</td>
+<td>Always, unless <code>Rp_known</code> is <code>false</code></td>
+</tr>
+<tr>
+<td><code>A1</code></td>
+<td><code>float</code></td>
+<td>cm·hr·Torr/g</td>
+<td>Always, unless <code>Rp_known</code> is <code>false</code></td>
+</tr>
+<tr>
+<td><code>A2</code></td>
+<td><code>float</code></td>
+<td>1/cm</td>
+<td>Always, unless <code>Rp_known</code> is <code>false</code></td>
+</tr>
+<tr>
+<td><code>T_pr_crit</code></td>
+<td><code>float</code></td>
+<td>°C</td>
+<td><code>Design Space Generator</code>, <code>Optimizer</code>, optional for <code>Primary Drying Calculator</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Notes</strong>:</p>
+<ul>
+<li><code>T_pr_crit</code> should be set 2–3 °C below the collapse or glass transition temperature, to allow a safety margin.</li>
+<li>For <code>"Primary Drying Calculator"</code> with <code>Rp_known == false</code>, only <code>cSolid</code> and <code>T_pr_crit</code> are needed.</li>
+</ul>
+<p><strong>Examples</strong>:</p>
+<p><em>Freezing</em>:
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">product</span><span class="p">:</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">cSolid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">  </span><span class="nt">Tpr0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15.8</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">  </span><span class="nt">Tf</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-1.54</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">  </span><span class="nt">Tn</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-5.84</span>
+</span></code></pre></div></p>
+<p><em>Drying (Rp known)</em>:
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">product</span><span class="p">:</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">  </span><span class="nt">cSolid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">  </span><span class="nt">R0</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.4</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="w">  </span><span class="nt">A1</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">16.0</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">  </span><span class="nt">A2</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.0</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">  </span><span class="nt">T_pr_crit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-5</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="4-ht-heat-transfer-parameters">4. <code>ht</code> — Heat Transfer Parameters</h2>
+<p>Required for all tools except <code>Freezing Calculator</code> or <code>Primary Drying Calculator</code> with <code>Kv_known == false</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Single value of Kv</p>
+<p>If you only have a single value of <span class="arithmatex">\(K_v\)</span> and you are simulating at the matching chamber pressure, you can put that value in as <code>KC</code> and set <code>KP</code>, <code>KD</code> both to zero.</p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>KC</code></td>
+<td><code>float</code></td>
+<td>cal/(s·K·cm²)</td>
+<td>Conductive/radiative coefficient</td>
+</tr>
+<tr>
+<td><code>KP</code></td>
+<td><code>float</code></td>
+<td>cal/(s·K·cm²·Torr)</td>
+<td>Pressure-dependent coefficient</td>
+</tr>
+<tr>
+<td><code>KD</code></td>
+<td><code>float</code></td>
+<td>1/Torr</td>
+<td>Pressure-dependent denominator</td>
+</tr>
+</tbody>
+</table>
+<p>The effective vial coefficient is: <code>Kv = KC + KP × Pch / (1 + KD × Pch)</code></p>
+<p><strong>Example</strong>:
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nt">ht</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">KC</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.000275</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">  </span><span class="nt">KP</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.000893</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">  </span><span class="nt">KD</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.46</span>
+</span></code></pre></div></p>
+<hr />
+<h2 id="5-pchamber-chamber-pressure-profile">5. <code>Pchamber</code> — Chamber Pressure Profile</h2>
+<p>The structure depends on the simulation mode:</p>
+<p><strong>Fixed setpoint</strong> (Primary Drying Calculator, non-variable Optimizer):</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>setpt</code></td>
+<td><code>list[float]</code></td>
+<td>Torr</td>
+<td>Pressure set points</td>
+</tr>
+<tr>
+<td><code>dt_setpt</code></td>
+<td><code>list[float]</code></td>
+<td>min</td>
+<td>Duration per set point (same length as <code>setpt</code>)</td>
+</tr>
+<tr>
+<td><code>ramp_rate</code></td>
+<td><code>float</code></td>
+<td>Torr/min</td>
+<td>Ramp rate between set points</td>
+</tr>
+</tbody>
+</table>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nt">Pchamber</span><span class="p">:</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span><span class="nt">setpt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.15</span><span class="p p-Indicator">]</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span><span class="nt">dt_setpt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1800.0</span><span class="p p-Indicator">]</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span><span class="nt">ramp_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+</span></code></pre></div>
+<p><strong>Sweep array</strong> (Design Space Generator):</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">Pchamber</span><span class="p">:</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">setpt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.02</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.05</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.15</span><span class="p p-Indicator">]</span>
+</span></code></pre></div>
+<p><strong>Bounds</strong> (Optimizer with <code>Variable_Pch == true</code>):</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nt">Pchamber</span><span class="p">:</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.05</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">  </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1000</span>
+</span></code></pre></div>
+<p>Not required for <code>Freezing Calculator</code>.</p>
+<hr />
+<h2 id="6-tshelf-shelf-temperature-profile">6. <code>Tshelf</code> — Shelf Temperature Profile</h2>
+<p><strong>Fixed setpoint</strong> (Primary Drying Calculator, non-variable Optimizer):</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>init</code></td>
+<td><code>float</code></td>
+<td>°C</td>
+<td>Initial shelf temperature</td>
+</tr>
+<tr>
+<td><code>setpt</code></td>
+<td><code>list[float]</code></td>
+<td>°C</td>
+<td>Temperature set points</td>
+</tr>
+<tr>
+<td><code>dt_setpt</code></td>
+<td><code>list[float]</code></td>
+<td>min</td>
+<td>Duration per set point (same length as <code>setpt</code>)</td>
+</tr>
+<tr>
+<td><code>ramp_rate</code></td>
+<td><code>float</code></td>
+<td>°C/min</td>
+<td>Ramp rate between set points</td>
+</tr>
+</tbody>
+</table>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nt">Tshelf</span><span class="p">:</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="w">  </span><span class="nt">init</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-35.0</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="w">  </span><span class="nt">setpt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">20.0</span><span class="p p-Indicator">]</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="w">  </span><span class="nt">dt_setpt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1800.0</span><span class="p p-Indicator">]</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="w">  </span><span class="nt">ramp_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+</span></code></pre></div>
+<p><strong>Sweep array</strong> (Design Space Generator):</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nt">Tshelf</span><span class="p">:</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">init</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-5.0</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">  </span><span class="nt">setpt</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-15</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">30</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">90</span><span class="p p-Indicator">]</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">  </span><span class="nt">ramp_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+</span></code></pre></div>
+<p><strong>Bounds</strong> (Optimizer with <code>Variable_Tsh == true</code>):</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">Tshelf</span><span class="p">:</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">  </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-45</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="w">  </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">120</span>
+</span></code></pre></div>
+<hr />
+<h2 id="7-equipment-and-scalar-keys">7. Equipment and Scalar Keys</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Unit</th>
+<th>Required When</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dt</code></td>
+<td><code>float</code></td>
+<td>hr</td>
+<td>Always</td>
+<td>Simulation time step</td>
+</tr>
+<tr>
+<td><code>eq_cap.a</code></td>
+<td><code>float</code></td>
+<td>kg/hr</td>
+<td>Design Space &amp; Optimizer</td>
+<td>Equipment capability intercept</td>
+</tr>
+<tr>
+<td><code>eq_cap.b</code></td>
+<td><code>float</code></td>
+<td>kg/hr/Torr</td>
+<td>Design Space &amp; Optimizer</td>
+<td>Equipment capability slope</td>
+</tr>
+<tr>
+<td><code>nVial</code></td>
+<td><code>int</code></td>
+<td>—</td>
+<td>Design Space &amp; Optimizer</td>
+<td>Number of vials in batch</td>
+</tr>
+</tbody>
+</table>
+<p>Equipment capability models choked flow to the condenser: <code>dm/dt [kg/hr] = a + b × Pch [Torr]</code></p>
+<hr />
+<h2 id="8-other-top-level-keys-by-mode">8. Other Top-level Keys by Mode</h2>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+<th>Required When</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>h_freezing</code></td>
+<td><code>float</code> (W/m²/K)</td>
+<td><code>Freezing Calculator</code></td>
+<td>Heat transfer coefficient during freezing</td>
+</tr>
+<tr>
+<td><code>t_dry_exp</code></td>
+<td><code>float</code> (hr)</td>
+<td><code>Primary Drying Calculator</code> +  <code>Kv_known == false</code></td>
+<td>Experimental drying time for Kv optimization</td>
+</tr>
+<tr>
+<td><code>Kv_range</code></td>
+<td><code>list[float, float]</code> (cal/s/K/cm²)</td>
+<td><code>Primary Drying Calculator</code> + <code>Kv_known == false</code></td>
+<td>Lower and upper bounds for Kv root-finding</td>
+</tr>
+<tr>
+<td><code>time_data</code></td>
+<td><code>list[float]</code> (hr)</td>
+<td><code>Rp_known == false</code></td>
+<td>Experimental time measurements</td>
+</tr>
+<tr>
+<td><code>temp_data</code></td>
+<td><code>list[float]</code> (°C)</td>
+<td><code>Rp_known == false</code></td>
+<td>Experimental product temperature measurements</td>
+</tr>
+<tr>
+<td><code>product_temp_filename</code></td>
+<td><code>str</code></td>
+<td><code>Rp_known == false</code></td>
+<td>Path to temperature data file (informational only)</td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
