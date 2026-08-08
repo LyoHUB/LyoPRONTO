@@ -26,11 +26,11 @@ def dry(vial,product,ht,Pchamber,Tshelf,dt,eq_cap,nVial):
     """Compute quantities necessary for constructing a graphical design space. 
 
     Args:
-        vial (dict): Vial properties, including 'Vfill' and 'Ap'.
+        vial (dict): Vial properties, including 'Vfill', 'Ap', and 'Av'..
         product (dict): Product properties, including 'cSolid', 'T_pr_crit', and Rp parameters 'R0', 'A1', and 'A2'.
         ht (dict): Heat transfer properties, including 'KC', 'KP', and 'KD'.
-        Pchamber (dict): Chamber pressure control data.
-        Tshelf (dict): Shelf temperature control data.
+        Pchamber (dict): Chamber pressure set points and time (see docs).
+        Tshelf (dict): Shelf temperature set points and time (see docs).
         dt (float): Fixed time step for output [hours]
         eq_cap (dict): Equipment capability line, with 'a' slope and 'b' intercept
         nVial (int): Number of vials in the load, used for equipment capability calculation

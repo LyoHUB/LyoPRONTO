@@ -26,10 +26,10 @@ def freeze(vial,product,h_freezing,Tshelf,dt):
     """Simulates the primary drying process for a vial.
 
     Args:
-        vial (dict): Vial properties, including 'Vfill' and 'Ap'.
-        product (dict): Product properties, including 'cSolid' and Rp parameters 'R0', 'A1', and 'A2'.
+        vial (dict): Vial properties, including 'Vfill', 'Ap', and 'Av'..
+        product (dict): Product properties, including 'cSolid', initial temperature 'Tpr0', freezing temperature 'Tf', and nucleation temperature 'Tn'.
         h_freezing (float): Heat transfer coefficient during freezing [W/m²/K].
-        Tshelf (dict): Shelf temperature control data.
+        Tshelf (dict): Shelf temperature set points and time (see docs).
         dt (float): Time step for the simulation [hr]. Used only as a sampling rate for output.
 
     Returns:

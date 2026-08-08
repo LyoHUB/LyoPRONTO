@@ -30,7 +30,7 @@ def execute_simulation(inputs):
         The output data from the selected simulation tool.
 
     Raises:
-        ValueError: If an invalid simulation tool is selected or required parameters are missing.
+        ValueError: If an invalid simulation tool is selected.
     """
     sim_type = inputs["sim"]["tool"]
     output_data = None
