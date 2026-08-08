@@ -33,8 +33,9 @@ jobs:
       # Deploy docs according to type of event
       - name: Build docs as latest
         if: ${{ github.event_name == 'release' }}
-        run: mike deploy v${{ github.ref_name }} \
-          mike alias v${{ github.ref_name }} latest --update-aliases 
+        run: |
+          mike deploy ${{ github.ref_name }}
+          mike alias ${{ github.ref_name }} latest --update-aliases 
       - name: Build docs for PR
         if: ${{ github.event_name == 'pull_request' }}
         run: mike deploy pr-${{ github.event.number }}
